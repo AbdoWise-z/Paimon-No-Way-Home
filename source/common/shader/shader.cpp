@@ -1,6 +1,5 @@
 #include "shader.hpp"
 
-#include <cassert>
 #include <iostream>
 #include <fstream>
 #include <string>
