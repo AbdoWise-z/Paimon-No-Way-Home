@@ -31,11 +31,11 @@ namespace our
                 glDeleteProgram(program);
         }
 
-        bool attach(const std::string &filename, GLenum type) const;
+        [[nodiscard]] bool attach(const std::string &filename, GLenum type) const;
 
-        bool link() const;
+        [[nodiscard]] bool link() const;
 
-        void use()
+        void use() const
         {
             glUseProgram(program);
         }
@@ -73,7 +73,7 @@ namespace our
             glUniform1ui(location, value);
         }
 
-        void set(const std::string &uniform, GLint value)
+        void set(const std::string &uniform, GLint value) const
         {
             // TODO: (Req 1) Send the given integer value to the given uniform
             GLint location = getUniformLocation(uniform);
@@ -85,7 +85,7 @@ namespace our
             glUniform1i(location, value);
         }
 
-        void set(const std::string &uniform, glm::vec2 value)
+        void set(const std::string &uniform, glm::vec2 value) const
         {
             // TODO: (Req 1) Send the given 2D vector value to the given uniform
             GLint location = getUniformLocation(uniform);
@@ -97,7 +97,7 @@ namespace our
             glUniform2f(location, value.x, value.y);
         }
 
-        void set(const std::string &uniform, glm::vec3 value)
+        void set(const std::string &uniform, glm::vec3 value) const
         {
             // TODO: (Req 1) Send the given 3D vector value to the given uniform
             GLint location = getUniformLocation(uniform);
@@ -109,7 +109,7 @@ namespace our
             glUniform3f(location, value.x, value.y, value.z);
         }
 
-        void set(const std::string &uniform, glm::vec4 value)
+        void set(const std::string &uniform, glm::vec4 value) const
         {
             // TODO: (Req 1) Send the given 4D vector value to the given uniform
             GLint location = getUniformLocation(uniform);
@@ -121,7 +121,7 @@ namespace our
             glUniform4f(location, value.x, value.y, value.z, value.w);
         }
 
-        void set(const std::string &uniform, glm::mat4 matrix)
+        void set(const std::string &uniform, glm::mat4 matrix) const
         {
             // TODO: (Req 1) Send the given matrix 4x4 value to the given uniform
             GLint location = getUniformLocation(uniform);
