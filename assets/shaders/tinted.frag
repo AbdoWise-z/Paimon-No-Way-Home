@@ -7,9 +7,13 @@ in Varyings {
 out vec4 frag_color;
 
 uniform vec4 tint;
+uniform float alphaThreshold;
 
 void main(){
     //TODO: (Req 7) Modify the following line to compute the fragment color
     // by multiplying the tint with the vertex color
     frag_color = tint * fs_in.color;
+    if (frag_color.a < alphaThreshold){
+        discard;
+    }
 }
