@@ -11,7 +11,7 @@ namespace our {
         // Then we check if there is a sky texture in the configuration
         if(config.contains("sky")){
             // First, we create a sphere which will be used to draw the sky
-            this->skySphere = mesh_utils::sphere(glm::ivec2(16, 16));
+            this->skySphere = mesh_utils::sphere(glm::ivec2(12, 12));
             
             // We can draw the sky using the same shader used to draw textured objects
             ShaderProgram* skyShader = new ShaderProgram();
@@ -23,12 +23,15 @@ namespace our {
             // Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
             // We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
-            
+            skyPipelineState.faceCulling.enabled = false;
+            skyPipelineState.faceCulling.frontFace = GL_CW;
+            skyPipelineState.depthTesting.enabled = false;
+
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
             Texture2D* skyTexture = texture_utils::loadImage(skyTextureFile, false);
 
-            // Setup a sampler for the sky 
+            // Setup a sampler for the sky
             Sampler* skySampler = new Sampler();
             skySampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             skySampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -42,7 +45,7 @@ namespace our {
             this->skyMaterial->sampler = skySampler;
             this->skyMaterial->pipelineState = skyPipelineState;
             this->skyMaterial->tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-            this->skyMaterial->alphaThreshold = 1.0f;
+            this->skyMaterial->alphaThreshold = 0.0f; //Fixme: changed from 1 -> 0 to fix issue with sky box
             this->skyMaterial->transparent = false;
         }
 
@@ -186,23 +189,25 @@ namespace our {
         // If there is a sky material, draw the sky
         if(this->skyMaterial){
             //TODO: (Req 10) setup the sky material
-            
+            skyMaterial->setup();
             //TODO: (Req 10) Get the camera position
-            
+            //...
+
             //TODO: (Req 10) Create a model matrix for the sy such that it always follows the camera (sky sphere center = camera position)
-            
+            auto M = glm::translate(glm::mat4(1.0f) , cameraCenter);
+
             //TODO: (Req 10) We want the sky to be drawn behind everything (in NDC space, z=1)
-            // We can acheive the is by multiplying by an extra matrix after the projection but what values should we put in it?
+            // We can achieve the is by multiplying by an extra matrix after the projection but what values should we put in it?
             glm::mat4 alwaysBehindTransform = glm::mat4(
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f
             );
             //TODO: (Req 10) set the "transform" uniform
-            
+            skyMaterial->shader->set("transform" , alwaysBehindTransform * VP * M);
             //TODO: (Req 10) draw the sky sphere
-            
+            skySphere->draw();
         }
         //TODO: (Req 9) Draw all the transparent commands
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
