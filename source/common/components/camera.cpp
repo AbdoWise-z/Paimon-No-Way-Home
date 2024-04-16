@@ -35,17 +35,52 @@ namespace our {
         // - the center position which is the point (0,0,-1) but after being transformed by M
         // - the up direction which is the vector (0,1,0) but after being transformed by M
         // then you can use glm::lookAt
-        return glm::mat4(1.0f);
+
+        auto eye    = glm::vec4(0,0,0 , 1.0);
+        auto look   = glm::vec4(0,0,-1 , 0.0);
+        auto up     = glm::vec4(0,1,0, 0.0);
+
+        eye    = M * eye;
+        look   = M * look;
+        up     = M * up;
+
+        glm::mat4 V = glm::lookAt(
+                 glm::vec3(eye.x , eye.y , eye.z),
+                 glm::vec3(look.x , look.y , look.z),
+                 glm::vec3(up.x , up.y , up.z)
+        );
+
+        return V;
     }
 
     // Creates and returns the camera projection matrix
     // "viewportSize" is used to compute the aspect ratio
     glm::mat4 CameraComponent::getProjectionMatrix(glm::ivec2 viewportSize) const {
-        //TODO: (Req 8) Wrtie this function
+        //TODO: (Req 8) Write this function
         // NOTE: The function glm::ortho can be used to create the orthographic projection matrix
         // It takes left, right, bottom, top. Bottom is -orthoHeight/2 and Top is orthoHeight/2.
         // Left and Right are the same but after being multiplied by the aspect ratio
         // For the perspective camera, you can use glm::perspective
-        return glm::mat4(1.0f);
+
+        float aspect = (float) viewportSize.x / (float) viewportSize.y;
+
+        glm::mat4 P = glm::mat4(1.0f);
+        switch (cameraType) {
+            case CameraType::PERSPECTIVE:
+                P = glm::perspective(fovY, aspect, near, far);
+                break;
+            case CameraType::ORTHOGRAPHIC:
+                P = glm::ortho(
+                        - (float) viewportSize.x / 2.0f * aspect,
+                        + (float) viewportSize.x / 2.0f * aspect,
+                        - orthoHeight/2,
+                        + orthoHeight/2,
+                        near,
+                        far
+                        );
+                break;
+        }
+
+        return P;
     }
 }
