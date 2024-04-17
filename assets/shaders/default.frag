@@ -1,29 +1,94 @@
 #version 330 core
+#define MAX_LIGHTS 20
 
 in Varyings {
     vec4 color;
     vec2 tex_coord;
-    vec3 normals;
+    vec3 normal;
+    vec3 position;
 } fs_in;
 
 out vec4 frag_color;
 
-//coloring
-uniform vec4 tint;
-uniform int hasTexture = 0; //1 == true , 0 == false
-uniform sampler2D tex;
+//material
+uniform struct Material {
+    vec4 tint;
+    int hasTexture; //1 == true , 0 == false
+    sampler2D tex;
+    float reflectivity;
+} material;
+
 
 //lighting
 uniform int spotLightsCount = 0;
+uniform struct SpotLight {
+    vec3 position;
+    float intensity;
+    vec3 color;
+} spotLights [MAX_LIGHTS];
 
-//Dr forgot to add this so I added it ..
-uniform float alphaThreshold;
+uniform int directionalLightCount = 0;
+uniform struct DirectionalLight {
+    vec3 direction;
+    float intensity;
+    vec3 color;
+} directionalLights [MAX_LIGHTS];
+
+uniform int coneLightsCount = 0;
+uniform struct ConeLight {
+    vec3 position;
+    float intensity;
+    vec3 color;
+    vec3 direction;
+    vec2 range;
+    int smoothing;
+} coneLights [MAX_LIGHTS];
+
+uniform int isSkybox = 0; //sky boxes are not affected by normals or spot lights when renderered
+uniform vec3 areaLight = vec3(1,1,1);
+
 
 void main(){
-    //TODO: (Req 7) Modify the following line to compute the fragment color
-    // by multiplying the tint with the vertex color and with the texture color
-    frag_color = tint * fs_in.color * texture(tex, fs_in.tex_coord);
-    if (frag_color.a < alphaThreshold){
-        discard;
+    //calculate the base color
+    vec4 baseColor = material.tint * fs_in.color;
+    if (material.hasTexture == 1){
+        baseColor = baseColor * texture(material.tex, fs_in.tex_coord);
     }
+
+    if (isSkybox == 1){ // no need to do light calculations
+        frag_color = baseColor * vec4(areaLight , 1.0);
+        return;
+    }
+
+    //calculate the total directional light
+    vec3 directionalLight = vec3(0,0,0);
+    for (int i = 0;i < directionalLightCount;i++){
+        directionalLight += max( dot(-fs_in.normal , normalize(directionalLights[i].direction)) , 0) * directionalLights[i].color * directionalLights[i].intensity;
+    }
+
+    //calculate the total spot light
+    vec3 spotLight = vec3(0,0,0);
+    for (int i = 0;i < spotLightsCount;i++){
+        vec3 diff = fs_in.position - spotLights[i].position;
+        vec3 ndiff = normalize(diff);
+        spotLight += max( dot(-fs_in.normal , ndiff) , 0) * spotLights[i].color * spotLights[i].intensity / dot(diff , diff);
+    }
+
+    //calculate the total cone light
+    vec3 coneLight = vec3(0,0,0);
+    for (int i = 0;i < coneLightsCount;i++){
+        vec3 diff = fs_in.position - coneLights[i].position;
+        vec3 ndiff = normalize(diff);
+        float div = dot(ndiff , normalize(coneLights[i].direction));
+        if (div >= coneLights[i].range.x && div >= coneLights[i].range.y){
+            div = coneLights[i].smoothing == 1 ? 1 : max(div , coneLights[i].range.x);
+            if (coneLights[i].smoothing == 2){
+                div = smoothstep(coneLights[i].range.x , coneLights[i].range.y , div);
+            }
+            coneLight += max( dot(-fs_in.normal, ndiff) , 0) * coneLights[i].color * coneLights[i].intensity / dot(diff, diff) * div;
+        }
+    }
+
+    vec3 totalLight = directionalLight + spotLight + coneLight + areaLight;
+    frag_color = baseColor * vec4(totalLight , 1.0);
 }

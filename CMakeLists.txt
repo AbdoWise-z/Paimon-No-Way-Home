@@ -112,6 +112,10 @@ set(STATES_SOURCES
         source/states/material-test-state.hpp
         source/states/entity-test-state.hpp
         source/states/renderer-test-state.hpp
+        source/common/components/DirectionalLight.cpp
+        source/common/components/DirectionalLight.hpp
+        source/common/components/SpotLight.cpp
+        source/common/components/SpotLight.h
 )
 
 # For each example, we add an executable target

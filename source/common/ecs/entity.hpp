@@ -57,6 +57,23 @@ namespace our {
             return nullptr;
         }
 
+        //same but with a bit of optimization
+        template<typename T,typename V>
+        std::pair<T*,V*> getComponents(){
+            std::pair<T*,V*> out;
+            auto it = components.begin();
+            while (it != components.end()){
+                if (dynamic_cast<T*>(*it)){
+                    out.first = (T*) *it;
+                }
+                if (dynamic_cast<V*>(*it)){
+                    out.second = (V*) *it;
+                }
+                it++;
+            }
+            return out;
+        }
+
         // This template method dynami and returns a pointer to it
         // If no component of type T was found, it returns a nullptr 
         template<typename T>

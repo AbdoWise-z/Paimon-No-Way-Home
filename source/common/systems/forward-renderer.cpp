@@ -1,3 +1,4 @@
+#include <sstream>
 #include "forward-renderer.hpp"
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
@@ -15,8 +16,9 @@ namespace our {
             
             // We can draw the sky using the same shader used to draw textured objects
             ShaderProgram* skyShader = new ShaderProgram();
-            skyShader->attach("assets/shaders/textured.vert", GL_VERTEX_SHADER);
-            skyShader->attach("assets/shaders/textured.frag", GL_FRAGMENT_SHADER);
+            //Fixme: change to texture if needed
+            skyShader->attach("assets/shaders/default.vert", GL_VERTEX_SHADER);
+            skyShader->attach("assets/shaders/default.frag", GL_FRAGMENT_SHADER);
             skyShader->link();
             
             //TODO: (Req 10) Pick the correct pipeline state to draw the sky
@@ -29,25 +31,25 @@ namespace our {
             skyPipelineState.depthTesting.enabled = true;
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
-            std::string skyTextureFile = config.value<std::string>("sky", "");
+            auto skyTextureFile = config.value<std::string>("sky", "");
             Texture2D* skyTexture = texture_utils::loadImage(skyTextureFile, false);
 
             // Setup a sampler for the sky
-            Sampler* skySampler = new Sampler();
+            auto* skySampler = new Sampler();
             skySampler->set(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             skySampler->set(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             skySampler->set(GL_TEXTURE_WRAP_S, GL_REPEAT);
             skySampler->set(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
             // Combine all the aforementioned objects (except the mesh) into a material 
-            this->skyMaterial = new TexturedMaterial();
+            this->skyMaterial = new DefaultMaterial(); //Fixme change back to Textured Material if needed
             this->skyMaterial->shader = skyShader;
             this->skyMaterial->texture = skyTexture;
             this->skyMaterial->sampler = skySampler;
             this->skyMaterial->pipelineState = skyPipelineState;
             this->skyMaterial->tint = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-            this->skyMaterial->alphaThreshold = 0.0f; //Fixme: changed from 1 -> 0 to fix issue with sky box
             this->skyMaterial->transparent = false;
+            this->skyMaterial->isSkybox = true;
         }
 
         // Then we check if there is a postprocessing shader in the configuration
@@ -117,15 +119,22 @@ namespace our {
         CameraComponent* camera = nullptr;
         opaqueCommands.clear();
         transparentCommands.clear();
+        directionalLights.clear();
+        spotLights.clear();
+
         for(auto entity : world->getEntities()){
             // If we hadn't found a camera yet, we look for a camera in this entity
             if(!camera) camera = entity->getComponent<CameraComponent>();
+
+            glm::mat4 localToWorld = entity->getLocalToWorldMatrix();
+            glm::vec4 position = localToWorld * glm::vec4(0, 0, 0, 1);
+
             // If this entity has a mesh renderer component
             if(auto meshRenderer = entity->getComponent<MeshRendererComponent>(); meshRenderer){
                 // We construct a command from it
                 RenderCommand command;
-                command.localToWorld = meshRenderer->getOwner()->getLocalToWorldMatrix();
-                command.center = glm::vec3(command.localToWorld * glm::vec4(0, 0, 0, 1));
+                command.localToWorld = localToWorld;
+                command.center = glm::vec3(position);
                 command.mesh = meshRenderer->mesh;
                 command.material = meshRenderer->material;
                 // if it is transparent, we add it to the transparent commands list
@@ -136,6 +145,17 @@ namespace our {
                     opaqueCommands.push_back(command);
                 }
             }
+
+            auto dl = entity->getComponent<DirectionalLight>();
+            if (dl != nullptr)
+                directionalLights.emplace_back(dl);
+
+            auto sl = entity->getComponent<SpotLight>();
+            if (sl != nullptr) {
+                spotLights.emplace_back(sl);
+                sl->worldPosition = glm::vec3(position);
+            }
+
         }
 
         // If there is no camera, we return (we cannot render without a camera)
@@ -187,7 +207,33 @@ namespace our {
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
         for (auto k : opaqueCommands){
             k.material->setup();
-            k.material->shader->set("transform", VP * k.localToWorld);
+            if (dynamic_cast<DefaultMaterial*>(k.material)){
+                // set up transform
+                k.material->shader->set("transform", k.localToWorld);
+                k.material->shader->set("Camera", VP);
+                // set up lights
+                k.material->shader->set("directionalLightCount" , (GLint) directionalLights.size());
+                for (int i = 0;i < directionalLights.size();i++){
+                    std::stringstream ss;
+                    ss << "directionalLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "direction" , directionalLights[i]->direction);
+                    k.material->shader->set( header + "intensity" , directionalLights[i]->intensity);
+                    k.material->shader->set( header + "color" , directionalLights[i]->color);
+                }
+
+                k.material->shader->set("spotLightsCount" , (GLint) directionalLights.size());
+                for (int i = 0;i < directionalLights.size();i++){
+                    std::stringstream ss;
+                    ss << "spotLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "position" , spotLights[i]->worldPosition);
+                    k.material->shader->set( header + "intensity" , spotLights[i]->intensity);
+                    k.material->shader->set( header + "color" , spotLights[i]->color);
+                }
+            }else{
+                k.material->shader->set("transform", VP * k.localToWorld);
+            }
             k.mesh->draw();
         }
 
@@ -211,7 +257,9 @@ namespace our {
             ); //this thing gets transposed ...
 
             //TODO: (Req 10) set the "transform" uniform
-            skyMaterial->shader->set("transform" , alwaysBehindTransform * VP * M);
+            skyMaterial->shader->set("transform", M);
+            skyMaterial->shader->set("Camera", alwaysBehindTransform * VP);
+
             //TODO: (Req 10) draw the sky sphere
             skySphere->draw();
         }
@@ -219,7 +267,25 @@ namespace our {
         // Don't forget to set the "transform" uniform to be equal the model-view-projection matrix for each render command
         for (auto k : transparentCommands){
             k.material->setup();
-            k.material->shader->set("transform", VP * k.localToWorld);
+            if (dynamic_cast<DefaultMaterial*>(k.material)){
+                // set up transform
+                k.material->shader->set("transform", k.localToWorld);
+                k.material->shader->set("Camera", VP);
+                // set up lights
+                k.material->shader->set("directionalLightCount" , (GLint) directionalLights.size());
+                for (int i = 0;i < directionalLights.size();i++){
+                    std::stringstream ss;
+                    ss << "directionalLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "direction" , directionalLights[i]->direction);
+                    k.material->shader->set( header + "intensity" , directionalLights[i]->intensity);
+                    k.material->shader->set( header + "color" , directionalLights[i]->color);
+                }
+
+
+            }else{
+                k.material->shader->set("transform", VP * k.localToWorld);
+            }
             k.mesh->draw();
         }
 

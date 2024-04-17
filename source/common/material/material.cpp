@@ -61,4 +61,36 @@ namespace our {
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
 
+
+    void DefaultMaterial::setup() const {
+        Material::setup();
+        shader->set("material.tint" , this->tint);
+        if (texture != nullptr){
+            glActiveTexture(GL_TEXTURE0);
+            texture->bind();
+            if (sampler != nullptr){
+                sampler->bind(0);
+            }
+            shader->set("material.hasTexture" , (GLint) 1);
+            shader->set("material.tex",0);   //set our Texture2D "tex" to use texture no 0
+        }else{
+            shader->set("material.hasTexture" , (GLint) 0);
+        }
+
+        shader->set("material.reflectivity" , reflectivity);
+        shader->set("isSkybox" , isSkybox ? (GLint) 1 : (GLint) 0);
+        shader->set("areaLight" , areaLight);
+    }
+
+    void DefaultMaterial::deserialize(const nlohmann::json &data) {
+        Material::deserialize(data);
+        texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
+        sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+        tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        areaLight = data.value("areaLight", glm::vec3(1.0f, 1.0f, 1.0f));
+        isSkybox = data.value("isSkybox" , false);
+        reflectivity = data.value("reflectivity" , 0.0f);
+    }
+
+
 }

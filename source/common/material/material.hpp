@@ -4,11 +4,13 @@
 #include "../texture/texture2d.hpp"
 #include "../texture/sampler.hpp"
 #include "../shader/shader.hpp"
+#include "components/DirectionalLight.hpp"
 
 #include <glm/vec4.hpp>
 #include <json/json.hpp>
 
 namespace our {
+
 
     // This is the base class for all the materials
     // It contains the 3 essential components required by any material
@@ -53,12 +55,27 @@ namespace our {
         void deserialize(const nlohmann::json& data) override;
     };
 
+    class DefaultMaterial : public Material{
+    public:
+        Texture2D* texture;
+        Sampler* sampler;
+        float reflectivity;
+        bool isSkybox;
+        glm::vec3 areaLight = glm::vec3(0.1,0.1,0.1);
+        glm::vec4 tint;
+
+        void setup() const override;
+        void deserialize(const nlohmann::json& data) override;
+    };
+
     // This function returns a new material instance based on the given type
     inline Material* createMaterialFromType(const std::string& type){
         if(type == "tinted"){
             return new TintedMaterial();
         } else if(type == "textured"){
             return new TexturedMaterial();
+        } else if(type == "default"){
+            return new DefaultMaterial();
         } else {
             return new Material();
         }
