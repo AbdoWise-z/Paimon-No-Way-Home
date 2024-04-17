@@ -37,7 +37,7 @@ namespace our {
         // then you can use glm::lookAt
 
         auto eye    = glm::vec4(0,0,0 , 1.0);
-        auto look   = glm::vec4(0,0,-1 , 0.0);
+        auto look   = glm::vec4(0,0,-1 , 1.0);
         auto up     = glm::vec4(0,1,0, 0.0);
 
         eye    = M * eye;
