@@ -239,6 +239,30 @@
                         "color": [1 ,0 ,0],
                         "smoothing": 2,
                         "intensity": 15000
+                    },
+                    {
+                        "type": "Cone Light",
+                        "range": [0.7 , 1],
+                        "direction": [0 , 0.4 , -1],
+                        "color": [1 ,0 ,0],
+                        "smoothing": 2,
+                        "intensity": 15
+                    },
+                    {
+                        "type": "Cone Light",
+                        "range": [0.7 , 1],
+                        "direction": [-0.346 , -0.2 , -1],
+                        "color": [0 ,1 ,0],
+                        "smoothing": 2,
+                        "intensity": 15
+                    },
+                    {
+                        "type": "Cone Light",
+                        "range": [0.7 , 1],
+                        "direction": [0.346 , -0.2 , -1],
+                        "color": [0 ,0 ,1],
+                        "smoothing": 2,
+                        "intensity": 15
                     }
                 ],
                 "children": [
