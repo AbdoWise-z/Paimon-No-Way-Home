@@ -6,6 +6,7 @@
 #include "../asset-loader.hpp"
 #include "../components/DirectionalLight.hpp"
 #include "components/SpotLight.h"
+#include "components/ConeLight.h"
 
 #include <glad/gl.h>
 #include <vector>
@@ -38,10 +39,12 @@ namespace our
 
         std::vector<DirectionalLight*> directionalLights;
         std::vector<SpotLight*> spotLights;
+        std::vector<ConeLight*> coneLights;
 
         // Objects used for rendering a skybox
         Mesh* skySphere;
         DefaultMaterial* skyMaterial;
+        glm::vec3 areaLight;
         // Objects used for Postprocessing
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;

@@ -61,7 +61,6 @@ namespace our {
         Sampler* sampler;
         float reflectivity;
         bool isSkybox;
-        glm::vec3 areaLight = glm::vec3(0.1,0.1,0.1);
         glm::vec4 tint;
 
         void setup() const override;

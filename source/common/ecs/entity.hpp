@@ -57,6 +57,22 @@ namespace our {
             return nullptr;
         }
 
+        template<typename T>
+        std::vector<T*> getAllComponents(){
+            //TODO: (Req 8) Go through the components list and find the first component that can be dynamically cast to "T*".
+            // Return the component you found, or return null of nothing was found.
+            std::vector<T*> out;
+            auto it = components.begin();
+            while (it != components.end()){
+                T* t = dynamic_cast<T*>(*it);
+                if (t){
+                    out.emplace_back(t);
+                }
+                it++;
+            }
+            return out;
+        }
+
         //same but with a bit of optimization
         template<typename T,typename V>
         std::pair<T*,V*> getComponents(){

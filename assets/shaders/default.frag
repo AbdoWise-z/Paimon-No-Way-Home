@@ -41,7 +41,7 @@ uniform struct ConeLight {
     vec3 color;
     vec3 direction;
     vec2 range;
-    int smoothing;
+    int smoothing; // 0 = disable , 1 = max , 2 = smooth step from low to high
 } coneLights [MAX_LIGHTS];
 
 uniform int isSkybox = 0; //sky boxes are not affected by normals or spot lights when renderered
@@ -80,8 +80,8 @@ void main(){
         vec3 diff = fs_in.position - coneLights[i].position;
         vec3 ndiff = normalize(diff);
         float div = dot(ndiff , normalize(coneLights[i].direction));
-        if (div >= coneLights[i].range.x && div >= coneLights[i].range.y){
-            div = coneLights[i].smoothing == 1 ? 1 : max(div , coneLights[i].range.x);
+        if (div >= coneLights[i].range.x && div <= coneLights[i].range.y){
+            div = coneLights[i].smoothing == 1 ? 1 : div;
             if (coneLights[i].smoothing == 2){
                 div = smoothstep(coneLights[i].range.x , coneLights[i].range.y , div);
             }

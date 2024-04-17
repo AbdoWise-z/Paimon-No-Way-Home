@@ -116,6 +116,8 @@ set(STATES_SOURCES
         source/common/components/DirectionalLight.hpp
         source/common/components/SpotLight.cpp
         source/common/components/SpotLight.h
+        source/common/components/ConeLight.cpp
+        source/common/components/ConeLight.h
 )
 
 # For each example, we add an executable target

@@ -2,13 +2,14 @@
 #include "forward-renderer.hpp"
 #include "../mesh/mesh-utils.hpp"
 #include "../texture/texture-utils.hpp"
+#include "../deserialize-utils.hpp"
 
 namespace our {
 
     void ForwardRenderer::initialize(glm::ivec2 windowSize, const nlohmann::json& config){
         // First, we store the window size for later use
         this->windowSize = windowSize;
-
+        this->areaLight = config.value("areaLight" , glm::vec3(1,1,1));
         // Then we check if there is a sky texture in the configuration
         if(config.contains("sky")){
             // First, we create a sphere which will be used to draw the sky
@@ -121,6 +122,7 @@ namespace our {
         transparentCommands.clear();
         directionalLights.clear();
         spotLights.clear();
+        coneLights.clear();
 
         for(auto entity : world->getEntities()){
             // If we hadn't found a camera yet, we look for a camera in this entity
@@ -156,6 +158,12 @@ namespace our {
                 sl->worldPosition = glm::vec3(position);
             }
 
+            auto cl = entity->getAllComponents<ConeLight>();
+            for (auto k : cl){
+                coneLights.emplace_back(k);
+                k->worldPosition = glm::vec3(position);
+                k->worldDirection = glm::vec3(localToWorld * glm::vec4(k->direction , 0.0));
+            }
         }
 
         // If there is no camera, we return (we cannot render without a camera)
@@ -211,6 +219,8 @@ namespace our {
                 // set up transform
                 k.material->shader->set("transform", k.localToWorld);
                 k.material->shader->set("Camera", VP);
+                k.material->shader->set("areaLight" , areaLight);
+
                 // set up lights
                 k.material->shader->set("directionalLightCount" , (GLint) directionalLights.size());
                 for (int i = 0;i < directionalLights.size();i++){
@@ -222,14 +232,27 @@ namespace our {
                     k.material->shader->set( header + "color" , directionalLights[i]->color);
                 }
 
-                k.material->shader->set("spotLightsCount" , (GLint) directionalLights.size());
-                for (int i = 0;i < directionalLights.size();i++){
+                k.material->shader->set("spotLightsCount" , (GLint) spotLights.size());
+                for (int i = 0;i < spotLights.size();i++){
                     std::stringstream ss;
                     ss << "spotLights[" << i << "].";
                     auto header = ss.str();
                     k.material->shader->set( header + "position" , spotLights[i]->worldPosition);
                     k.material->shader->set( header + "intensity" , spotLights[i]->intensity);
                     k.material->shader->set( header + "color" , spotLights[i]->color);
+                }
+
+                k.material->shader->set("coneLightsCount" , (GLint) coneLights.size());
+                for (int i = 0;i < coneLights.size();i++){
+                    std::stringstream ss;
+                    ss << "coneLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "position" , coneLights[i]->worldPosition);
+                    k.material->shader->set( header + "intensity" , coneLights[i]->intensity);
+                    k.material->shader->set( header + "color" , coneLights[i]->color);
+                    k.material->shader->set( header + "direction" , coneLights[i]->worldDirection);
+                    k.material->shader->set( header + "range" , coneLights[i]->range);
+                    k.material->shader->set( header + "smoothing" , coneLights[i]->smoothing);
                 }
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);
@@ -241,6 +264,8 @@ namespace our {
         if(this->skyMaterial){
             //TODO: (Req 10) setup the sky material
             skyMaterial->setup();
+            skyMaterial->shader->set("areaLight" , areaLight);
+
             //TODO: (Req 10) Get the camera position
             //...
 
@@ -271,6 +296,8 @@ namespace our {
                 // set up transform
                 k.material->shader->set("transform", k.localToWorld);
                 k.material->shader->set("Camera", VP);
+                k.material->shader->set("areaLight" , areaLight);
+
                 // set up lights
                 k.material->shader->set("directionalLightCount" , (GLint) directionalLights.size());
                 for (int i = 0;i < directionalLights.size();i++){
@@ -282,7 +309,28 @@ namespace our {
                     k.material->shader->set( header + "color" , directionalLights[i]->color);
                 }
 
+                k.material->shader->set("spotLightsCount" , (GLint) spotLights.size());
+                for (int i = 0;i < spotLights.size();i++){
+                    std::stringstream ss;
+                    ss << "spotLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "position" , spotLights[i]->worldPosition);
+                    k.material->shader->set( header + "intensity" , spotLights[i]->intensity);
+                    k.material->shader->set( header + "color" , spotLights[i]->color);
+                }
 
+                k.material->shader->set("coneLightsCount" , (GLint) coneLights.size());
+                for (int i = 0;i < coneLights.size();i++){
+                    std::stringstream ss;
+                    ss << "coneLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "position" , coneLights[i]->worldPosition);
+                    k.material->shader->set( header + "intensity" , coneLights[i]->intensity);
+                    k.material->shader->set( header + "color" , coneLights[i]->color);
+                    k.material->shader->set( header + "direction" , coneLights[i]->worldDirection);
+                    k.material->shader->set( header + "range" , coneLights[i]->range);
+                    k.material->shader->set( header + "smoothing" , coneLights[i]->smoothing);
+                }
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);
             }

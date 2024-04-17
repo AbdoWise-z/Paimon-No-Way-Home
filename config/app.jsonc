@@ -11,9 +11,9 @@
     },
     "scene": {
         "renderer":{
-            "useDefaultShaderForSky": true,
             "sky": "assets/textures/sky.jpg",
-            "postprocess": "assets/shaders/postprocess/vignette.frag"
+            "postprocess": "assets/shaders/postprocess/vignette.frag",
+            "areaLight": [0.2,0.1,0.1]
         },
         "assets":{
             "shaders":{
@@ -75,7 +75,6 @@
                         }
                     },
                     "tint": [0.45, 0.4, 0.5, 1],
-                    "areaLight": [0.1,0.1,0.1],
                     "reflectivity": 0.4,
                     "isSkybox": false
                 },
@@ -122,7 +121,6 @@
                     "tint": [1, 1, 1, 1],
                     "texture": "glass",
                     "sampler": "pixelated",
-                    "areaLight": [0.1,0.1,0.1],
                     "reflectivity": 0.4,
                     "isSkybox": false
                 },
@@ -155,7 +153,6 @@
                     "tint": [1, 1, 1, 1],
                     "texture": "grass",
                     "sampler": "default",
-                    "areaLight": [0.1,0.1,0.1],
                     "reflectivity": 0.4,
                     "isSkybox": false
                 },
@@ -189,7 +186,7 @@
                     "texture": "moon",
                     "sampler": "default"
                 },
-                "test_1":{
+                "moon2":{
                     "type": "default",
                     "shader": "default",
                     "pipelineState": {
@@ -203,11 +200,10 @@
                     "tint": [1, 1, 1, 1],
                     "texture": "moon",
                     "sampler": "default",
-                    "areaLight": [0.1,0.1,0.1],
                     "reflectivity": 0.4,
                     "isSkybox": false
                 },
-                "test_2":{
+                "monkey2":{
                     "type": "default",
                     "shader": "default",
                     "pipelineState": {
@@ -221,7 +217,6 @@
                     "tint": [1, 1, 1, 1],
                     "texture": "monkey",
                     "sampler": "default",
-                    "areaLight": [0.1,0.1,0.1],
                     "reflectivity": 0.4,
                     "isSkybox": false
                 }
@@ -237,10 +232,13 @@
                     {
                         "type": "Free Camera Controller"
                     },
+
                     {
-                        "type":"Spot Light",
-                        "color": [1,2,0],
-                        "intensity": 3
+                        "type": "Cone Light",
+                        "range": [0.9999 , 1],
+                        "color": [1 ,0 ,0],
+                        "smoothing": 2,
+                        "intensity": 15000
                     }
                 ],
                 "children": [
@@ -264,7 +262,7 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "monkey",
-                        "material": "test_2"
+                        "material": "monkey2"
                     },
                     {
                         "type": "Movement",
@@ -365,11 +363,16 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "test_1"
+                        "material": "moon2"
                     },
                     {
                         "type": "Movement",
                         "angularVelocity": [0, 90, 0]
+                    },
+                    {
+                        "type":"Spot Light",
+                        "color": [1,2,0],
+                        "intensity": 15
                     }
                 ]
             },
@@ -382,7 +385,7 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "test_1"
+                        "material": "moon2"
                     },
                     {
                         "type": "Movement",
@@ -399,7 +402,7 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "test_1"
+                        "material": "moon2"
                     },
                     {
                         "type": "Movement",
@@ -416,7 +419,7 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "test_1"
+                        "material": "moon2"
                     },
                     {
                         "type": "Movement",
@@ -433,7 +436,7 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "test_1"
+                        "material": "moon2"
                     },
                     {
                         "type": "Movement",
@@ -450,7 +453,7 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "test_1"
+                        "material": "moon2"
                     },
                     {
                         "type": "Movement",

@@ -7,6 +7,7 @@
 #include "movement.hpp"
 #include "DirectionalLight.hpp"
 #include "SpotLight.h"
+#include "ConeLight.h"
 
 namespace our {
 
@@ -28,6 +29,8 @@ namespace our {
             component = entity->addComponent<DirectionalLight>();
         } else if (type == SpotLight::getID()){
             component = entity->addComponent<SpotLight>();
+        } else if (type == ConeLight::getID()){
+            component = entity->addComponent<ConeLight>();
         }
         if (component) component->deserialize(data);
     }

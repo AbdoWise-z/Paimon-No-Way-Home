@@ -79,7 +79,7 @@ namespace our {
 
         shader->set("material.reflectivity" , reflectivity);
         shader->set("isSkybox" , isSkybox ? (GLint) 1 : (GLint) 0);
-        shader->set("areaLight" , areaLight);
+
     }
 
     void DefaultMaterial::deserialize(const nlohmann::json &data) {
@@ -87,9 +87,8 @@ namespace our {
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
         tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        areaLight = data.value("areaLight", glm::vec3(1.0f, 1.0f, 1.0f));
         isSkybox = data.value("isSkybox" , false);
-        reflectivity = data.value("reflectivity" , 0.0f);
+        //reflectivity = data.value("reflectivity" , 0.0f);
     }
 
 
