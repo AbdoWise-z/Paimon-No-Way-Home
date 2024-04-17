@@ -11,7 +11,7 @@ namespace our {
         // Then we check if there is a sky texture in the configuration
         if(config.contains("sky")){
             // First, we create a sphere which will be used to draw the sky
-            this->skySphere = mesh_utils::sphere(glm::ivec2(12, 12));
+            this->skySphere = mesh_utils::sphere(glm::ivec2(16, 16));
             
             // We can draw the sky using the same shader used to draw textured objects
             ShaderProgram* skyShader = new ShaderProgram();
@@ -23,9 +23,10 @@ namespace our {
             // Hints: the sky will be draw after the opaque objects so we would need depth testing but which depth funtion should we pick?
             // We will draw the sphere from the inside, so what options should we pick for the face culling.
             PipelineState skyPipelineState{};
-            skyPipelineState.faceCulling.enabled = false;
+            skyPipelineState.faceCulling.enabled = true;
             skyPipelineState.faceCulling.frontFace = GL_CW;
-            skyPipelineState.depthTesting.enabled = false;
+            skyPipelineState.depthMask = true;
+            skyPipelineState.depthTesting.enabled = true;
 
             // Load the sky texture (note that we don't need mipmaps since we want to avoid any unnecessary blurring while rendering the sky)
             std::string skyTextureFile = config.value<std::string>("sky", "");
@@ -202,8 +203,9 @@ namespace our {
                 1.0f, 0.0f, 0.0f, 0.0f,
                 0.0f, 1.0f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f
-            );
+                0.0f, 0.0f, 1.0f, 1.0f
+            ); //this thing gets transposed ...
+
             //TODO: (Req 10) set the "transform" uniform
             skyMaterial->shader->set("transform" , alwaysBehindTransform * VP * M);
             //TODO: (Req 10) draw the sky sphere
