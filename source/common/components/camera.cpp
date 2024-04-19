@@ -7,7 +7,7 @@ namespace our {
     // Reads camera parameters from the given json object
     void CameraComponent::deserialize(const nlohmann::json& data){
         if(!data.is_object()) return;
-        std::string cameraTypeStr = data.value("cameraType", "perspective");
+        std::string cameraTypeStr = data.value("cameraType", "orthographic");//orthographic perspective
         if(cameraTypeStr == "orthographic"){
             cameraType = CameraType::ORTHOGRAPHIC;
         } else {
@@ -55,32 +55,42 @@ namespace our {
 
     // Creates and returns the camera projection matrix
     // "viewportSize" is used to compute the aspect ratio
-    glm::mat4 CameraComponent::getProjectionMatrix(glm::ivec2 viewportSize) const {
-        //TODO: (Req 8) Write this function
-        // NOTE: The function glm::ortho can be used to create the orthographic projection matrix
-        // It takes left, right, bottom, top. Bottom is -orthoHeight/2 and Top is orthoHeight/2.
-        // Left and Right are the same but after being multiplied by the aspect ratio
-        // For the perspective camera, you can use glm::perspective
 
-        float aspect = (float) viewportSize.x / (float) viewportSize.y;
-
+    glm::mat4 CameraComponent::getProjectionMatrix(glm::ivec2 windowSize) const {
         glm::mat4 P = glm::mat4(1.0f);
+        float aspectRatio = static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
         switch (cameraType) {
             case CameraType::PERSPECTIVE:
-                P = glm::perspective(fovY, aspect, near, far);
+                P = glm::perspective(fovY, aspectRatio, near, far);
                 break;
-            case CameraType::ORTHOGRAPHIC:
-                P = glm::ortho(
-                        - (float) viewportSize.x / 2.0f * aspect,
-                        + (float) viewportSize.x / 2.0f * aspect,
-                        - orthoHeight/2,
-                        + orthoHeight/2,
-                        near,
-                        far
-                        );
+            case CameraType::ORTHOGRAPHIC: {
+
+                float viewPortHeight = 50.0f; // this value is set to give me the desired height of the orthographic projection
+                float viewPortWidth = viewPortHeight * aspectRatio;
+                float left, right, bottom, top;
+                if (aspectRatio >= 1.0f) {
+                    // Window is wider than tall, adjust horizontal bounds
+                    left = -viewPortWidth / 2.0f;
+                    right = viewPortWidth / 2.0f;
+                    bottom = -viewPortHeight / (2.0f * aspectRatio);
+                    top = viewPortHeight / (2.0f * aspectRatio);
+                } else {
+                    // Window is taller than wide, adjust vertical bounds
+                    left = -viewPortWidth / (2.0f * aspectRatio);
+                    right = viewPortWidth / (2.0f * aspectRatio);
+                    bottom = -viewPortHeight / 2.0f;
+                    top = viewPortHeight / 2.0f;
+                }
+
+                // Set the near and far plane distances
+                float near = -1000.0f;
+                float far = 1000.0f;
+
+                P = glm::ortho(left, right, bottom, top, near, far);
+                break;
+            }
                 break;
         }
-
-        return P;
+    return P;
     }
 }

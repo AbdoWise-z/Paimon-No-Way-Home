@@ -270,20 +270,24 @@ namespace our {
             //...
 
             //TODO: (Req 10) Create a model matrix for the sy such that it always follows the camera (sky sphere center = camera position)
-            auto M = glm::translate(glm::mat4(1.0f) , cameraCenter);
+//            auto M = glm::translate(glm::mat4(1.0f) , cameraCenter);
 
             //TODO: (Req 10) We want the sky to be drawn behind everything (in NDC space, z=1)
             // We can achieve the is by multiplying by an extra matrix after the projection but what values should we put in it?
-            glm::mat4 alwaysBehindTransform = glm::mat4(
-                1.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, 1.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.0f, 0.0f,
-                0.0f, 0.0f, 1.0f, 1.0f
-            ); //this thing gets transposed ...
+//            glm::mat4 alwaysBehindTransform = glm::mat4(
+//                1.0f, 0.0f, 0.0f, 0.0f,
+//                0.0f, 1.0f, 0.0f, 0.0f,
+//                0.0f, 0.0f, 0.0f, 0.0f,
+//                0.0f, 0.0f, 1.0f, 1.0f
+//            ); //this thing gets transposed ...
+            float skyboxScale = 200.0f; // Adjust this value as needed
+
+            // Create a scale matrix for the skybox
+            glm::mat4 skyboxScaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(skyboxScale, skyboxScale, skyboxScale));
 
             //TODO: (Req 10) set the "transform" uniform
-            skyMaterial->shader->set("transform", M);
-            skyMaterial->shader->set("Camera", alwaysBehindTransform * VP);
+            skyMaterial->shader->set("transform", skyboxScaleMatrix);
+            skyMaterial->shader->set("Camera",  VP);
 
             //TODO: (Req 10) draw the sky sphere
             skySphere->draw();
