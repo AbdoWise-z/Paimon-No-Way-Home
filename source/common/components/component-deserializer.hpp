@@ -9,6 +9,9 @@
 #include "SpotLight.h"
 #include "ConeLight.h"
 #include "PaimonIdle.hpp"
+#include "Paimon.hpp"
+#include "Ground.hpp"
+#include "OrbitalCameraComponent.h"
 
 namespace our {
 
@@ -34,6 +37,12 @@ namespace our {
             component = entity->addComponent<ConeLight>();
         } else if (type == PaimonIdle::getID()){
             component = entity->addComponent<PaimonIdle>();
+        } else if (type == Paimon::getID()){
+            component = entity->addComponent<Paimon>();
+        } else if (type == Ground::getID()){
+            component = entity->addComponent<Ground>();
+        } else if (type == OrbitalCameraComponent::getID()){
+            component = entity->addComponent<OrbitalCameraComponent>();
         }
         if (component) component->deserialize(data);
     }

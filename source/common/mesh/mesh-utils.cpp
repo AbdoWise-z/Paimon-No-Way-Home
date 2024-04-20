@@ -36,6 +36,7 @@ our::Mesh* our::mesh_utils::loadOBJ(const std::string& filename) {
     // An obj file can have multiple shapes where each shape can have its own material
     // Ideally, we would load each shape into a separate mesh or store the start and end of it in the element buffer to be able to draw each shape separately
     // But we ignored this fact since we don't plan to use multiple materials in the examples
+
     //TODO: maybe add material implementation or something ..
     std::vector<std::pair<unsigned int ,unsigned int>> shapes_ids; //defines the start & end index of each shape
 
@@ -43,7 +44,6 @@ our::Mesh* our::mesh_utils::loadOBJ(const std::string& filename) {
         unsigned int start = elements.size();
         for (const auto &index : shape.mesh.indices) {
             Vertex vertex = {};
-
             // Read the data for a vertex from the "attrib" object
             vertex.position = {
                     attrib.vertices[3 * index.vertex_index + 0],

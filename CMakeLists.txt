@@ -122,6 +122,14 @@ set(STATES_SOURCES
         source/common/components/PaimonIdle.cpp
         source/common/components/PaimonIdle.hpp
         source/common/systems/paimon-idle.hpp
+        source/common/components/Paimon.cpp
+        source/common/components/Paimon.hpp
+        source/common/components/Ground.cpp
+        source/common/components/Ground.hpp
+        source/common/systems/Level-mapping.h
+        source/common/components/OrbitalCameraComponent.cpp
+        source/common/components/OrbitalCameraComponent.h
+        source/common/systems/orbital-camera-controller.hpp
 )
 
 # For each example, we add an executable target

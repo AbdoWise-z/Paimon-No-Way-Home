@@ -8,6 +8,8 @@
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
 #include "systems/paimon-idle.hpp"
+#include "systems/Level-mapping.h"
+#include "systems/orbital-camera-controller.hpp"
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -17,6 +19,8 @@ class Playstate: public our::State {
     our::FreeCameraControllerSystem cameraController;
     our::MovementSystem movementSystem;
     our::PaimonIdleSystem paimonIdleSystem;
+    our::LevelMapping levelMapping;
+    our::OrbitalCameraControllerSystem orbitalCameraControllerSystem;
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -34,6 +38,8 @@ class Playstate: public our::State {
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+        levelMapping.init(getApp());
+        orbitalCameraControllerSystem.init(getApp());
     }
 
     void onDraw(double deltaTime) override {
@@ -41,6 +47,8 @@ class Playstate: public our::State {
         movementSystem.update(&world, (float)deltaTime);
         cameraController.update(&world, (float)deltaTime);
         paimonIdleSystem.update(&world, (float)deltaTime);
+        levelMapping.update(&world , (float)deltaTime);
+        orbitalCameraControllerSystem.update(&world , (float) deltaTime);
 
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
