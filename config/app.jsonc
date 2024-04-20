@@ -39,7 +39,15 @@
                 "paimon_cape": "assets/textures/paimon/cape.jpg",
                 "paimon_face": "assets/textures/paimon/face.jpg",
                 "paimon_hair": "assets/textures/paimon/hair.jpg",
-                "paimon_shirt": "assets/textures/paimon/shirt.jpg"
+                "paimon_shirt": "assets/textures/paimon/shirt.jpg",
+
+                "mora": "assets/textures/mora.png",
+
+                "arlecchino_hair": "assets/textures/arlecchino/hair.png",
+                "arlecchino_hair_n": "assets/textures/arlecchino/hair_n.png",
+                "arlecchino_face": "assets/textures/arlecchino/face.png",
+                "arlecchino_body": "assets/textures/arlecchino/body.png",
+                "arlecchino_body_n": "assets/textures/arlecchino/body_n.png"
             },
             "meshes":{
                 "cube": "assets/models/cube.obj",
@@ -47,7 +55,9 @@
                 "plane": "assets/models/plane.obj",
                 "sphere": "assets/models/high_res_sphere.obj",
                 "cubes": "assets/models/untitled.obj",
-                "paimon": "assets/models/paimon.obj"
+                "paimon": "assets/models/paimon.obj",
+                "arlecchino": "assets/models/arlecchino.obj",
+                "mora": "assets/models/mora.obj"
             },
             "samplers":{
                 "default":{},
@@ -114,6 +124,98 @@
                     },
                     "tint": [1, 1, 1, 1],
                     "texture": "paimon_shirt",
+                    "sampler": "default"
+                },
+
+                "arlecchino_hair":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "arlecchino_hair",
+                    "sampler": "default"
+                },
+                "arlecchino_hair_n":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "arlecchino_hair_n",
+                    "sampler": "default"
+                },
+                "arlecchino_face":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "arlecchino_face",
+                    "sampler": "default"
+                },
+                "arlecchino_body":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "arlecchino_body",
+                    "sampler": "default"
+                },
+                "arlecchino_body_n":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "arlecchino_body_n",
+                    "sampler": "default"
+                },
+
+                "mora": {
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "mora",
                     "sampler": "default"
                 },
 
@@ -584,6 +686,124 @@
                     }
                 ]
             },
+
+            {
+                "position": [17 , 0 , 15],
+                "scale": [0.0005, 0.0005, 0.0005],
+                "name": "Arlecchino",
+                "children": [
+                    {
+                        "children" : [
+                            {
+                                "components": [
+                                    {
+                                        "tag": "Hair & Arms & Shoes",
+                                        "type": "Mesh Renderer",
+                                        "shapeID": 0,
+                                        "mesh": "arlecchino",
+                                        "material": "arlecchino_hair"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag": "Legs Rings & Arms Rings",
+                                        "type": "Mesh Renderer",
+                                        "shapeID": 1,
+                                        "mesh": "arlecchino",
+                                        "material": "arlecchino_hair"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag": "Body (Torso & Legs)",
+                                        "type": "Mesh Renderer",
+                                        "shapeID": 2,
+                                        "mesh": "arlecchino",
+                                        "material": "arlecchino_body"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag": "Face",
+                                        "type": "Mesh Renderer",
+                                        "shapeID": 3,
+                                        "mesh": "arlecchino",
+                                        "material": "arlecchino_face"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            {
+                "position": [16, 0, 15],
+                "scale": [0.001, 0.001, 0.001],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "mora",
+                        "material": "mora"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [0, 90, 0]
+                    }
+                ]
+            },
+            {
+                "position": [14, 0, 15],
+                "scale": [0.001, 0.001, 0.001],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "mora",
+                        "material": "mora"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [0, 90, 0]
+                    }
+                ]
+            },
+            {
+                "position": [15, 2, 15],
+                "scale": [0.001, 0.001, 0.001],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "mora",
+                        "material": "mora"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [0, 90, 0]
+                    }
+                ]
+            },
+            {
+                "position": [15, -1, 15],
+                "scale": [0.001, 0.001, 0.001],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "mora",
+                        "material": "mora"
+                    },
+                    {
+                        "type": "Movement",
+                        "angularVelocity": [0, 90, 0]
+                    }
+                ]
+            },
+
 
             {
                 "position": [10, 8, 0],
