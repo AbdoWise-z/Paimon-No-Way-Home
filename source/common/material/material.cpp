@@ -88,9 +88,9 @@ namespace our {
         Material::deserialize(data);
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+
         tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         isSkybox = data.value("isSkybox" , false);
-
         ambientReflectivity = data.value("specularReflectivity" , ambientReflectivity);
         diffuseReflectivity = data.value("diffuseReflectivity" , diffuseReflectivity);
         specularReflectivity = data.value("specularReflectivity" , specularReflectivity);

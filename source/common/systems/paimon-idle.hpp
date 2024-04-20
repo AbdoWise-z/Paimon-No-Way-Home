@@ -36,11 +36,23 @@ namespace our
 
             auto et = paimon->getOwner();
 
-            auto right = glm::cross(paimon->top , paimon->forward);
+            auto mat = et->getLocalToWorldMatrix();
+            mat = glm::transpose(glm::inverse(mat));
+
+            auto top4 = mat * glm::vec4(paimon->top , 0.0);
+            auto for4 = mat * glm::vec4(paimon->forward , 0.0);
+
+            auto right = glm::cross(
+                    glm::vec3(top4) ,
+                    glm::vec3(for4)
+                    );
+
+            right = glm::normalize(right);
+            auto top = glm::normalize(glm::vec3(top4));
 
             et->localTransform.position  =
-                    right       * (float) glm::sin(time / paimon->duration * 4 * glm::pi<float>()) * paimon->width +
-                    paimon->top * (float) glm::sin(time / paimon->duration * 2 * glm::pi<float>()) * paimon->height
+                    right  * (float) glm::sin(time / paimon->duration * 4 * glm::pi<float>()) * paimon->width +
+                    top    * (float) glm::sin(time / paimon->duration * 2 * glm::pi<float>()) * paimon->height
                     ;
 
         }
