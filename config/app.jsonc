@@ -140,7 +140,9 @@
                     },
                     "tint": [1, 1, 1, 1],
                     "texture": "arlecchino_hair",
-                    "sampler": "default"
+                    "sampler": "default",
+                    "specularReflectivity": [0,0,0],
+                    "diffuseReflectivity": [4,4,4]
                 },
                 "arlecchino_hair_n":{
                     "type": "default",
@@ -422,7 +424,7 @@
 
                     {
                         "type": "Spot Light",
-                        "color": [1 ,0 ,0],
+                        "color": [1 ,1 ,1],
                         "intensity": 1
                     },
 
@@ -486,7 +488,7 @@
                 "components": [
                     {
                         "type": "Directional Light",
-                        "intensity": 0.2,
+                        "intensity": 0.5,
                         "direction": [-1 , -1 , -1],
                         "color": [ 1, 1, 1]
                     }
