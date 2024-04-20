@@ -25,6 +25,7 @@ uniform struct SpotLight {
     vec3 position;
     float intensity;
     vec3 color;
+    int decay;
 } spotLights [MAX_LIGHTS];
 
 uniform int directionalLightCount = 0;
@@ -42,6 +43,7 @@ uniform struct ConeLight {
     vec3 direction;
     vec2 range;
     int smoothing; // 0 = disable , 1 = max , 2 = smooth step from low to high
+    int decay;
 } coneLights [MAX_LIGHTS];
 
 uniform int isSkybox = 0; //sky boxes are not affected by normals or spot lights when renderered
@@ -71,7 +73,11 @@ void main(){
     for (int i = 0;i < spotLightsCount;i++){
         vec3 diff = fs_in.position - spotLights[i].position;
         vec3 ndiff = normalize(diff);
-        spotLight += max( dot(-fs_in.normal , ndiff) , 0) * spotLights[i].color * spotLights[i].intensity / dot(diff , diff);
+        float divider = dot(diff, diff);
+        if (spotLights[i].decay == 1){
+            divider = sqrt(divider);
+        }
+        spotLight += max(dot(-fs_in.normal, ndiff), 0) * spotLights[i].color * spotLights[i].intensity / divider;
     }
 
     //calculate the total cone light
@@ -80,12 +86,17 @@ void main(){
         vec3 diff = fs_in.position - coneLights[i].position;
         vec3 ndiff = normalize(diff);
         float div = dot(ndiff , normalize(coneLights[i].direction));
+        float divider = dot(diff, diff);
+        if (coneLights[i].decay == 1){
+            divider = sqrt(divider);
+        }
+
         if (div >= coneLights[i].range.x && div <= coneLights[i].range.y){
             div = coneLights[i].smoothing == 1 ? 1 : div;
             if (coneLights[i].smoothing == 2){
                 div = smoothstep(coneLights[i].range.x , coneLights[i].range.y , div);
             }
-            coneLight += max( dot(-fs_in.normal, ndiff) , 0) * coneLights[i].color * coneLights[i].intensity / dot(diff, diff) * div;
+            coneLight += max( dot(-fs_in.normal, ndiff) , 0) * coneLights[i].color * coneLights[i].intensity / divider * div;
         }
     }
 

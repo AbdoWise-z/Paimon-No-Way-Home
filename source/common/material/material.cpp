@@ -77,7 +77,8 @@ namespace our {
             shader->set("material.hasTexture" , (GLint) 0);
         }
 
-        shader->set("material.reflectivity" , reflectivity);
+        //TODO: fixme when added
+        //shader->set("material.reflectivity" , reflectivity);
         shader->set("isSkybox" , isSkybox ? (GLint) 1 : (GLint) 0);
 
     }

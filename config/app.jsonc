@@ -1,5 +1,5 @@
 {
-    "start-scene": "menu",
+    "start-scene": "play",
     "window":
     {
         "title":"Default Game Window",
@@ -13,7 +13,7 @@
         "renderer":{
             "sky": "assets/textures/sky.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag",
-            "areaLight": [0.2,0.1,0.1]
+            "areaLight": [0.6,0.6,0.6]
         },
         "assets":{
             "shaders":{
@@ -227,7 +227,11 @@
                 "position": [0, 0, 10],
                 "components": [
                     {
-                        "type": "Camera"
+                        "type": "Camera",
+                        "cameraType": "orthographic",
+                        "orthoHeight": 15,
+                        "far": 10000,
+                        "near": -1000
                     },
                     {
                         "type": "Free Camera Controller"
@@ -246,7 +250,8 @@
                         "direction": [0 , 0.4 , -1],
                         "color": [1 ,0 ,0],
                         "smoothing": 2,
-                        "intensity": 15
+                        "intensity": 15,
+                        "decay": 1
                     },
                     {
                         "type": "Cone Light",
@@ -255,6 +260,7 @@
                         "color": [0 ,1 ,0],
                         "smoothing": 2,
                         "intensity": 15
+
                     },
                     {
                         "type": "Cone Light",
@@ -382,7 +388,7 @@
             {
                 "position": [0, 10, 0],
                 "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
+                "scale": [5, 15, 5],
                 "components": [
                     {
                         "type": "Mesh Renderer",

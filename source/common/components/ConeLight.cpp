@@ -13,5 +13,6 @@ namespace our {
         color     = data.value("color", color);
         smoothing = data.value("smoothing", smoothing);
         range     = data.value("range", range);
+        lightDecay = data.value("decay" , lightDecay);
     }
 } // our

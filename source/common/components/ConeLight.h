@@ -22,6 +22,7 @@ namespace our {
         //used by the renderer
         glm::vec3 worldPosition;
         glm::vec3 worldDirection;
+        Decay lightDecay;
 
         // The ID of this component type is "ConeLight"
         static std::string getID() { return "Cone Light"; }

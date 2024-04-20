@@ -23,5 +23,5 @@ void main(){
 
     vs_out.color = color;
     vs_out.tex_coord = tex_coord;
-    vs_out.normal = normalize((transform * vec4(normals , 0.0)).xyz);
+    vs_out.normal = normalize((transpose(inverse(transform)) * vec4(normals , 0.0)).xyz);
 }

@@ -10,5 +10,6 @@ namespace our {
         if(!data.is_object()) return;
         intensity = data.value("intensity", intensity);
         color     = data.value("color", color);
+        lightDecay = data.value("decay" , lightDecay);
     }
 } // our

@@ -15,6 +15,7 @@ namespace our {
         float intensity = 1;
         glm::vec3 color = glm::vec3(1,1,1);
         glm::vec3 worldPosition;
+        Decay lightDecay = SQUARE;
 
         // The ID of this component type is "DirectionalLight"
         static std::string getID() { return "Spot Light"; }

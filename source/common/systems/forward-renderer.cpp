@@ -240,6 +240,7 @@ namespace our {
                     k.material->shader->set( header + "position" , spotLights[i]->worldPosition);
                     k.material->shader->set( header + "intensity" , spotLights[i]->intensity);
                     k.material->shader->set( header + "color" , spotLights[i]->color);
+                    k.material->shader->set( header + "decay" , spotLights[i]->lightDecay);
                 }
 
                 k.material->shader->set("coneLightsCount" , (GLint) coneLights.size());
@@ -253,6 +254,7 @@ namespace our {
                     k.material->shader->set( header + "direction" , coneLights[i]->worldDirection);
                     k.material->shader->set( header + "range" , coneLights[i]->range);
                     k.material->shader->set( header + "smoothing" , coneLights[i]->smoothing);
+                    k.material->shader->set( header + "decay" , coneLights[i]->lightDecay);
                 }
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);
@@ -281,8 +283,11 @@ namespace our {
                 0.0f, 0.0f, 1.0f, 1.0f
             ); //this thing gets transposed ...
 
+            // Create a scale matrix for the skybox
+            glm::mat4 skyboxScaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(camera->orthoHeight * 2, camera->orthoHeight * 2, camera->orthoHeight * 2));
+
             //TODO: (Req 10) set the "transform" uniform
-            skyMaterial->shader->set("transform", M);
+            skyMaterial->shader->set("transform", M * skyboxScaleMatrix);
             skyMaterial->shader->set("Camera", alwaysBehindTransform * VP);
 
             //TODO: (Req 10) draw the sky sphere
@@ -317,6 +322,7 @@ namespace our {
                     k.material->shader->set( header + "position" , spotLights[i]->worldPosition);
                     k.material->shader->set( header + "intensity" , spotLights[i]->intensity);
                     k.material->shader->set( header + "color" , spotLights[i]->color);
+                    k.material->shader->set( header + "decay" , spotLights[i]->lightDecay);
                 }
 
                 k.material->shader->set("coneLightsCount" , (GLint) coneLights.size());
@@ -330,6 +336,7 @@ namespace our {
                     k.material->shader->set( header + "direction" , coneLights[i]->worldDirection);
                     k.material->shader->set( header + "range" , coneLights[i]->range);
                     k.material->shader->set( header + "smoothing" , coneLights[i]->smoothing);
+                    k.material->shader->set( header + "decay" , coneLights[i]->lightDecay);
                 }
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);

@@ -71,9 +71,9 @@ namespace our {
                 break;
             case CameraType::ORTHOGRAPHIC:
                 P = glm::ortho(
-                        - (float) viewportSize.x / 2.0f * aspect,
-                        + (float) viewportSize.x / 2.0f * aspect,
-                        - orthoHeight/2,
+                        - (float) orthoHeight / 2.0f * aspect,
+                        + (float) orthoHeight / 2.0f * aspect,
+                        - orthoHeight/2 ,
                         + orthoHeight/2,
                         near,
                         far
