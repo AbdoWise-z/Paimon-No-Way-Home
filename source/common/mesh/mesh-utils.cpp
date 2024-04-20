@@ -36,7 +36,11 @@ our::Mesh* our::mesh_utils::loadOBJ(const std::string& filename) {
     // An obj file can have multiple shapes where each shape can have its own material
     // Ideally, we would load each shape into a separate mesh or store the start and end of it in the element buffer to be able to draw each shape separately
     // But we ignored this fact since we don't plan to use multiple materials in the examples
+    //TODO: maybe add material implementation or something ..
+    std::vector<std::pair<unsigned int ,unsigned int>> shapes_ids; //defines the start & end index of each shape
+
     for (const auto &shape : shapes) {
+        unsigned int start = elements.size();
         for (const auto &index : shape.mesh.indices) {
             Vertex vertex = {};
 
@@ -79,9 +83,13 @@ our::Mesh* our::mesh_utils::loadOBJ(const std::string& filename) {
                 elements.push_back(it->second);
             }
         }
+        unsigned int end = elements.size() - 1;
+        shapes_ids.emplace_back(start , end);
     }
-
-    return new our::Mesh(vertices, elements);
+    std::cout << "Loaded : " << elements.size() << " elements, with : " << shapes_ids.size() << " Shapes" << std::endl;
+    auto k = new our::Mesh(vertices, elements);
+    k->shapes = shapes_ids;
+    return k;
 }
 
 // Create a sphere (the vertex order in the triangles are CCW from the outside)

@@ -8,6 +8,7 @@
 #include "DirectionalLight.hpp"
 #include "SpotLight.h"
 #include "ConeLight.h"
+#include "PaimonIdle.hpp"
 
 namespace our {
 
@@ -31,6 +32,8 @@ namespace our {
             component = entity->addComponent<SpotLight>();
         } else if (type == ConeLight::getID()){
             component = entity->addComponent<ConeLight>();
+        } else if (type == PaimonIdle::getID()){
+            component = entity->addComponent<PaimonIdle>();
         }
         if (component) component->deserialize(data);
     }

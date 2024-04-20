@@ -138,6 +138,7 @@ namespace our {
                 command.localToWorld = localToWorld;
                 command.center = glm::vec3(position);
                 command.mesh = meshRenderer->mesh;
+                command.shapeID = meshRenderer->shapeID;
                 command.material = meshRenderer->material;
                 // if it is transparent, we add it to the transparent commands list
                 if(command.material->transparent){
@@ -260,7 +261,7 @@ namespace our {
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);
             }
-            k.mesh->draw();
+            k.mesh->draw(k.shapeID);
         }
 
         // If there is a sky material, draw the sky
@@ -343,7 +344,7 @@ namespace our {
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);
             }
-            k.mesh->draw();
+            k.mesh->draw(k.shapeID);
         }
 
         // If there is a postprocess material, apply postprocessing
@@ -351,7 +352,9 @@ namespace our {
             //TODO: (Req 11) Return to the default framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER,0);
             //TODO: (Req 11) Setup the postprocess material and draw the fullscreen triangle
+            our::SUPPRESS_SHADER_ERRORS = true; //for my mental stability ...
             postprocessMaterial->setup();
+            our::SUPPRESS_SHADER_ERRORS = false;
             glBindVertexArray(postProcessVertexArray);
             glDrawArrays(GL_TRIANGLES,0,3);
         }

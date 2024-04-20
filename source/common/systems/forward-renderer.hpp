@@ -22,6 +22,7 @@ namespace our
         glm::mat4 localToWorld;
         glm::vec3 center;
         Mesh* mesh;
+        int shapeID;
         Material* material;
     };
 

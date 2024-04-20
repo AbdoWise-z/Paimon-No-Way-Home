@@ -13,7 +13,7 @@
         "renderer":{
             "sky": "assets/textures/sky.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag",
-            "areaLight": [0.2,0.2,0.2]
+            "areaLight": [0.4,0.4,0.4]
         },
         "assets":{
             "shaders":{
@@ -35,13 +35,19 @@
                 "grass": "assets/textures/grass_ground_d.jpg",
                 "wood": "assets/textures/wood.jpg",
                 "glass": "assets/textures/glass-panels.png",
-                "monkey": "assets/textures/monkey.png"
+                "monkey": "assets/textures/monkey.png",
+                "paimon_cape": "assets/textures/paimon/cape.jpg",
+                "paimon_face": "assets/textures/paimon/face.jpg",
+                "paimon_hair": "assets/textures/paimon/hair.jpg",
+                "paimon_shirt": "assets/textures/paimon/shirt.jpg"
             },
             "meshes":{
                 "cube": "assets/models/cube.obj",
                 "monkey": "assets/models/monkey.obj",
                 "plane": "assets/models/plane.obj",
-                "sphere": "assets/models/high_res_sphere.obj"
+                "sphere": "assets/models/high_res_sphere.obj",
+                "cubes": "assets/models/untitled.obj",
+                "paimon": "assets/models/paimon.obj"
             },
             "samplers":{
                 "default":{},
@@ -50,6 +56,67 @@
                 }
             },
             "materials":{
+                "paimon_hair":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "paimon_hair",
+                    "sampler": "default"
+                },
+                "paimon_cape":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "paimon_cape",
+                    "sampler": "default"
+                },
+                "paimon_face":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "paimon_face",
+                    "sampler": "default"
+                },
+                "paimon_shirt":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "paimon_shirt",
+                    "sampler": "default"
+                },
+
                 "metal":{
                     "type": "tinted",
                     "shader": "tinted",
@@ -202,7 +269,6 @@
                     "sampler": "default",
                     "isSkybox": false
                 },
-
                 "sphere":{
                     "type": "default",
                     "shader": "default",
@@ -218,7 +284,6 @@
                     "isSkybox": false,
                     "specularIntensity": 10
                 },
-
                 "monkey2":{
                     "type": "default",
                     "shader": "default",
@@ -256,9 +321,7 @@
                     {
                         "type": "Spot Light",
                         "color": [1 ,0 ,0],
-                        "smoothing": 2,
-                        "intensity": 1,
-                        "decay": 1
+                        "intensity": 1
                     },
 
                     {
@@ -317,13 +380,12 @@
                     }
                 ]
             },
-
             {
                 "components": [
                     {
                         "type": "Directional Light",
-                        "intensity": 0.1,
-                        "direction": [-0.5 , -0.5 , -0.5],
+                        "intensity": 0.2,
+                        "direction": [-1 , -1 , -1],
                         "color": [ 1, 1, 1]
                     }
                 ]
@@ -401,7 +463,6 @@
                     }
                 ]
             },
-
             {
                 "position": [0, 15, 0],
                 "rotation": [90, 0, 0],
@@ -410,6 +471,129 @@
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
+                        "material": "sphere"
+                    }
+                ]
+            },
+            {
+                "position": [0, 8, 0],
+                "rotation": [90, 0, 0],
+                "scale": [2, 2, 2],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "cubes",
+                        "material": "sphere"
+                    }
+                ]
+            },
+
+            {
+                "position": [15 , 0 , 15],
+                "rotation": [0 , 0 , 0],
+                "scale": [0.2, 0.2, 0.2],
+                "name": "Paimon",
+                "children" : [
+                    {
+                        "children": [
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Face-Parts",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 0,
+                                        "material": "paimon_face"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Eyes",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 1,
+                                        "material": "paimon_hair"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Face-Skin",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 2,
+                                        "material": "paimon_face"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Metal-Parts + Legs",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 3,
+                                        "material": "paimon_face"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Cloth",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 4,
+                                        "material": "paimon_shirt"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Hair",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 5,
+                                        "material": "paimon_hair"
+                                    }
+                                ]
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "tag" : "Cape",
+                                        "type": "Mesh Renderer",
+                                        "mesh": "paimon",
+                                        "shapeID": 6,
+                                        "material": "paimon_cape"
+                                    }
+                                ]
+                            }
+                        ],
+                        "components" : [
+                            {
+                                "type": "Paimon Idle",
+                                "top": [0, 1, 0],
+                                "forward": [0 , 0 , 1]
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            {
+                "position": [10, 8, 0],
+                "rotation": [90, 0, 0],
+                "scale": [2, 2, 2],
+                "components": [
+                    {
+                        "type": "Mesh Renderer",
+                        "mesh": "cubes",
+                        "shapeID" : 0,
                         "material": "sphere"
                     }
                 ]

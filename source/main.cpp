@@ -5,6 +5,9 @@
 
 #include <application.hpp>
 
+#define EXTERN
+#include "globals.h"
+
 #include "states/menu-state.hpp"
 #include "states/play-state.hpp"
 #include "states/shader-test-state.hpp"
@@ -18,6 +21,10 @@
 #include "states/renderer-test-state.hpp"
 
 int main(int argc, char** argv) {
+
+    // quick definitions
+    our::SUPPRESS_SHADER_ERRORS = false;
+
     
     flags::args args(argc, argv); // Parse the command line arguments
     // config_path is the path to the json file containing the application configuration

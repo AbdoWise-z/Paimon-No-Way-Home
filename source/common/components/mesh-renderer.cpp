@@ -13,6 +13,7 @@ namespace our {
         // Look at "source/common/asset-loader.hpp" to know how to use the static class AssetLoader.
 
         this->mesh = our::AssetLoader<our::Mesh>::get(data["mesh"]);
+        this->shapeID = data.value("shapeID" , this->shapeID);
         this->material = our::AssetLoader<our::Material>::get(data["material"]);
     }
 }

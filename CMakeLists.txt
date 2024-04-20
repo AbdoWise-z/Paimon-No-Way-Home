@@ -118,6 +118,10 @@ set(STATES_SOURCES
         source/common/components/SpotLight.h
         source/common/components/ConeLight.cpp
         source/common/components/ConeLight.h
+        source/globals.h
+        source/common/components/PaimonIdle.cpp
+        source/common/components/PaimonIdle.hpp
+        source/common/systems/paimon-idle.hpp
 )
 
 # For each example, we add an executable target
