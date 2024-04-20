@@ -219,6 +219,7 @@ namespace our {
                 // set up transform
                 k.material->shader->set("transform", k.localToWorld);
                 k.material->shader->set("Camera", VP);
+                k.material->shader->set("cameraPosition", cameraCenter);
                 k.material->shader->set("areaLight" , areaLight);
 
                 // set up lights
@@ -302,6 +303,7 @@ namespace our {
                 k.material->shader->set("transform", k.localToWorld);
                 k.material->shader->set("Camera", VP);
                 k.material->shader->set("areaLight" , areaLight);
+                k.material->shader->set("cameraPosition", cameraCenter);
 
                 // set up lights
                 k.material->shader->set("directionalLightCount" , (GLint) directionalLights.size());

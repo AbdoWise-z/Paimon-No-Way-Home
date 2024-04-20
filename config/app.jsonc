@@ -13,7 +13,7 @@
         "renderer":{
             "sky": "assets/textures/sky.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag",
-            "areaLight": [0.6,0.6,0.6]
+            "areaLight": [0.2,0.2,0.2]
         },
         "assets":{
             "shaders":{
@@ -41,7 +41,7 @@
                 "cube": "assets/models/cube.obj",
                 "monkey": "assets/models/monkey.obj",
                 "plane": "assets/models/plane.obj",
-                "sphere": "assets/models/sphere.obj"
+                "sphere": "assets/models/high_res_sphere.obj"
             },
             "samplers":{
                 "default":{},
@@ -200,9 +200,25 @@
                     "tint": [1, 1, 1, 1],
                     "texture": "moon",
                     "sampler": "default",
-                    "reflectivity": 0.4,
                     "isSkybox": false
                 },
+
+                "sphere":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "isSkybox": false,
+                    "specularIntensity": 10
+                },
+
                 "monkey2":{
                     "type": "default",
                     "shader": "default",
@@ -228,30 +244,30 @@
                 "components": [
                     {
                         "type": "Camera",
-                        "cameraType": "orthographic",
-                        "orthoHeight": 15,
+                        "cameraType": "perspective",
+                        "orthoHeight": 1,
                         "far": 10000,
-                        "near": -1000
+                        "near": 0.001
                     },
                     {
                         "type": "Free Camera Controller"
                     },
 
                     {
-                        "type": "Cone Light",
-                        "range": [0.9999 , 1],
+                        "type": "Spot Light",
                         "color": [1 ,0 ,0],
                         "smoothing": 2,
-                        "intensity": 15000
+                        "intensity": 1,
+                        "decay": 1
                     },
+
                     {
                         "type": "Cone Light",
                         "range": [0.7 , 1],
                         "direction": [0 , 0.4 , -1],
                         "color": [1 ,0 ,0],
                         "smoothing": 2,
-                        "intensity": 15,
-                        "decay": 1
+                        "intensity": 0
                     },
                     {
                         "type": "Cone Light",
@@ -259,7 +275,7 @@
                         "direction": [-0.346 , -0.2 , -1],
                         "color": [0 ,1 ,0],
                         "smoothing": 2,
-                        "intensity": 15
+                        "intensity": 0
 
                     },
                     {
@@ -268,7 +284,7 @@
                         "direction": [0.346 , -0.2 , -1],
                         "color": [0 ,0 ,1],
                         "smoothing": 2,
-                        "intensity": 15
+                        "intensity": 0
                     }
                 ],
                 "children": [
@@ -306,9 +322,9 @@
                 "components": [
                     {
                         "type": "Directional Light",
-                        "intensity": 0.8,
+                        "intensity": 0.1,
                         "direction": [-0.5 , -0.5 , -0.5],
-                        "color": [1,1,1]
+                        "color": [ 1, 1, 1]
                     }
                 ]
             },
@@ -385,109 +401,33 @@
                     }
                 ]
             },
+
             {
-                "position": [0, 10, 0],
-                "rotation": [45, 45, 0],
-                "scale": [5, 15, 5],
+                "position": [0, 15, 0],
+                "rotation": [90, 0, 0],
+                "scale": [2, 2, 2],
                 "components": [
                     {
                         "type": "Mesh Renderer",
                         "mesh": "sphere",
-                        "material": "moon2"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [0, 90, 0]
-                    },
-                    {
-                        "type":"Spot Light",
-                        "color": [1,2,0],
-                        "intensity": 15
+                        "material": "sphere"
                     }
                 ]
             },
 
             {
-                "position": [0, 10, 0],
-                "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
+                "position": [4, 8, 0],
+                "rotation": [0, 0, 0],
+                "scale": [2, 2, 2],
                 "components": [
                     {
-                        "type": "Mesh Renderer",
-                        "mesh": "sphere",
-                        "material": "moon2"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [0, -90, 0]
-                    }
-                ]
-            },
-
-            {
-                "position": [10, 0, 10],
-                "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "sphere",
-                        "material": "moon2"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [0, 90, 0]
-                    }
-                ]
-            },
-
-            {
-                "position": [10, 10, 10],
-                "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "sphere",
-                        "material": "moon2"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [0, 0, 0]
-                    }
-                ]
-            },
-
-            {
-                "position": [0, 10, 10],
-                "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "sphere",
-                        "material": "moon2"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [0, 90, 0]
-                    }
-                ]
-            },
-
-            {
-                "position": [10, 10, 0],
-                "rotation": [45, 45, 0],
-                "scale": [5, 5, 5],
-                "components": [
-                    {
-                        "type": "Mesh Renderer",
-                        "mesh": "sphere",
-                        "material": "moon2"
-                    },
-                    {
-                        "type": "Movement",
-                        "angularVelocity": [0, 90, 0]
+                        "type": "Cone Light",
+                        "range": [0.7 , 1],
+                        "direction": [0 , 1 , 0],
+                        "color": [0 ,0 ,1],
+                        "smoothing": 2,
+                        "intensity": 2,
+                        "decay": 1
                     }
                 ]
             }

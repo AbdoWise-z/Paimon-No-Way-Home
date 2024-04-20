@@ -59,7 +59,10 @@ namespace our {
     public:
         Texture2D* texture;
         Sampler* sampler;
-        float reflectivity;
+        glm::vec3 ambientReflectivity = glm::vec3(1,1,1);
+        glm::vec3 diffuseReflectivity = glm::vec3(1,1,1);
+        glm::vec3 specularReflectivity = glm::vec3(1,1,1);
+        float specularIntensity = 4;
         bool isSkybox;
         glm::vec4 tint;
 

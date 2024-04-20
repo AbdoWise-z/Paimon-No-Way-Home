@@ -77,10 +77,11 @@ namespace our {
             shader->set("material.hasTexture" , (GLint) 0);
         }
 
-        //TODO: fixme when added
-        //shader->set("material.reflectivity" , reflectivity);
         shader->set("isSkybox" , isSkybox ? (GLint) 1 : (GLint) 0);
-
+        shader->set("material.ambientReflectivity" , ambientReflectivity);
+        shader->set("material.diffuseReflectivity" , diffuseReflectivity);
+        shader->set("material.specularReflectivity" , specularReflectivity);
+        shader->set("material.specularIntensity" , specularIntensity);
     }
 
     void DefaultMaterial::deserialize(const nlohmann::json &data) {
@@ -89,7 +90,12 @@ namespace our {
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
         tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
         isSkybox = data.value("isSkybox" , false);
-        //reflectivity = data.value("reflectivity" , 0.0f);
+
+        ambientReflectivity = data.value("specularReflectivity" , ambientReflectivity);
+        diffuseReflectivity = data.value("diffuseReflectivity" , diffuseReflectivity);
+        specularReflectivity = data.value("specularReflectivity" , specularReflectivity);
+        specularIntensity = data.value("specularIntensity" , specularIntensity);
+
     }
 
 
