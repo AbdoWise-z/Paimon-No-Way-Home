@@ -41,11 +41,11 @@ namespace our{
     class LevelMapping {
     private:
 
-        inline int findBlockNear(glm::vec3& paimon, glm::vec3& paimonUp, std::vector<GroundBlock>& mBlocks , std::vector<bool>& visited) const{
-            for (int i = 0;i < mBlocks.size();i++){
+        inline int findBlockNear(glm::vec3& paimon, glm::vec3& paimonUp, std::vector<bool>& visited) const{
+            for (int i = 0;i < blocks.size();i++){
                 if (visited[i]) continue;
 
-                auto block = mBlocks[i];
+                auto block = blocks[i];
                 if (glm::dot(paimonUp, block.up) < UP_TO_UP_ALIGNMENT) continue;
 
                 auto dis = block.position - paimon + paimonUp * PAIMON_TO_BLOCK_OFFSET;
@@ -60,8 +60,7 @@ namespace our{
         [[nodiscard]] inline int findBlockAlongDirection(
                 const glm::vec3& direction,
                 const glm::vec3& position,
-                const glm::vec3& up,
-                const std::vector<GroundBlock>& blocks
+                const glm::vec3& up
                 ) const{
             int res = -1;
             float minDis = 1e10;
@@ -229,7 +228,6 @@ namespace our{
             auto initial = findBlockNear(
                     paimonPosition ,
                     paimonViewUp ,
-                    blocks ,
                     visitedBlocks
                     );
 
@@ -247,10 +245,10 @@ namespace our{
 
                 GroundBlock g = blocks[index];
 
-                int l = findBlockAlongDirection(left     , g.position , paimonViewUp , blocks);
-                int r = findBlockAlongDirection(-left    , g.position , paimonViewUp , blocks);
-                int f = findBlockAlongDirection(forward  , g.position , paimonViewUp , blocks);
-                int b = findBlockAlongDirection(-forward , g.position , paimonViewUp , blocks);
+                int l = findBlockAlongDirection(left     , g.position , paimonViewUp );
+                int r = findBlockAlongDirection(-left    , g.position , paimonViewUp );
+                int f = findBlockAlongDirection(forward  , g.position , paimonViewUp );
+                int b = findBlockAlongDirection(-forward , g.position , paimonViewUp );
 
                 PUSH(index , l);
                 PUSH(index , r);
