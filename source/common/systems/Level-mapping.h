@@ -25,6 +25,9 @@
 #define BLOCK_MAX_DISTANCE     2.01f
 #define BLOCK_MIN_DISTANCE     1.99000f
 
+#define TYPE2_BLOCK_MAX_DISTANCE    0.010
+#define TYPE2_DIRECTION_ALIGNMENT   0.999
+
 #define PUSH(i, k) if (k.first >= 0) {groundMap[i].push_back(k); if (!visitedBlocks[k.first]) next.push(k.first);}
 
 namespace our{
@@ -68,6 +71,37 @@ namespace our{
                 }
             }
             return -1;
+        }
+
+        [[nodiscard]] inline std::pair<int,glm::vec3> findBlockAlongDirection2(
+                const glm::vec3& direction,
+                const glm::vec3& position,
+                const glm::vec3& up,
+                const int& ignoreIndex
+        ) const{
+            int ret = -1;
+            float mDepth = 1e10;
+            glm::vec3 block_position;
+            for (int i = 0;i < blocks.size();i++){
+                if (i == ignoreIndex) continue;
+                auto block = blocks[i];
+
+                if (glm::dot(block.up , up) < UP_TO_UP_ALIGNMENT) continue;
+                auto P0 = block.position;
+                auto P1 = position + glm::normalize(direction) * 2.0f;
+                auto depth = abs(P0.z); //distance from cam
+
+                auto dot = glm::dot(glm::normalize(P1 - P0) , glm::vec3(0,0,1));
+                auto len = glm::length(P1 - P0);
+                if (glm::abs(dot) > TYPE2_DIRECTION_ALIGNMENT || len <= TYPE2_BLOCK_MAX_DISTANCE){
+                    if (glm::abs(depth) < glm::abs(mDepth)){
+                        ret = i;
+                        mDepth = depth;
+                        block_position = P1;
+                    }
+                }
+            }
+            return {ret , block_position};
         }
 
         [[nodiscard]] inline std::pair<int,glm::vec3> findBlockAlongDirection(
@@ -361,10 +395,10 @@ namespace our{
 
                 GroundBlock g = blocks[index];
 
-                auto l = findBlockAlongDirection(left     , g.position , paimonViewUp );
-                auto r = findBlockAlongDirection(-left    , g.position , paimonViewUp );
-                auto f = findBlockAlongDirection(forward  , g.position , paimonViewUp );
-                auto b = findBlockAlongDirection(-forward , g.position , paimonViewUp );
+                auto l = findBlockAlongDirection2(left     , g.position , paimonViewUp, index );
+                auto r = findBlockAlongDirection2(-left    , g.position , paimonViewUp, index );
+                auto f = findBlockAlongDirection2(forward  , g.position , paimonViewUp, index );
+                auto b = findBlockAlongDirection2(-forward , g.position , paimonViewUp, index );
 
                 PUSH(index , l);
                 PUSH(index , r);
