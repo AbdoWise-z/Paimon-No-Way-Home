@@ -128,76 +128,7 @@
           "tint": [0.45, 0.4, 0.5, 1],
           "specularReflectivity": [0.2, 0.2, 0.2]
         },
-        "ground1":{
-          "type": "default",
-          "shader": "default",
-          "pipelineState": {
-            "faceCulling":{
-              "enabled": false
-            },
-            "depthTesting":{
-              "enabled": true
-            }
-          },
-          "tint": [0.45, 0.4, 0.5, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
-        },
-        "ground2":{
-          "type": "default",
-          "shader": "default",
-          "pipelineState": {
-            "faceCulling":{
-              "enabled": false
-            },
-            "depthTesting":{
-              "enabled": true
-            }
-          },
-          "tint": [0.45, 0.4, 0.5, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
-        },
-        "ground3":{
-          "type": "default",
-          "shader": "default",
-          "pipelineState": {
-            "faceCulling":{
-              "enabled": false
-            },
-            "depthTesting":{
-              "enabled": true
-            }
-          },
-          "tint": [0.45, 0.4, 0.5, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
-        },
-        "ground4":{
-          "type": "default",
-          "shader": "default",
-          "pipelineState": {
-            "faceCulling":{
-              "enabled": false
-            },
-            "depthTesting":{
-              "enabled": true
-            }
-          },
-          "tint": [0.45, 0.4, 0.5, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
-        },
-        "ground5":{
-          "type": "default",
-          "shader": "default",
-          "pipelineState": {
-            "faceCulling":{
-              "enabled": false
-            },
-            "depthTesting":{
-              "enabled": true
-            }
-          },
-          "tint": [0.45, 0.4, 0.5, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
-        },
+
         "mora":{
           "type": "default",
           "shader": "default",
@@ -335,7 +266,8 @@
               {
                 "type": "Mesh Renderer",
                 "mesh": "ground",
-                "material": "ground"
+                "material": "ground",
+                "copy": true
               },
               {
                 "type": "Ground"
@@ -350,7 +282,8 @@
               {
                 "type": "Mesh Renderer",
                 "mesh": "ground",
-                "material": "ground1"
+                "material": "ground",
+                "copy": true
               },
               {
                 "type": "Ground"
@@ -365,7 +298,8 @@
               {
                 "type": "Mesh Renderer",
                 "mesh": "ground",
-                "material": "ground2"
+                "material": "ground",
+                "copy": true
               },
               {
                 "type": "Ground"
@@ -380,7 +314,8 @@
               {
                 "type": "Mesh Renderer",
                 "mesh": "ground",
-                "material": "ground3"
+                "material": "ground",
+                "copy": true
               },
               {
                 "type": "Ground"
@@ -396,7 +331,8 @@
               {
                 "type": "Mesh Renderer",
                 "mesh": "ground",
-                "material": "ground4"
+                "material": "ground",
+                "copy": true
               },
               {
                 "type": "Ground"
@@ -414,7 +350,8 @@
                   {
                     "type": "Mesh Renderer",
                     "mesh": "ground",
-                    "material": "ground5"
+                    "material": "ground",
+                    "copy": true
                   },
                   {
                     "type": "Ground"

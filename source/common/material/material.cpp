@@ -23,6 +23,18 @@ namespace our {
         transparent = data.value("transparent", false);
     }
 
+    void Material::copyTo(Material *m) const {
+        m->shader = shader;
+        m->pipelineState = pipelineState;
+        m->transparent = transparent;
+    }
+
+    Material *Material::copy() {
+        auto* material = new Material();
+        copyTo(material);
+        return material;
+    }
+
     // This function should call the setup of its parent and
     // set the "tint" uniform to the value in the member variable tint 
     void TintedMaterial::setup() const {
@@ -36,6 +48,13 @@ namespace our {
         Material::deserialize(data);
         if(!data.is_object()) return;
         tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    }
+
+    TintedMaterial *TintedMaterial::copy() {
+        auto* material = new TintedMaterial();
+        material->tint = tint;
+        copyTo(material);
+        return material;
     }
 
     // This function should call the setup of its parent and
@@ -59,6 +78,16 @@ namespace our {
         alphaThreshold = data.value("alphaThreshold", 0.0f);
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+    }
+
+    TexturedMaterial* TexturedMaterial::copy() {
+       auto k = new TexturedMaterial();
+       k->sampler = sampler;
+       k->texture = texture;
+       k->alphaThreshold = alphaThreshold;
+       k->tint = tint;
+       copyTo(k);
+       return k;
     }
 
 
@@ -96,6 +125,20 @@ namespace our {
         specularReflectivity = data.value("specularReflectivity" , specularReflectivity);
         specularIntensity = data.value("specularIntensity" , specularIntensity);
 
+    }
+
+    DefaultMaterial *DefaultMaterial::copy() {
+        auto k = new DefaultMaterial();
+        copyTo(k);
+        k->texture = texture;
+        k->sampler = sampler;
+        k->specularIntensity = specularIntensity;
+        k->ambientReflectivity = ambientReflectivity;
+        k->specularReflectivity = specularReflectivity;
+        k->diffuseReflectivity = diffuseReflectivity;
+        k->tint = tint;
+        k->isSkybox = isSkybox;
+        return k;
     }
 
 

@@ -14,6 +14,9 @@ namespace our {
 
         this->mesh = our::AssetLoader<our::Mesh>::get(data["mesh"]);
         this->shapeID = data.value("shapeID" , this->shapeID);
-        this->material = our::AssetLoader<our::Material>::get(data["material"]);
+
+        this->material = our::AssetLoader<our::Material>::get(
+                data["material"] ,  data.value("copy" , false)
+                );
     }
 }

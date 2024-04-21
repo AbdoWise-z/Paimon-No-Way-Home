@@ -17,9 +17,9 @@
 
 #define PAIMON_TO_BLOCK_OFFSET 1.0f
 #define PAIMON_TO_BLOCK_DIST   0.4f
-#define UP_TO_UP_ALIGNMENT     0.98f
+#define UP_TO_UP_ALIGNMENT     0.999f
 
-#define DIRECTION_ALIGNMENT    0.90f
+#define DIRECTION_ALIGNMENT    0.99f
 
 #define BLOCK_MAX_DISTANCE     2.2f
 #define BLOCK_MIN_DISTANCE     1.8000f
@@ -150,6 +150,9 @@ namespace our{
         }
 
 
+        std::vector<GroundBlock> blocks;
+        GroundLinks groundMap;
+
     public:
         Application* app{};
 
@@ -163,8 +166,10 @@ namespace our{
             Paimon* paimon = nullptr;
             std::vector<Ground*> ground_blocks;
             CameraComponent* camera = nullptr;
-            std::vector<GroundBlock> blocks;
             std::vector<bool> visitedBlocks;
+
+            blocks.clear();
+            groundMap.clear();
 
             //first we need to get all of our objects ready
             for (auto k : world->getEntities()){
@@ -231,7 +236,6 @@ namespace our{
             if (initial >= 0)
                 next.push(initial);
 
-            GroundLinks groundMap;
 
             glm::vec3 camForward = glm::vec3(
                     glm::mat4(1) * glm::vec4(0,0,1,0)
@@ -245,15 +249,11 @@ namespace our{
 
                 int l = findBlockAlongDirection(left     , g.position , paimonViewUp , blocks);
                 int r = findBlockAlongDirection(-left    , g.position , paimonViewUp , blocks);
-                int u = findBlockAlongDirection(top      , g.position , paimonViewUp , blocks);
-                int d = findBlockAlongDirection(-top     , g.position , paimonViewUp , blocks);
                 int f = findBlockAlongDirection(forward  , g.position , paimonViewUp , blocks);
                 int b = findBlockAlongDirection(-forward , g.position , paimonViewUp , blocks);
 
                 PUSH(index , l);
                 PUSH(index , r);
-                PUSH(index , u);
-                PUSH(index , d);
                 PUSH(index , f);
                 PUSH(index , b);
             }
