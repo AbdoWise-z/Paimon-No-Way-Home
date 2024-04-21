@@ -15,16 +15,17 @@
 #include <queue>
 #include <iostream>
 
+#define EPSILON 1e-2
 #define PAIMON_TO_BLOCK_OFFSET 1.0f
-#define PAIMON_TO_BLOCK_DIST   0.4f
+#define PAIMON_TO_BLOCK_DIST   1.0f
 #define UP_TO_UP_ALIGNMENT     0.999f
 
-#define DIRECTION_ALIGNMENT    0.99f
+#define DIRECTION_ALIGNMENT    0.95f
 
-#define BLOCK_MAX_DISTANCE     2.2f
-#define BLOCK_MIN_DISTANCE     1.8000f
+#define BLOCK_MAX_DISTANCE     2.01f
+#define BLOCK_MIN_DISTANCE     1.99000f
 
-#define PUSH(i, k) if (k >= 0) {groundMap[i].push_back(k); if (!visitedBlocks[k]) next.push(k);}
+#define PUSH(i, k) if (k.first >= 0) {groundMap[i].push_back(k); if (!visitedBlocks[k.first]) next.push(k.first);}
 
 namespace our{
     typedef std::pair<int, int> link;
@@ -36,7 +37,20 @@ namespace our{
         Ground* ground;
     };
 
-    typedef std::unordered_map<int , std::vector<int>> GroundLinks;
+    template<typename T>
+    struct PathTreeNode{
+        PathTreeNode* parent{};
+        std::vector<PathTreeNode*> children;
+        T value{};
+    };
+
+    struct RoutePart {
+        int blockIndex;
+        glm::vec3 fakePosition;
+        Ground* ground;
+    };
+
+    typedef std::unordered_map<int , std::vector<std::pair<int,glm::vec3>>> GroundLinks;
 
     class LevelMapping {
     private:
@@ -49,7 +63,6 @@ namespace our{
                 if (glm::dot(paimonUp, block.up) < UP_TO_UP_ALIGNMENT) continue;
 
                 auto dis = block.position - paimon + paimonUp * PAIMON_TO_BLOCK_OFFSET;
-                if (enableVisualTricks) dis.z = 0; //camera should be looking along the z-axis
                 if (glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST){ //a near block
                     return i;
                 }
@@ -57,13 +70,15 @@ namespace our{
             return -1;
         }
 
-        [[nodiscard]] inline int findBlockAlongDirection(
+        [[nodiscard]] inline std::pair<int,glm::vec3> findBlockAlongDirection(
                 const glm::vec3& direction,
                 const glm::vec3& position,
                 const glm::vec3& up
                 ) const{
+
             int res = -1;
-            float minDis = 1e10;
+            float dFromCam = 1e10;
+            glm::vec3 block_position;
 
             for (int i = 0;i < blocks.size();i++){
                 auto block = blocks[i];
@@ -72,6 +87,7 @@ namespace our{
 
                 auto P0 = block.position;
                 auto P1 = position;
+                auto pFromCam = abs(P0.z); //distance from cam
 
                 auto dis = P0 - P1;
                 auto distance = glm::dot(dis , dis);
@@ -81,9 +97,15 @@ namespace our{
                 auto directionAlignment = glm::dot(glm::normalize(dis) , glm::normalize(direction));
                 distance = glm::sqrt(distance);
 
-                if ((directionAlignment > DIRECTION_ALIGNMENT) && (distance < minDis) && (distance >= BLOCK_MIN_DISTANCE)){ //a near block
-                    minDis = distance;
+                if ((directionAlignment > DIRECTION_ALIGNMENT) &&
+                    (distance >= BLOCK_MIN_DISTANCE) &&
+                    (distance <= BLOCK_MAX_DISTANCE) &&
+                    (pFromCam <= dFromCam)
+                        ){ //a near block
+
                     res = i;
+                    dFromCam = pFromCam;
+                    block_position = P0;
                     continue;
                 }
 
@@ -108,37 +130,37 @@ namespace our{
                      * so the equations are much simpler
                      * */
 
-
                     float s1, s0 = 0;
-                    if (direction.x != 0){
+                    if (abs(direction.x) > 0){
                         s1 = (P0.x - P1.x) / direction.x;
                         s0 = (P1.z + direction.z * s1 - P0.z);
-                    } else if (direction.y != 0){
+                    } else {
                         s1 = (P0.y - P1.y) / direction.y;
                         s0 = (P1.z + direction.z * s1 - P0.z);
                     }
 
                     P0 = P0 + glm::vec3(0 , 0 , 1) * s0;
+
                     dis = P0 - P1;
+
                     distance = glm::dot(dis , dis);
                     if (distance == 0) continue; // self
                     directionAlignment = glm::dot(glm::normalize(dis) , glm::normalize(direction));
                     distance = glm::sqrt(distance);
-                    if ((directionAlignment > DIRECTION_ALIGNMENT) && (distance < minDis) && (distance >= BLOCK_MIN_DISTANCE)){ //a near block
-                        minDis = distance;
+
+                    if ((directionAlignment > DIRECTION_ALIGNMENT) &&
+                        (distance >= BLOCK_MIN_DISTANCE) &&
+                        (distance <= BLOCK_MAX_DISTANCE) &&
+                        (pFromCam <= dFromCam)
+                            ) {
                         res = i;
+                        dFromCam = pFromCam;
+                        block_position = P0;
                     }
                 }
             }
 
-            if (res != -1){
-                //validate the distance
-                if (minDis > BLOCK_MAX_DISTANCE){
-                    return -1;
-                }
-            }
-
-            return res;
+            return {res , block_position};
         }
 
         inline bool canStand(glm::vec3& paimon, glm::vec3& ground , glm::vec3& paimonUp, glm::vec3& groundUp) const{
@@ -147,6 +169,7 @@ namespace our{
             if (enableVisualTricks) dis.z = 0;
             return glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST;
         }
+
 
 
         std::vector<GroundBlock> blocks;
@@ -160,6 +183,99 @@ namespace our{
         void init(Application* a){
             this->app = a;
         }
+
+        std::vector<RoutePart> findRoute(Paimon* paimon, CameraComponent* camera, Ground* target){
+            auto PV = camera->getViewMatrix();
+
+            glm::vec3 paimonUp       = glm::vec3(
+                    paimon->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0 , 1 , 0 , 0.0)
+            );
+
+            glm::vec3 paimonPosition = glm::vec3(
+                    PV *
+                    paimon->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0,0,0 , 1.0)
+            );
+
+            glm::vec3 paimonViewUp = glm::vec3(PV * glm::vec4(paimonUp , 0.0));
+            paimonViewUp = glm::normalize(paimonViewUp);
+
+            std::vector<bool> visited;
+            for (auto k : blocks) visited.push_back(false);
+
+            auto initial = findBlockNear(
+                    paimonPosition ,
+                    paimonViewUp ,
+                    visited
+            );
+
+            if (initial == -1) return {};
+
+            visited.clear();
+            for (auto k : blocks) visited.push_back(false);
+
+            auto root = new PathTreeNode<std::pair<int,glm::vec3>>();
+            root->value = {initial , blocks[initial].position};
+            root->parent = nullptr;
+
+            std::queue<PathTreeNode<std::pair<int,glm::vec3>>*> next;
+            next.push(root);
+
+            std::vector<PathTreeNode<std::pair<int,glm::vec3>>*> allNodes;
+            allNodes.emplace_back(root);
+
+            std::vector<std::pair<int,glm::vec3>> path;
+            bool path_found = false;
+
+            while (!next.empty()){
+                auto v = next.front();
+                next.pop();
+                for (auto k : groundMap[v->value.first]){
+                    if (visited[k.first]) continue;
+                    if (blocks[k.first].ground == target){
+                        //found it
+                        path.push_back(k);
+                        while (v){
+                            path.push_back(v->value);
+                            v = v->parent;
+                        }
+                        path_found = true;
+                    } else {
+                        visited[k.first] = true;
+                        auto newNode = new PathTreeNode<std::pair<int,glm::vec3>>();
+                        newNode->value = k;
+                        newNode->parent = v;
+                        allNodes.emplace_back(newNode);
+                        next.push(newNode);
+                    }
+
+                    if (path_found) break;
+                }
+
+                if (path_found) break;
+            }
+
+            for (auto k : allNodes){
+                delete k;
+            }
+
+            if (!path_found) return {};
+
+            std::vector<RoutePart> route;
+
+            for (int i = path.size() - 1;i >= 0;i --){
+                RoutePart p = {
+                        path[i].first,
+                        path[i].second,
+                        blocks[i].ground
+                };
+                route.emplace_back(p);
+            }
+            return route;
+        }
+
+
 
         void update(World *world, float deltaTime) {
             Paimon* paimon = nullptr;
@@ -245,10 +361,10 @@ namespace our{
 
                 GroundBlock g = blocks[index];
 
-                int l = findBlockAlongDirection(left     , g.position , paimonViewUp );
-                int r = findBlockAlongDirection(-left    , g.position , paimonViewUp );
-                int f = findBlockAlongDirection(forward  , g.position , paimonViewUp );
-                int b = findBlockAlongDirection(-forward , g.position , paimonViewUp );
+                auto l = findBlockAlongDirection(left     , g.position , paimonViewUp );
+                auto r = findBlockAlongDirection(-left    , g.position , paimonViewUp );
+                auto f = findBlockAlongDirection(forward  , g.position , paimonViewUp );
+                auto b = findBlockAlongDirection(-forward , g.position , paimonViewUp );
 
                 PUSH(index , l);
                 PUSH(index , r);
@@ -260,6 +376,12 @@ namespace our{
             while (it != groundMap.end()){
                 ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
                 it++;
+            }
+
+            //try to find route to the last block
+            auto test = findRoute(paimon , camera , blocks[blocks.size() - 1].ground);
+            for (auto k : test){
+                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
             }
         }
     };
