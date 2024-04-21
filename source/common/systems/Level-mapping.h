@@ -41,11 +41,11 @@ namespace our{
     class LevelMapping {
     private:
 
-        inline int findBlockNear(glm::vec3& paimon, glm::vec3& paimonUp, std::vector<GroundBlock>& blocks , std::vector<bool>& visited) const{
-            for (int i = 0;i < blocks.size();i++){
+        inline int findBlockNear(glm::vec3& paimon, glm::vec3& paimonUp, std::vector<GroundBlock>& mBlocks , std::vector<bool>& visited) const{
+            for (int i = 0;i < mBlocks.size();i++){
                 if (visited[i]) continue;
 
-                auto block = blocks[i];
+                auto block = mBlocks[i];
                 if (glm::dot(paimonUp, block.up) < UP_TO_UP_ALIGNMENT) continue;
 
                 auto dis = block.position - paimon + paimonUp * PAIMON_TO_BLOCK_OFFSET;
