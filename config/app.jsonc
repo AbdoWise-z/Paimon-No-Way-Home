@@ -57,7 +57,8 @@
                 "cubes": "assets/models/untitled.obj",
                 "paimon": "assets/models/paimon.obj",
                 "arlecchino": "assets/models/arlecchino.obj",
-                "mora": "assets/models/mora.obj"
+                "mora": "assets/models/mora.obj",
+                "test": "assets/models/air.obj"
             },
             "samplers":{
                 "default":{},
@@ -66,6 +67,48 @@
                 }
             },
             "materials":{
+                "white":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1]
+                },
+
+                "red":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 0, 0, 1]
+                },
+
+                "blue":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [0, 0, 1, 1]
+                },
+
                 "paimon_hair":{
                     "type": "default",
                     "shader": "default",
@@ -464,6 +507,61 @@
                                 "type": "Mesh Renderer",
                                 "mesh": "cube",
                                 "material": "metal2"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "position": [0, 20, 0],
+                "rotation": [0, 0, 0],
+                "scale": [1, 1, 1],
+                "children": [
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "test",
+                                "shapeID": 0,
+                                "material": "blue"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "test",
+                                "shapeID": 1,
+                                "material": "red"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "test",
+                                "shapeID": 2,
+                                "material": "white"
+                            },
+                            {
+                                "type": "Movement",
+                                "angularVelocity": [0, 90, 0]
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "test",
+                                "shapeID": 3,
+                                "material": "white"
+                            },
+                            {
+                                "type": "Movement",
+                                "angularVelocity": [0, 800, 0]
                             }
                         ]
                     }
