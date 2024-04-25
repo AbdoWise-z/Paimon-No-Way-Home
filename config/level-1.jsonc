@@ -260,6 +260,18 @@
         "scale": [1, 1, 1],
         "children": [
           {
+            "name": "marker",
+            "position": [0, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              }
+            ]
+          },
+          {
             "name": "g0",
             "position": [0, 0, 0],
             "components": [

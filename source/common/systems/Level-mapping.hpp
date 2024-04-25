@@ -2,8 +2,8 @@
 // Created by xAbdoMo on 4/20/2024.
 //
 
-#ifndef GFX_LAB_LEVEL_MAPPING_H
-#define GFX_LAB_LEVEL_MAPPING_H
+#ifndef GFX_LAB_LEVEL_MAPPING_HPP
+#define GFX_LAB_LEVEL_MAPPING_HPP
 
 #include "ecs/world.hpp"
 #include "components/Paimon.hpp"
@@ -17,7 +17,7 @@
 
 #define EPSILON 1e-2
 #define PAIMON_TO_BLOCK_OFFSET 1.0f
-#define PAIMON_TO_BLOCK_DIST   1.0f
+#define PAIMON_TO_BLOCK_DIST   1.2f
 #define UP_TO_UP_ALIGNMENT     0.999f
 
 #define DIRECTION_ALIGNMENT    0.95f
@@ -143,7 +143,7 @@ namespace our{
                     continue;
                 }
 
-                if (enableVisualTricks){
+                if (enableVisualIllusions){
                     /*
                      * L0 = P0 + cam_dir * S0
                      * L1 = P1 + dir     * S1
@@ -200,7 +200,7 @@ namespace our{
         inline bool canStand(glm::vec3& paimon, glm::vec3& ground , glm::vec3& paimonUp, glm::vec3& groundUp) const{
             if (glm::dot(groundUp , paimonUp) < UP_TO_UP_ALIGNMENT) return false;
             auto dis = ground - paimon + paimonUp * PAIMON_TO_BLOCK_OFFSET;
-            if (enableVisualTricks) dis.z = 0;
+            if (enableVisualIllusions) dis.z = 0;
             return glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST;
         }
 
@@ -211,14 +211,36 @@ namespace our{
 
     public:
         Application* app{};
+        Paimon* paimon{};
+        CameraComponent* camera{};
+        Entity* marker{};
 
-        bool enableVisualTricks = true; //ignore the y-axis when doing calculations
+        bool enableVisualIllusions = true; //ignore the y-axis when doing calculations
 
         void init(Application* a){
             this->app = a;
         }
 
-        std::vector<RoutePart> findRoute(Paimon* paimon, CameraComponent* camera, Ground* target){
+        float getPaimonDistanceToGround(glm::vec3 block_pos){
+            auto PV = camera->getViewMatrix();
+            glm::vec3 paimonUp       = glm::vec3(
+                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0 , 1 , 0 , 0.0)
+            );
+
+            paimonUp = glm::normalize(paimonUp);
+
+            glm::vec3 paimonPos       = glm::vec3(
+                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0 , 0 , 0 , 1.0)
+            );
+
+            auto dis = block_pos - paimonPos + paimonUp * PAIMON_TO_BLOCK_OFFSET;
+            return glm::length(dis);
+        }
+
+        std::vector<RoutePart> findRoute(Ground* target){
+            if (target == nullptr) return std::vector<RoutePart>();
             auto PV = camera->getViewMatrix();
 
             glm::vec3 paimonUp       = glm::vec3(
@@ -243,6 +265,8 @@ namespace our{
                     paimonViewUp ,
                     visited
             );
+
+            if (blocks[initial].ground == target) return {};
 
             if (initial == -1) return {};
 
@@ -309,12 +333,65 @@ namespace our{
             return route;
         }
 
+        Ground* ScreenToGroundCast(float screenX, float screenY){
+            auto fSx = (float) screenX;
+            auto fSy = (float) app->getFrameBufferSize().y - (float) screenY;
 
+            fSx /= (float) app->getFrameBufferSize().x;
+            fSx -= 0.5;
+            fSx *= 2;
+
+            fSy /= (float) app->getFrameBufferSize().y;
+            fSy -= 0.5;
+            fSy *= 2;
+
+            //now we have the NDC coords
+            glm::vec4 ndcVector = glm::vec4(fSx , fSy , 0 , 1);
+            glm::vec4 vsVector  = glm::inverse(camera->getProjectionMatrix(app->getFrameBufferSize())) * ndcVector;
+
+            auto temp = vsVector;
+            temp.z = -1;
+            glm::vec4 pos = glm::inverse(camera->getViewMatrix()) * vsVector;
+            marker->localTransform.position.x = pos.x;
+            marker->localTransform.position.y = pos.y;
+            marker->localTransform.position.z = pos.z;
+
+            float minDis = 1e15;
+            int hitI     = -1;
+            int index    = 0;
+            for (auto k: blocks){
+                float val = 0;
+
+                //currently, I'm doing Sphere ray cast cuz it just easier ..
+                if (glm::intersectRaySphere(
+                        glm::vec3(vsVector),
+                        glm::vec3(0,0,1),
+                        k.position,
+                        2.0f,
+                        val
+                        )){
+
+                    if (abs(k.position.z) < minDis){
+                        minDis = abs(k.position.z);
+                        hitI = index;
+                    }
+                }
+
+                index++;
+            }
+
+            if (hitI != -1) ((DefaultMaterial*) blocks[hitI].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 2 , 2 , 1);
+            if (hitI == -1) return nullptr;
+
+            return blocks[hitI].ground;
+        }
+
+        std::vector<GroundBlock>& getBlocks(){
+            return blocks;
+        }
 
         void update(World *world, float deltaTime) {
-            Paimon* paimon = nullptr;
             std::vector<Ground*> ground_blocks;
-            CameraComponent* camera = nullptr;
             std::vector<bool> visitedBlocks;
 
             blocks.clear();
@@ -322,6 +399,9 @@ namespace our{
 
             //first we need to get all of our objects ready
             for (auto k : world->getEntities()){
+                if (k->name == "marker"){
+                    marker = k;
+                }
                 if (paimon == nullptr) paimon = k->getComponent<Paimon>();
                 if (camera == nullptr) camera = k->getComponent<CameraComponent>();
                 auto g = k->getComponent<Ground>();
@@ -406,19 +486,19 @@ namespace our{
                 PUSH(index , b);
             }
 
-            auto it = groundMap.begin();
-            while (it != groundMap.end()){
-                ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
-                it++;
-            }
-
-            //try to find route to the last block
-            auto test = findRoute(paimon , camera , blocks[blocks.size() - 1].ground);
-            for (auto k : test){
-                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
-            }
+//            auto it = groundMap.begin();
+//            while (it != groundMap.end()){
+//                ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
+//                it++;
+//            }
+//
+//            //try to find route to the last block
+//            auto test = findRoute(ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y));
+//            for (auto k : test){
+//                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
+//            }
         }
     };
 }
 
-#endif //GFX_LAB_LEVEL_MAPPING_H
+#endif //GFX_LAB_LEVEL_MAPPING_HPP

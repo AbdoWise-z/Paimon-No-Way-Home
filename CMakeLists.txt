@@ -126,10 +126,11 @@ set(STATES_SOURCES
         source/common/components/Paimon.hpp
         source/common/components/Ground.cpp
         source/common/components/Ground.hpp
-        source/common/systems/Level-mapping.h
+        source/common/systems/Level-mapping.hpp
         source/common/components/OrbitalCameraComponent.cpp
         source/common/components/OrbitalCameraComponent.h
         source/common/systems/orbital-camera-controller.hpp
+        source/common/systems/paimon-movement.hpp
 )
 
 # For each example, we add an executable target

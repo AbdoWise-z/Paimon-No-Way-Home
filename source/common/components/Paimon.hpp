@@ -11,6 +11,7 @@ namespace our {
 
     class Paimon : public Component{
     public:
+        float speed = 8;
         static std::string getID() { return "Paimon"; }
         void deserialize(const nlohmann::json& data) override;
     };
