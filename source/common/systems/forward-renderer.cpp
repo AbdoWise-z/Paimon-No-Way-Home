@@ -310,13 +310,51 @@ namespace our {
                 // set up transform
                 k.material->shader->set("transform", k.localToWorld);
                 k.material->shader->set("Camera", VP);
-                k.material->shader->set("areaLight" , areaLight);
                 k.material->shader->set("cameraPosition", cameraCenter);
+                k.material->shader->set("areaLight" , areaLight);
 
                 // set up lights
-                k.material->shader->set("directionalLightCount" , 0);
-                k.material->shader->set("spotLightsCount" , 0);
-                k.material->shader->set("coneLightsCount" , 0);
+                k.material->shader->set("directionalLightCount" , (GLint) directionalLights.size());
+                for (int i = 0;i < directionalLights.size();i++){
+                    std::stringstream ss;
+                    ss << "directionalLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "direction" , directionalLights[i]->direction);
+                    k.material->shader->set( header + "intensity" , directionalLights[i]->intensity);
+                    k.material->shader->set( header + "ambientColor" , directionalLights[i]->ambientColor);
+                    k.material->shader->set( header + "diffuseColor" , directionalLights[i]->diffuseColor);
+                    k.material->shader->set( header + "specularColor" , directionalLights[i]->specularColor);
+                }
+
+                k.material->shader->set("spotLightsCount" , (GLint) spotLights.size());
+                for (int i = 0;i < spotLights.size();i++){
+                    std::stringstream ss;
+                    ss << "spotLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "position" , spotLights[i]->worldPosition);
+                    k.material->shader->set( header + "intensity" , spotLights[i]->intensity);
+                    k.material->shader->set( header + "specularColor" , spotLights[i]->specularColor);
+                    k.material->shader->set( header + "diffuseColor" , spotLights[i]->diffuseColor);
+                    k.material->shader->set( header + "ambientColor" , spotLights[i]->ambientColor);
+                    k.material->shader->set( header + "attenuation" , spotLights[i]->attenuation);
+                }
+
+                k.material->shader->set("coneLightsCount" , (GLint) coneLights.size());
+                for (int i = 0;i < coneLights.size();i++){
+                    std::stringstream ss;
+                    ss << "coneLights[" << i << "].";
+                    auto header = ss.str();
+                    k.material->shader->set( header + "position" , coneLights[i]->worldPosition);
+                    k.material->shader->set( header + "direction" , coneLights[i]->worldDirection);
+                    k.material->shader->set( header + "intensity" , coneLights[i]->intensity);
+                    k.material->shader->set( header + "range" , coneLights[i]->range);
+                    k.material->shader->set( header + "ambientColor" , coneLights[i]->ambientColor);
+                    k.material->shader->set( header + "specularColor" , coneLights[i]->specularColor);
+                    k.material->shader->set( header + "diffuseColor" , coneLights[i]->diffuseColor);
+                    k.material->shader->set( header + "attenuation" , coneLights[i]->attenuation);
+                    k.material->shader->set( header + "smoothing" , coneLights[i]->smoothing);
+                    k.material->shader->set( header + "range" , coneLights[i]->range);
+                }
             }else{
                 k.material->shader->set("transform", VP * k.localToWorld);
             }
