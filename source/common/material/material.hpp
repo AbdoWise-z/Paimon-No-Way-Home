@@ -4,11 +4,13 @@
 #include "../texture/texture2d.hpp"
 #include "../texture/sampler.hpp"
 #include "../shader/shader.hpp"
+#include "components/DirectionalLight.hpp"
 
 #include <glm/vec4.hpp>
 #include <json/json.hpp>
 
 namespace our {
+
 
     // This is the base class for all the materials
     // It contains the 3 essential components required by any material
@@ -26,6 +28,9 @@ namespace our {
         virtual void setup() const;
         // This function read a material from a json object
         virtual void deserialize(const nlohmann::json& data);
+
+        virtual Material* copy();
+        void copyTo(Material* m) const;
     };
 
     // This material adds a uniform for a tint (a color that will be sent to the shader)
@@ -36,6 +41,7 @@ namespace our {
 
         void setup() const override;
         void deserialize(const nlohmann::json& data) override;
+        TintedMaterial* copy() override;
     };
 
     // This material adds two uniforms (besides the tint from Tinted Material)
@@ -51,6 +57,23 @@ namespace our {
 
         void setup() const override;
         void deserialize(const nlohmann::json& data) override;
+        TexturedMaterial* copy() override;
+    };
+
+    class DefaultMaterial : public Material{
+    public:
+        Texture2D* texture;
+        Sampler* sampler;
+        glm::vec3 ambientReflectivity = glm::vec3(1,1,1);
+        glm::vec3 diffuseReflectivity = glm::vec3(1,1,1);
+        glm::vec3 specularReflectivity = glm::vec3(1,1,1);
+        float specularIntensity = 4;
+        bool isSkybox;
+        glm::vec4 tint;
+
+        void setup() const override;
+        void deserialize(const nlohmann::json& data) override;
+        DefaultMaterial* copy() override;
     };
 
     // This function returns a new material instance based on the given type
@@ -59,6 +82,8 @@ namespace our {
             return new TintedMaterial();
         } else if(type == "textured"){
             return new TexturedMaterial();
+        } else if(type == "default"){
+            return new DefaultMaterial();
         } else {
             return new Material();
         }

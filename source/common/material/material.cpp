@@ -23,6 +23,18 @@ namespace our {
         transparent = data.value("transparent", false);
     }
 
+    void Material::copyTo(Material *m) const {
+        m->shader = shader;
+        m->pipelineState = pipelineState;
+        m->transparent = transparent;
+    }
+
+    Material *Material::copy() {
+        auto* material = new Material();
+        copyTo(material);
+        return material;
+    }
+
     // This function should call the setup of its parent and
     // set the "tint" uniform to the value in the member variable tint 
     void TintedMaterial::setup() const {
@@ -36,6 +48,13 @@ namespace our {
         Material::deserialize(data);
         if(!data.is_object()) return;
         tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    }
+
+    TintedMaterial *TintedMaterial::copy() {
+        auto* material = new TintedMaterial();
+        material->tint = tint;
+        copyTo(material);
+        return material;
     }
 
     // This function should call the setup of its parent and
@@ -60,5 +79,67 @@ namespace our {
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
     }
+
+    TexturedMaterial* TexturedMaterial::copy() {
+       auto k = new TexturedMaterial();
+       k->sampler = sampler;
+       k->texture = texture;
+       k->alphaThreshold = alphaThreshold;
+       k->tint = tint;
+       copyTo(k);
+       return k;
+    }
+
+
+    void DefaultMaterial::setup() const {
+        Material::setup();
+        shader->set("material.tint" , this->tint);
+        if (texture != nullptr){
+            glActiveTexture(GL_TEXTURE0);
+            texture->bind();
+            if (sampler != nullptr){
+                sampler->bind(0);
+            }
+            shader->set("material.hasTexture" , (GLint) 1);
+            shader->set("material.tex",0);   //set our Texture2D "tex" to use texture no 0
+        }else{
+            shader->set("material.hasTexture" , (GLint) 0);
+        }
+
+        shader->set("isSkybox" , isSkybox ? (GLint) 1 : (GLint) 0);
+        shader->set("material.ambientReflectivity" , ambientReflectivity);
+        shader->set("material.diffuseReflectivity" , diffuseReflectivity);
+        shader->set("material.specularReflectivity" , specularReflectivity);
+        shader->set("material.specularIntensity" , specularIntensity);
+    }
+
+    void DefaultMaterial::deserialize(const nlohmann::json &data) {
+        Material::deserialize(data);
+        texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
+        sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
+
+        tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        isSkybox = data.value("isSkybox" , false);
+        ambientReflectivity = data.value("specularReflectivity" , ambientReflectivity);
+        diffuseReflectivity = data.value("diffuseReflectivity" , diffuseReflectivity);
+        specularReflectivity = data.value("specularReflectivity" , specularReflectivity);
+        specularIntensity = data.value("specularIntensity" , specularIntensity);
+
+    }
+
+    DefaultMaterial *DefaultMaterial::copy() {
+        auto k = new DefaultMaterial();
+        copyTo(k);
+        k->texture = texture;
+        k->sampler = sampler;
+        k->specularIntensity = specularIntensity;
+        k->ambientReflectivity = ambientReflectivity;
+        k->specularReflectivity = specularReflectivity;
+        k->diffuseReflectivity = diffuseReflectivity;
+        k->tint = tint;
+        k->isSkybox = isSkybox;
+        return k;
+    }
+
 
 }

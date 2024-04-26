@@ -5,6 +5,11 @@
 
 namespace our {
 
+    enum Decay{
+        SQUARE = 0,
+        LINEAR = 1
+    };
+
     class Entity; // A forward declaration of the Entity Class
 
     // A component is a data container that can be added to an entity.

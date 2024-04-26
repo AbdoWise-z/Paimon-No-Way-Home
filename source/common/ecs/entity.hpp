@@ -26,6 +26,7 @@ namespace our {
         World* getWorld() const { return world; } // Returns the world to which this entity belongs
 
         glm::mat4 getLocalToWorldMatrix() const; // Computes and returns the transformation from the entities local space to the world space
+        glm::vec3 getWorldPosition() const; // Computes and returns the transformation from the entities local space to the world space
         void deserialize(const nlohmann::json&); // Deserializes the entity data and components from a json object
         
         // This template method create a component of type T,
@@ -55,6 +56,39 @@ namespace our {
                 it++;
             }
             return nullptr;
+        }
+
+        template<typename T>
+        std::vector<T*> getAllComponents(){
+            //TODO: (Req 8) Go through the components list and find the first component that can be dynamically cast to "T*".
+            // Return the component you found, or return null of nothing was found.
+            std::vector<T*> out;
+            auto it = components.begin();
+            while (it != components.end()){
+                T* t = dynamic_cast<T*>(*it);
+                if (t){
+                    out.emplace_back(t);
+                }
+                it++;
+            }
+            return out;
+        }
+
+        //same but with a bit of optimization
+        template<typename T,typename V>
+        std::pair<T*,V*> getComponents(){
+            std::pair<T*,V*> out;
+            auto it = components.begin();
+            while (it != components.end()){
+                if (dynamic_cast<T*>(*it)){
+                    out.first = (T*) *it;
+                }
+                if (dynamic_cast<V*>(*it)){
+                    out.second = (V*) *it;
+                }
+                it++;
+            }
+            return out;
         }
 
         // This template method dynami and returns a pointer to it

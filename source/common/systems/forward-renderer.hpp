@@ -4,6 +4,9 @@
 #include "../components/camera.hpp"
 #include "../components/mesh-renderer.hpp"
 #include "../asset-loader.hpp"
+#include "../components/DirectionalLight.hpp"
+#include "components/SpotLight.h"
+#include "components/ConeLight.h"
 
 #include <glad/gl.h>
 #include <vector>
@@ -19,6 +22,7 @@ namespace our
         glm::mat4 localToWorld;
         glm::vec3 center;
         Mesh* mesh;
+        int shapeID;
         Material* material;
     };
 
@@ -33,9 +37,15 @@ namespace our
         // We define them here (instead of being local to the "render" function) as an optimization to prevent reallocating them every frame
         std::vector<RenderCommand> opaqueCommands;
         std::vector<RenderCommand> transparentCommands;
+
+        std::vector<DirectionalLight*> directionalLights;
+        std::vector<SpotLight*> spotLights;
+        std::vector<ConeLight*> coneLights;
+
         // Objects used for rendering a skybox
         Mesh* skySphere;
-        TexturedMaterial* skyMaterial;
+        DefaultMaterial* skyMaterial;
+        glm::vec3 areaLight;
         // Objects used for Postprocessing
         GLuint postprocessFrameBuffer, postProcessVertexArray;
         Texture2D *colorTarget, *depthTarget;

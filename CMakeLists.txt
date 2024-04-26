@@ -112,6 +112,26 @@ set(STATES_SOURCES
         source/states/material-test-state.hpp
         source/states/entity-test-state.hpp
         source/states/renderer-test-state.hpp
+        source/common/components/DirectionalLight.cpp
+        source/common/components/DirectionalLight.hpp
+        source/common/components/SpotLight.cpp
+        source/common/components/SpotLight.h
+        source/common/components/ConeLight.cpp
+        source/common/components/ConeLight.h
+        source/globals.h
+        source/common/components/PaimonIdle.cpp
+        source/common/components/PaimonIdle.hpp
+        source/common/systems/paimon-idle.hpp
+        source/common/components/Paimon.cpp
+        source/common/components/Paimon.hpp
+        source/common/components/Ground.cpp
+        source/common/components/Ground.hpp
+        source/common/systems/Level-mapping.hpp
+        source/common/components/OrbitalCameraComponent.cpp
+        source/common/components/OrbitalCameraComponent.h
+        source/common/systems/orbital-camera-controller.hpp
+        source/common/systems/paimon-movement.hpp
+        source/common/systems/common.h
 )
 
 # For each example, we add an executable target

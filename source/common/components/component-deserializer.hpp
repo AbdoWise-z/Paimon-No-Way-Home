@@ -5,6 +5,13 @@
 #include "mesh-renderer.hpp"
 #include "free-camera-controller.hpp"
 #include "movement.hpp"
+#include "DirectionalLight.hpp"
+#include "SpotLight.h"
+#include "ConeLight.h"
+#include "PaimonIdle.hpp"
+#include "Paimon.hpp"
+#include "Ground.hpp"
+#include "OrbitalCameraComponent.h"
 
 namespace our {
 
@@ -22,6 +29,20 @@ namespace our {
             component = entity->addComponent<MovementComponent>();
         } else if (type == MeshRendererComponent::getID()){
             component = entity->addComponent<MeshRendererComponent>();
+        } else if (type == DirectionalLight::getID()){
+            component = entity->addComponent<DirectionalLight>();
+        } else if (type == SpotLight::getID()){
+            component = entity->addComponent<SpotLight>();
+        } else if (type == ConeLight::getID()){
+            component = entity->addComponent<ConeLight>();
+        } else if (type == PaimonIdle::getID()){
+            component = entity->addComponent<PaimonIdle>();
+        } else if (type == Paimon::getID()){
+            component = entity->addComponent<Paimon>();
+        } else if (type == Ground::getID()){
+            component = entity->addComponent<Ground>();
+        } else if (type == OrbitalCameraComponent::getID()){
+            component = entity->addComponent<OrbitalCameraComponent>();
         }
         if (component) component->deserialize(data);
     }

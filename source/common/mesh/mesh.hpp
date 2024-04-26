@@ -2,6 +2,7 @@
 
 #include <glad/gl.h>
 #include "vertex.hpp"
+#include "tinyobj/tiny_obj_loader.h"
 
 namespace our {
 
@@ -15,9 +16,12 @@ namespace our {
         // A vertex array object, A vertex buffer and an element buffer
         unsigned int VBO, EBO;
         unsigned int VAO;
-        // We need to remember the number of elements that will be draw by glDrawElements 
+        // We need to remember the number of elements that will be draw by glDrawElements
         GLsizei elementCount;
     public:
+
+        std::vector<std::pair<unsigned int ,unsigned int>> shapes; //defines the start & end index of each shape
+        std::vector<tinyobj::material_t> materials;
 
         // The constructor takes two vectors:
         // - vertices which contain the vertex data.
@@ -51,7 +55,7 @@ namespace our {
             //element buffer
             glGenBuffers(1, &EBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()*sizeof( unsigned int), elements.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof( unsigned int), elements.data(), GL_STATIC_DRAW);
             elementCount=(GLsizei) elements.size();
 
             // Unbind the Vertex array
@@ -66,11 +70,21 @@ namespace our {
         }
 
         // this function should render the mesh
-        void draw() 
+        void draw(int id = -1) const
         {
             //TODO: (Req 2) Write this function
+
+            int count = elementCount;
+            unsigned long long offset = 0;
+
+            if (id != -1){
+                auto shape = shapes[id];
+                count = shape.second - shape.first + 1;
+                offset = (unsigned long long) (shape.first * sizeof( unsigned int));
+            }
+
             glBindVertexArray(VAO);
-            glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, (void *) 0);
+            glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void *) offset);
             glBindVertexArray(0);
         }
 

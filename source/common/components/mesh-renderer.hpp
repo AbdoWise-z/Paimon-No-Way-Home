@@ -11,6 +11,7 @@ namespace our {
     class MeshRendererComponent : public Component {
     public:
         Mesh* mesh; // The mesh that should be drawn
+        int shapeID = -1;
         Material* material; // The material used to draw the mesh
 
         // The ID of this component type is "Mesh Renderer"

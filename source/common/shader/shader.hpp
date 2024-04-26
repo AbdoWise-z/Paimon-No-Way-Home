@@ -7,10 +7,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include "../../globals.h"
+
 
 namespace our
 {
-
     class ShaderProgram
     {
 
@@ -50,7 +51,7 @@ namespace our
         {
             // TODO: (Req 1) Send the given float value to the given uniform
             GLint loc = getUniformLocation(uniform);
-            if (loc == -1){
+            if (loc == -1 && !SUPPRESS_SHADER_ERRORS){
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
             }
@@ -64,7 +65,7 @@ namespace our
             GLint location = getUniformLocation(uniform);
 
             // Check if the uniform exists
-            if (location == -1)
+            if (location == -1 && !SUPPRESS_SHADER_ERRORS)
             {
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
@@ -77,7 +78,7 @@ namespace our
         {
             // TODO: (Req 1) Send the given integer value to the given uniform
             GLint location = getUniformLocation(uniform);
-            if (location == -1)
+            if (location == -1 && !SUPPRESS_SHADER_ERRORS)
             {
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
@@ -89,7 +90,7 @@ namespace our
         {
             // TODO: (Req 1) Send the given 2D vector value to the given uniform
             GLint location = getUniformLocation(uniform);
-            if (location == -1)
+            if (location == -1 && !SUPPRESS_SHADER_ERRORS)
             {
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
@@ -101,7 +102,7 @@ namespace our
         {
             // TODO: (Req 1) Send the given 3D vector value to the given uniform
             GLint location = getUniformLocation(uniform);
-            if (location == -1)
+            if (location == -1 && !SUPPRESS_SHADER_ERRORS)
             {
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
@@ -113,7 +114,7 @@ namespace our
         {
             // TODO: (Req 1) Send the given 4D vector value to the given uniform
             GLint location = getUniformLocation(uniform);
-            if (location == -1)
+            if (location == -1 && !SUPPRESS_SHADER_ERRORS)
             {
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
@@ -125,7 +126,7 @@ namespace our
         {
             // TODO: (Req 1) Send the given matrix 4x4 value to the given uniform
             GLint location = getUniformLocation(uniform);
-            if (location == -1)
+            if (location == -1 && !SUPPRESS_SHADER_ERRORS)
             {
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;

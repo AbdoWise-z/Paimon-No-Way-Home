@@ -17,6 +17,8 @@ namespace our {
         return parent->getLocalToWorldMatrix() * localTransform.toMat4();
     }
 
+
+
     // Deserializes the entity data and components from a json object
     void Entity::deserialize(const nlohmann::json& data){
         if(!data.is_object()) return;
@@ -29,6 +31,10 @@ namespace our {
                 }
             }
         }
+    }
+
+    glm::vec3 Entity::getWorldPosition() const {
+        return {getLocalToWorldMatrix() * glm::vec4(0,0,0,1) };
     }
 
 }
