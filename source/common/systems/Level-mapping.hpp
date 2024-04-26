@@ -15,15 +15,9 @@
 #include <queue>
 #include <iostream>
 
-#define EPSILON 1e-2
 #define PAIMON_TO_BLOCK_OFFSET 1.0f
 #define PAIMON_TO_BLOCK_DIST   1.2f
 #define UP_TO_UP_ALIGNMENT     0.999f
-
-#define DIRECTION_ALIGNMENT    0.95f
-
-#define BLOCK_MAX_DISTANCE     2.01f
-#define BLOCK_MIN_DISTANCE     1.99000f
 
 #define TYPE2_BLOCK_MAX_DISTANCE    0.010
 #define TYPE2_DIRECTION_ALIGNMENT   0.999
