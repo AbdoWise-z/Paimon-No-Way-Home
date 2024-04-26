@@ -79,7 +79,7 @@ class Playstate: public our::State {
         }
         if(keyboard.justPressed(GLFW_KEY_T)){
             // If the escape  key is pressed in this frame, go to the play state
-            SoundEngine->play2D("assets/sounds/bleep.mp3", true);
+            SoundEngine->play2D("assets/sounds/bleep.mp3", false);
         }
     }
 
