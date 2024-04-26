@@ -8,11 +8,13 @@
 namespace our {
     void ConeLight::deserialize(const nlohmann::json &data) {
         if(!data.is_object()) return;
-        intensity = data.value("intensity", intensity);
-        direction = data.value("direction", direction);
-        color     = data.value("color", color);
-        smoothing = data.value("smoothing", smoothing);
-        range     = data.value("range", range);
-        lightDecay = data.value("decay" , lightDecay);
+        intensity        = data.value("intensity", intensity);
+        direction        = data.value("direction", direction);
+        ambientColor     = data.value("ambientColor", ambientColor);
+        specularColor    = data.value("specularColor", specularColor);
+        diffuseColor     = data.value("diffuseColor", diffuseColor);
+        smoothing        = data.value("smoothing", smoothing);
+        range            = data.value("range", range);
+        attenuation      = data.value("attenuation", attenuation);
     }
 } // our

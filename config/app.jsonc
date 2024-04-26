@@ -13,7 +13,7 @@
         "renderer":{
             "sky": "assets/textures/sky.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag",
-            "areaLight": [0.4,0.4,0.4]
+            "areaLight": [0.1,0.1,0.1]
         },
         "assets":{
             "shaders":{
@@ -466,35 +466,29 @@
                     },
 
                     {
-                        "type": "Spot Light",
-                        "color": [1 ,1 ,1],
-                        "intensity": 1
-                    },
-
-                    {
                         "type": "Cone Light",
                         "range": [0.7 , 1],
                         "direction": [0 , 0.4 , -1],
-                        "color": [1 ,0 ,0],
+                        "diffuseColor": [1 ,0 ,0],
                         "smoothing": 2,
-                        "intensity": 0
+                        "intensity": 1
                     },
                     {
                         "type": "Cone Light",
                         "range": [0.7 , 1],
                         "direction": [-0.346 , -0.2 , -1],
-                        "color": [0 ,1 ,0],
+                        "diffuseColor": [0 ,1 ,0],
                         "smoothing": 2,
-                        "intensity": 0
+                        "intensity": 1
 
                     },
                     {
                         "type": "Cone Light",
                         "range": [0.7 , 1],
                         "direction": [0.346 , -0.2 , -1],
-                        "color": [0 ,0 ,1],
+                        "diffuseColor": [0 ,0 ,1],
                         "smoothing": 2,
-                        "intensity": 0
+                        "intensity": 1
                     }
                 ],
                 "children": [
@@ -588,7 +582,7 @@
                         "type": "Directional Light",
                         "intensity": 0.5,
                         "direction": [-1 , -1 , -1],
-                        "color": [ 1, 1, 1]
+                        "diffuseColor": [ 1, 1, 1]
                     }
                 ]
             },
@@ -915,23 +909,6 @@
                         "mesh": "cubes",
                         "shapeID" : 0,
                         "material": "sphere"
-                    }
-                ]
-            },
-
-            {
-                "position": [4, 8, 0],
-                "rotation": [0, 0, 0],
-                "scale": [2, 2, 2],
-                "components": [
-                    {
-                        "type": "Cone Light",
-                        "range": [0.7 , 1],
-                        "direction": [0 , 1 , 0],
-                        "color": [0 ,0 ,1],
-                        "smoothing": 2,
-                        "intensity": 2,
-                        "decay": 1
                     }
                 ]
             }

@@ -8,8 +8,10 @@
 namespace our {
     void SpotLight::deserialize(const nlohmann::json &data) {
         if(!data.is_object()) return;
-        intensity = data.value("intensity", intensity);
-        color     = data.value("color", color);
-        lightDecay = data.value("decay" , lightDecay);
+        intensity        = data.value("intensity", intensity);
+        ambientColor     = data.value("ambientColor", ambientColor);
+        specularColor    = data.value("specularColor", specularColor);
+        diffuseColor     = data.value("diffuseColor", diffuseColor);
+        attenuation      = data.value("attenuation", attenuation);
     }
 } // our

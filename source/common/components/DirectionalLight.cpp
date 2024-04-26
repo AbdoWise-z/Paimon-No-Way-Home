@@ -8,8 +8,10 @@
 namespace our {
     void DirectionalLight::deserialize(const nlohmann::json &data) {
         if(!data.is_object()) return;
-        intensity = data.value("intensity", intensity);
-        direction = data.value("direction", direction);
-        color     = data.value("color", color);
+        intensity        = data.value("intensity", intensity);
+        direction        = data.value("direction", direction);
+        ambientColor     = data.value("ambientColor", ambientColor);
+        specularColor    = data.value("specularColor", specularColor);
+        diffuseColor     = data.value("diffuseColor", diffuseColor);
     }
 } // our

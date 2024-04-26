@@ -12,9 +12,11 @@ namespace our {
 
     class DirectionalLight : public Component {
     public:
-        glm::vec3 direction = glm::vec3(0,1,0);
         float intensity = 1;
-        glm::vec3 color = glm::vec3(1,1,1);
+        glm::vec3 ambientColor = glm::vec3(0,0,0);
+        glm::vec3 diffuseColor = glm::vec3(1,1,1);
+        glm::vec3 specularColor = glm::vec3(1,1,1);
+        glm::vec3 direction = glm::vec3(0,0,-1);
 
         // The ID of this component type is "DirectionalLight"
         static std::string getID() { return "Directional Light"; }

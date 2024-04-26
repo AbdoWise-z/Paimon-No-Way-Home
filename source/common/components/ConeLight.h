@@ -14,15 +14,17 @@ namespace our {
     class ConeLight : public Component {
     public:
         float intensity = 1;
-        glm::vec3 color = glm::vec3(1,1,1);
+        glm::vec3 ambientColor = glm::vec3(0,0,0);
+        glm::vec3 diffuseColor = glm::vec3(1,1,1);
+        glm::vec3 specularColor = glm::vec3(1,1,1);
         glm::vec3 direction = glm::vec3(0,0,-1);
         glm::vec2 range = glm::vec2(0.5,1);
+        glm::vec3 attenuation = glm::vec3(1,0,0);
         int smoothing = 0;
 
         //used by the renderer
         glm::vec3 worldPosition;
         glm::vec3 worldDirection;
-        Decay lightDecay;
 
         // The ID of this component type is "ConeLight"
         static std::string getID() { return "Cone Light"; }
