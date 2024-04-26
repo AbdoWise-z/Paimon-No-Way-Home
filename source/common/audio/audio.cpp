@@ -1,31 +1,23 @@
 #include "audio.hpp"
 #include <iostream>
 #include<windows.h>
-#include <Mmsystem.h>
 //these two headers are already included in the <Windows.h> header
 #pragma comment(lib, "Winmm.lib")
 namespace our {
     AudioPlayer::AudioPlayer() : m_isPlaying(false),m_volumeLevel(100) {}
 
-    bool AudioPlayer::load(const std::string &filePath) {
+    bool AudioPlayer::load(const std::string& filePath) {
         // Open the audio file with an alias name
-        if (mciSendString(("open \"" + filePath + "\" type mpegvideo alias mp3").c_str(), NULL, 0, NULL) != 0) {
+        if (mciSendString(
+                ("open \"" + filePath + "\" type mpegvideo alias mp3").c_str(),
+                NULL,
+                0,
+                NULL
+                ) != 0) {
             std::cerr << "Failed to open audio file" << std::endl;
             return false;
         }
-        return true;
-    }
-    bool AudioPlayer::load(const std::string& filePath, int volumeLevel) {
-        // Open the audio file with an alias name
-        if (mciSendString(("open \"" + filePath + "\" type mpegvideo alias mp3").c_str(), NULL, 0, NULL) != 0) {
-            std::cerr << "Failed to open audio file" << std::endl;
-            return false;
-        }
-        // Set the volume level
-        if (!setVolume(volumeLevel)) {
-            std::cerr << "Failed to set volume level" << std::endl;
-            return false;
-        }
+
         return true;
     }
     void AudioPlayer::play(bool loop) {
@@ -68,5 +60,11 @@ namespace our {
     AudioPlayer::~AudioPlayer() {
         // Close the audio file
         mciSendString("close mp3", NULL, 0, NULL);
+    }
+
+    void AudioPlayer::deserialize(const nlohmann::json& data) {
+        if (!data.is_object()) return;
+        load(data.value("path" , "no path"));
+        setVolume(data.value("volume" , 100));
     }
 }

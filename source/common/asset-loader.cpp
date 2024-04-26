@@ -76,20 +76,10 @@ namespace our {
     template<>
     void AssetLoader<AudioPlayer>::deserialize(const nlohmann::json& data) {
         if(data.is_object()){
-            auto sounds = data.find("sounds");
-            auto volumes = data.find("volume");
-                for(auto& [name, desc] : sounds->items()) {
-                    auto path = desc.get<std::string>();
-                    auto volume = volumes->find(name);
-                    if (volume != volumes->end() && volume->is_number_integer()) {
-                        int volumeLevel = volume->get<int>();
-                        auto audio = new AudioPlayer();
-                        audio->load(path);
-                        std::printf("%d",volumeLevel);
-                        audio->setVolume(volumeLevel);
-                        assets[name] = audio;
-                    }
-
+            for(auto& [name, desc] : data.items()){
+                auto* player = new AudioPlayer();
+                assets[name] = player;
+                player->deserialize(desc);
             }
         }
     };

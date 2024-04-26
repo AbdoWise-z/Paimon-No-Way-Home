@@ -68,13 +68,14 @@
                 "ayaka": "assets/models/ayaka.obj"
             },
             "audio":{
-                "volume":{
-                    "music": 50,
-                    "clicksound": 100
-                    },
-                "sounds":{
-                    "music": "assets/sounds/breakout.mp3",
-                    "clicksound": "assets/sounds/breakout.mp3"
+                "music": {
+                    "path": "assets/sounds/breakout.mp3",
+                    "volume": 50
+                },
+
+                "clicksound": {
+                    "path": "assets/sounds/breakout.mp3",
+                    "volume": 100
                 }
             },
             "samplers":{
@@ -540,8 +541,7 @@
                     "texture": "ayaka5",
                     "sampler": "default"
                 }
-            },
-            "audio": {}
+            }
         },
         "world":[
             {
