@@ -11,6 +11,7 @@
 #include "systems/Level-mapping.hpp"
 #include "systems/orbital-camera-controller.hpp"
 #include "systems/paimon-movement.hpp"
+#include "audio/audio.hpp"
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -35,6 +36,7 @@ class Playstate: public our::State {
         if(config.contains("world")){
             world.deserialize(config["world"]);
         }
+
         // We initialize the camera controller system since it needs a pointer to the app
         cameraController.enter(getApp());
         // Then we initialize the renderer
@@ -63,6 +65,10 @@ class Playstate: public our::State {
         if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
+        }
+        if(keyboard.justPressed(GLFW_KEY_F)){
+            // If the escape  key is pressed in this frame, go to the play state
+            our::AssetLoader<our::AudioPlayer>::get("music")->play();
         }
     }
 
