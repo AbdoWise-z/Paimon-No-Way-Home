@@ -27,45 +27,23 @@
 
 #define TYPE2_BLOCK_MAX_DISTANCE    0.010
 #define TYPE2_DIRECTION_ALIGNMENT   0.999
+#define BLOCK_WIDTH            1.0f
 
 #define PUSH(i, k) if (k.first >= 0) {groundMap[i].push_back(k); if (!visitedBlocks[k.first]) next.push(k.first);}
 
 namespace our{
-    typedef std::pair<int, int> link;
-
-    struct GroundBlock{
-        glm::vec3 position;
-        glm::vec3 up;
-        Entity* et;
-        Ground* ground;
-    };
-
-    template<typename T>
-    struct PathTreeNode{
-        PathTreeNode* parent{};
-        std::vector<PathTreeNode*> children;
-        T value{};
-    };
-
-    struct RoutePart {
-        int blockIndex;
-        glm::vec3 fakePosition;
-        Ground* ground;
-    };
-
-    typedef std::unordered_map<int , std::vector<std::pair<int,glm::vec3>>> GroundLinks;
 
     class LevelMapping {
     private:
 
-        inline int findBlockNear(glm::vec3& paimon, glm::vec3& paimonUp, std::vector<bool>& visited) const{
+        [[nodiscard]] inline int findBlockNear(const glm::vec3& paimonPos,const glm::vec3& paimonUp,const std::vector<bool>& visited) const{
             for (int i = 0;i < blocks.size();i++){
                 if (visited[i]) continue;
 
                 auto block = blocks[i];
                 if (glm::dot(paimonUp, block.up) < UP_TO_UP_ALIGNMENT) continue;
 
-                auto dis = block.position - paimon + paimonUp * PAIMON_TO_BLOCK_OFFSET;
+                auto dis = block.position - paimonPos + paimonUp * PAIMON_TO_BLOCK_OFFSET;
                 if (glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST){ //a near block
                     return i;
                 }
@@ -98,6 +76,7 @@ namespace our{
                         ret = i;
                         mDepth = depth;
                         block_position = P1;
+                        block_position.z = glm::max(P1.z , P0.z);
                     }
                 }
             }
@@ -204,7 +183,30 @@ namespace our{
             return glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST;
         }
 
+        inline int getPaimonInitialPosition(const glm::vec3& pos, const glm::vec3& up, std::vector<bool>& visited){
+            int initial;
+            //add the initial block
+            if (paimon->ground == nullptr) {
+                initial = findBlockNear(
+                        pos,
+                        up,
+                        visited
+                );
+                if (initial == -1) return -1;
 
+                paimon->ground = blocks[initial].ground;
+            }else{
+                initial = -1;
+                for (int i = 0;i < blocks.size();i++){
+                    if (blocks[i].ground == paimon->ground){
+                        initial = i;
+                        break;
+                    }
+                }
+            }
+
+            return initial;
+        }
 
         std::vector<GroundBlock> blocks;
         GroundLinks groundMap;
@@ -214,13 +216,29 @@ namespace our{
         Paimon* paimon{};
         CameraComponent* camera{};
         Entity* marker{};
+        World* world{};
 
         bool enableVisualIllusions = true; //ignore the y-axis when doing calculations
 
-        void init(Application* a){
+        void init(Application* a, World* mWorld){
             this->app = a;
+            this->world = mWorld;
+            update();
         }
 
+        inline glm::vec3 getBlockPosition(Ground* g){
+            if (g == nullptr){
+                throw "Ground can't be null";
+            }
+
+            auto PV = camera->getViewMatrix();
+            glm::vec3 pos       = glm::vec3(
+                    PV * g->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0 , 0 , 0 , 1.0)
+            );
+            return pos;
+        }
+        // block_pos in camera space
         float getPaimonDistanceToGround(glm::vec3 block_pos){
             auto PV = camera->getViewMatrix();
             glm::vec3 paimonUp       = glm::vec3(
@@ -239,8 +257,31 @@ namespace our{
             return glm::length(dis);
         }
 
+        float getPaimonDistanceToGround2D(glm::vec3 block_pos){
+            auto PV = camera->getViewMatrix();
+            glm::vec3 paimonUp       = glm::vec3(
+                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0 , 1 , 0 , 0.0)
+            );
+
+            paimonUp = glm::normalize(paimonUp);
+
+            glm::vec3 paimonPos       = glm::vec3(
+                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
+                    glm::vec4(0 , 0 , 0 , 1.0)
+            );
+
+            paimonPos.z = 0;
+            block_pos.z = 0;
+            paimonUp.z  = 0;
+
+            auto dis = block_pos - paimonPos + paimonUp * PAIMON_TO_BLOCK_OFFSET;
+            return glm::length(dis);
+        }
+
+
         std::vector<RoutePart> findRoute(Ground* target){
-            if (target == nullptr) return std::vector<RoutePart>();
+            if (target == nullptr) return {};
             auto PV = camera->getViewMatrix();
 
             glm::vec3 paimonUp       = glm::vec3(
@@ -260,15 +301,11 @@ namespace our{
             std::vector<bool> visited;
             for (auto k : blocks) visited.push_back(false);
 
-            auto initial = findBlockNear(
-                    paimonPosition ,
-                    paimonViewUp ,
-                    visited
-            );
-
-            if (blocks[initial].ground == target) return {};
+            int initial = getPaimonInitialPosition(paimonPosition, paimonViewUp, visited);
 
             if (initial == -1) return {};
+            if (blocks[initial].ground == target) return {};
+
 
             visited.clear();
             for (auto k : blocks) visited.push_back(false);
@@ -326,7 +363,7 @@ namespace our{
                 RoutePart p = {
                         path[i].first,
                         path[i].second,
-                        blocks[i].ground
+                        blocks[path[i].first].ground
                 };
                 route.emplace_back(p);
             }
@@ -390,7 +427,7 @@ namespace our{
             return blocks;
         }
 
-        void update(World *world, float deltaTime) {
+        void update() {
             std::vector<Ground*> ground_blocks;
             std::vector<bool> visitedBlocks;
 
@@ -454,12 +491,7 @@ namespace our{
 
 
             std::queue<int> next;
-            //add the initial block
-            auto initial = findBlockNear(
-                    paimonPosition ,
-                    paimonViewUp ,
-                    visitedBlocks
-                    );
+            int initial = getPaimonInitialPosition(paimonPosition, paimonViewUp, visitedBlocks);
 
             if (initial >= 0)
                 next.push(initial);
@@ -486,17 +518,17 @@ namespace our{
                 PUSH(index , b);
             }
 
-//            auto it = groundMap.begin();
-//            while (it != groundMap.end()){
-//                ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
-//                it++;
-//            }
-//
-//            //try to find route to the last block
-//            auto test = findRoute(ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y));
-//            for (auto k : test){
-//                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
-//            }
+            auto it = groundMap.begin();
+            while (it != groundMap.end()){
+                ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
+                it++;
+            }
+
+            //try to find route to the last block
+            auto test = findRoute(ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y));
+            for (auto k : test){
+                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
+            }
         }
     };
 }

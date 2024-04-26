@@ -40,7 +40,7 @@ class Playstate: public our::State {
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
-        levelMapping.init(getApp());
+        levelMapping.init(getApp() , &world);
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
     }
@@ -50,7 +50,7 @@ class Playstate: public our::State {
         movementSystem.update(&world, (float)deltaTime);
         cameraController.update(&world, (float)deltaTime);
         paimonIdleSystem.update(&world, (float)deltaTime);
-        levelMapping.update(&world , (float)deltaTime);
+        //levelMapping.update();
         orbitalCameraControllerSystem.update(&world , (float) deltaTime);
         paimonMovement.update(&world , &levelMapping, (float) deltaTime);
 
