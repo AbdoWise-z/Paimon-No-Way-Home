@@ -83,106 +83,6 @@ namespace our{
             return {ret , block_position};
         }
 
-        [[nodiscard]] inline std::pair<int,glm::vec3> findBlockAlongDirection(
-                const glm::vec3& direction,
-                const glm::vec3& position,
-                const glm::vec3& up
-                ) const{
-
-            int res = -1;
-            float dFromCam = 1e10;
-            glm::vec3 block_position;
-
-            for (int i = 0;i < blocks.size();i++){
-                auto block = blocks[i];
-
-                if (glm::dot(block.up , up) < UP_TO_UP_ALIGNMENT) continue;
-
-                auto P0 = block.position;
-                auto P1 = position;
-                auto pFromCam = abs(P0.z); //distance from cam
-
-                auto dis = P0 - P1;
-                auto distance = glm::dot(dis , dis);
-
-                if (distance == 0) continue; // self
-
-                auto directionAlignment = glm::dot(glm::normalize(dis) , glm::normalize(direction));
-                distance = glm::sqrt(distance);
-
-                if ((directionAlignment > DIRECTION_ALIGNMENT) &&
-                    (distance >= BLOCK_MIN_DISTANCE) &&
-                    (distance <= BLOCK_MAX_DISTANCE) &&
-                    (pFromCam <= dFromCam)
-                        ){ //a near block
-
-                    res = i;
-                    dFromCam = pFromCam;
-                    block_position = P0;
-                    continue;
-                }
-
-                if (enableVisualIllusions){
-                    /*
-                     * L0 = P0 + cam_dir * S0
-                     * L1 = P1 + dir     * S1
-                     *
-                     * X0 = X1 -> cam_dir.x * S0 - dir.x * S1 = P0.x - P1.x
-                     * Y0 = Y1 -> cam_dir.y * S0 - dir.y * S1 = P0.y - P1.y
-                     *
-                     * solve for S0 , S1
-                     * sub for z to check
-                     *
-                     * [cx dx  ppx]     [cx    dx                  ppx                 ]
-                     * [cy dy  ppy] --> [0     dy - dx * cy / cx   ppy - ppx * cy / cx ]
-                     *
-                     * S1 = A0 / A1
-                     * S0 = (ppx - dx * A0 / A1) / cx
-                     *
-                     * but we actually only have cam_dir.z
-                     * so the equations are much simpler
-                     * */
-
-                    float s1, s0 = 0;
-                    if (abs(direction.x) > 0){
-                        s1 = (P0.x - P1.x) / direction.x;
-                        s0 = (P1.z + direction.z * s1 - P0.z);
-                    } else {
-                        s1 = (P0.y - P1.y) / direction.y;
-                        s0 = (P1.z + direction.z * s1 - P0.z);
-                    }
-
-                    P0 = P0 + glm::vec3(0 , 0 , 1) * s0;
-
-                    dis = P0 - P1;
-
-                    distance = glm::dot(dis , dis);
-                    if (distance == 0) continue; // self
-                    directionAlignment = glm::dot(glm::normalize(dis) , glm::normalize(direction));
-                    distance = glm::sqrt(distance);
-
-                    if ((directionAlignment > DIRECTION_ALIGNMENT) &&
-                        (distance >= BLOCK_MIN_DISTANCE) &&
-                        (distance <= BLOCK_MAX_DISTANCE) &&
-                        (pFromCam <= dFromCam)
-                            ) {
-                        res = i;
-                        dFromCam = pFromCam;
-                        block_position = P0;
-                    }
-                }
-            }
-
-            return {res , block_position};
-        }
-
-        inline bool canStand(glm::vec3& paimon, glm::vec3& ground , glm::vec3& paimonUp, glm::vec3& groundUp) const{
-            if (glm::dot(groundUp , paimonUp) < UP_TO_UP_ALIGNMENT) return false;
-            auto dis = ground - paimon + paimonUp * PAIMON_TO_BLOCK_OFFSET;
-            if (enableVisualIllusions) dis.z = 0;
-            return glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST;
-        }
-
         inline int getPaimonInitialPosition(const glm::vec3& pos, const glm::vec3& up, std::vector<bool>& visited){
             int initial;
             //add the initial block
@@ -217,8 +117,6 @@ namespace our{
         CameraComponent* camera{};
         Entity* marker{};
         World* world{};
-
-        bool enableVisualIllusions = true; //ignore the y-axis when doing calculations
 
         void init(Application* a, World* mWorld){
             this->app = a;

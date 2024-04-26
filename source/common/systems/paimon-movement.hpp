@@ -18,9 +18,9 @@ namespace our {
         glm::vec3 nextBlockPosition;
         bool returnToBlockCenter = false;
 
-        inline void update_angle(Paimon* paimon, CameraComponent* camera, glm::vec3 diff , float deltaTime){
+        static inline void update_angle(Paimon* paimon, CameraComponent* camera, glm::vec3 diff , float deltaTime){
             auto diff3D = glm::inverse(camera->getViewMatrix()) * glm::vec4(diff, 0.0);
-            std::cout << "X: " << diff3D.x << " , Y: " << diff3D.y << " , Z: " << diff3D.z << std::endl;
+            // std::cout << "X: " << diff3D.x << " , Y: " << diff3D.y << " , Z: " << diff3D.z << std::endl;
             diff3D.y = 0;
             diff3D = glm::normalize(diff3D);
             auto dx = abs(diff3D.x);
@@ -109,7 +109,7 @@ namespace our {
                     if (route.size() > 1){
                         nextBlock = route[1].ground;
                         nextBlockPosition = route[1].fakePosition;
-                        std::cout << "Next block end: " << route[1].blockIndex << std::endl;
+                        //std::cout << "Next block end: " << route[1].blockIndex << std::endl;
                     } else {
                         currentTarget = nullptr;
                         nextBlock = nullptr;
@@ -123,7 +123,7 @@ namespace our {
                         nextBlock = nullptr;
                         returnToBlockCenter = true;
                         nextBlockPosition = myBlock;
-                        std::cout << "Return to center" << std::endl;
+                        // std::cout << "Return to center" << std::endl;
                         return;
                     }
 

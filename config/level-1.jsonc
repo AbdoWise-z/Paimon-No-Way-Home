@@ -248,7 +248,7 @@
             "type": "Directional Light",
             "intensity": 0.4,
             "direction": [-1 , -1 , -0.5],
-            "color": [1, 1, 1]
+            "diffuseColor": [1, 1, 1]
           }
         ]
       },
@@ -882,9 +882,9 @@
           },
           {
             "type": "Spot Light",
-            "color": [1, 1, 0],
+            "diffuseColor": [1, 1, 0],
             "intensity": 1,
-            "decay": 1
+            "attenuation": [1,0,0]
           }
         ]
       },
@@ -944,9 +944,9 @@
             "components": [
               {
                 "type": "Spot Light",
-                "color": [1, 0, 0],
+                "diffuseColor": [1, 0, 0],
                 "intensity": 10,
-                "decay": 1
+                "attenuation": [1,0,0]
               }
             ]
           }
