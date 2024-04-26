@@ -89,14 +89,14 @@ namespace our {
                 auto pos2 = nextBlockPosition + paimonUp * PAIMON_TO_BLOCK_OFFSET;
                 auto diff = pos2 - pos1;
                 diff.z = 0;
-                pos1.z = pos2.z + PAIMON_TO_BLOCK_OFFSET;
+                pos1.z = glm::max(pos1.z , pos2.z + PAIMON_TO_BLOCK_OFFSET);
                 pos1 += glm::normalize(diff) * paimon->speed * deltaTime;
                 paimon->getOwner()->localTransform.position = glm::vec3(glm::inverse(camera->getViewMatrix()) * glm::vec4(pos1 , 1.0));
                 update_angle(paimon, camera, diff , deltaTime);
-
                 auto dis = level->getPaimonDistanceToGround2D(nextBlockPosition);
                 if (dis <= BLOCK_REACH_MAX_DIFF){
                     returnToBlockCenter = false;
+                    paimon->getOwner()->localTransform.position = glm::vec3(glm::inverse(camera->getViewMatrix()) * glm::vec4(pos2 , 1.0));
                 }
             }
 
