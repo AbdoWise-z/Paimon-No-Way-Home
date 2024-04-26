@@ -1,0 +1,966 @@
+{
+  "start-scene": "play",
+  "window":
+  {
+    "title":"Default Game Window",
+    "size":{
+      "width":1280,
+      "height":720
+    },
+    "fullscreen": false
+  },
+  "scene": {
+    "renderer":{
+      "sky": "assets/textures/wallpaper3.jpg",
+      "postprocess": "assets/shaders/postprocess/vignette.frag",
+      "areaLight": [1, 1, 1]
+    },
+    "assets":{
+      "shaders":{
+        "tinted":{
+          "vs":"assets/shaders/tinted.vert",
+          "fs":"assets/shaders/tinted.frag"
+        },
+        "textured":{
+          "vs":"assets/shaders/textured.vert",
+          "fs":"assets/shaders/textured.frag"
+        },
+        "default":{
+          "vs":"assets/shaders/default.vert",
+          "fs":"assets/shaders/default.frag"
+        }
+      },
+      "textures":{
+        "paimon_cape": "assets/textures/paimon/cape.jpg",
+        "paimon_face": "assets/textures/paimon/face.jpg",
+        "paimon_hair": "assets/textures/paimon/hair.jpg",
+        "paimon_shirt": "assets/textures/paimon/shirt.jpg",
+
+        "arlecchino_hair" : "assets/textures/arlecchino/hair.png",
+        "arlecchino_hair_n" : "assets/textures/arlecchino/hair_n.png",
+        "arlecchino_body" : "assets/textures/arlecchino/body.png",
+        "arlecchino_body_n" : "assets/textures/arlecchino/body_n.png",
+        "arlecchino_face" : "assets/textures/arlecchino/face.png",
+
+        "mora": "assets/textures/mora.png"
+      },
+      "meshes":{
+        "ground": "assets/models/cube.obj",
+        "paimon": "assets/models/paimon.obj",
+        "mora": "assets/models/mora.obj",
+        "arlecchino" : "assets/models/arlecchino.obj"
+      },
+      "samplers":{
+        "default":{}
+      },"audio":{
+        "volume":{
+          "music": 50,
+          "clicksound": 100
+        },
+        "sounds":{
+          "music": "assets/sounds/breakout.mp3",
+          "clicksound": "assets/sounds/bleep.mp3"
+        }
+      },
+      "materials":{
+        "paimon_hair":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_hair",
+          "sampler": "default"
+        },
+        "paimon_cape":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_cape",
+          "sampler": "default"
+        },
+        "paimon_face":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_face",
+          "sampler": "default"
+        },
+        "paimon_shirt":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_shirt",
+          "sampler": "default"
+        },
+        "ground":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [0.45, 0.4, 0.5, 1],
+          "specularReflectivity": [0.2, 0.2, 0.2]
+        },
+
+        "mora":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "mora",
+          "sampler": "default"
+        },
+        "arlecchino_body":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_body",
+          "sampler": "default"
+        },
+        "arlecchino_body_n":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_body_n",
+          "sampler": "default"
+        },
+        "arlecchino_hair":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_hair",
+          "sampler": "default"
+        },
+        "arlecchino_hair_n":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_hair_n",
+          "sampler": "default"
+        },
+        "arlecchino_face":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_face",
+          "sampler": "default"
+        }
+      }
+    },
+    "world":[
+      {
+        "name": "Camera",
+        "position": [-15, 30, 20],
+        "rotation": [-45 , -45, 0],
+
+        "components": [
+          {
+            "type": "Camera",
+            "cameraType": "orthographic",
+            "orthoHeight": 20,
+            "far": 10000,
+            "near": 0.001
+          },
+          {
+            "type": "Orbital Camera Component"
+          }
+        ]
+      },
+
+      {
+        "name": "Light",
+        "components": [
+          {
+            "type": "Directional Light",
+            "intensity": 0.4,
+            "direction": [-1 , -1 , -0.5],
+            "diffuseColor": [1, 1, 1]
+          }
+        ]
+      },
+
+      {
+        "name": "Level",
+        "position": [0, 0, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1],
+        "children": [
+          {
+            "name": "marker",
+            "position": [0, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              }
+            ]
+          },
+          {
+            "name": "g0",
+            "position": [0, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [4, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+
+          {
+            "name": "g2",
+            "position": [4, 0, 2],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [4, 0, 4],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [4, 0, 6],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [6, 0, 6],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [8, 0, 6],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [8, 0, 8],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [8, 0, 10],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [8, 0, 12],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [8, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [10, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 12],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 10],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [10, -2, 8],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 8],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 6],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 4],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 2],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+
+          {
+            "name": "g2",
+            "position": [6, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [4, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [2, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [0, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "position": [2, 0, 2],
+            "children": [
+              {
+                "name": "g1",
+                "position": [0, 0, -2],
+                "components": [
+                  {
+                    "type": "Mesh Renderer",
+                    "mesh": "ground",
+                    "material": "ground",
+                    "copy": true
+                  },
+                  {
+                    "type": "Ground"
+                  }
+                ]
+              }
+            ],
+            "components": [
+              {
+                "type": "Movement",
+                "angularVelocity": [0 , 0 , 0]
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [-2, 0, 14],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "testing",
+            "position": [6, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [10, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+          {
+            "name": "testing_target",
+            "position": [8, -2, -2],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          },
+
+          {
+            "name": "g2",
+            "position": [12, 0, 0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ground",
+                "material": "ground",
+                "copy": true
+              },
+              {
+                "type": "Ground"
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        "name": "Paimon",
+        "position": [0 , 1, 0],
+        "scale": [0.2, 0.2, 0.2],
+        "children" : [
+          {
+            "rotation": [0 , 90 , 0],
+            "children": [
+              {
+                "components": [
+                  {
+                    "tag" : "Face-Parts",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 0,
+                    "material": "paimon_face"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Eyes",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 1,
+                    "material": "paimon_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Face-Skin",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 2,
+                    "material": "paimon_face"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Metal-Parts + Legs",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 3,
+                    "material": "paimon_face"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Cloth",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 4,
+                    "material": "paimon_shirt"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Hair",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 5,
+                    "material": "paimon_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Cape",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 6,
+                    "material": "paimon_cape"
+                  }
+                ]
+              }
+            ],
+            "components" : [
+              {
+                "type": "Paimon Idle",
+                "top": [0, 1, 0],
+                "forward": [0 , 0 , 1]
+              }
+            ]
+          }
+        ],
+        "components": [
+          {
+            "type": "Paimon"
+          }
+        ]
+      },
+      {
+        "name": "Mora",
+        "position": [4, 2, 0],
+        "scale": [0.003, 0.003, 0.003],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "mora",
+            "material": "mora"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity" : [0, 90, 0]
+          },
+          {
+            "type": "Spot Light",
+            "diffuseColor": [1, 1, 0],
+            "intensity": 1,
+            "attenuation": [1,0,0]
+          }
+        ]
+      },
+      {
+        "position": [10 ,1.7 , 0],
+        "rotation": [0, 270, 0],
+        "scale": [0.0005, 0.0005, 0.0005],
+        "name": "Arlecchino",
+        "children": [
+          {
+            "children" : [
+              {
+                "components": [
+                  {
+                    "tag": "Hair & Arms & Shoes",
+                    "type": "Mesh Renderer",
+                    "shapeID": 0,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag": "Legs Rings & Arms Rings",
+                    "type": "Mesh Renderer",
+                    "shapeID": 1,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag": "Body (Torso & Legs)",
+                    "type": "Mesh Renderer",
+                    "shapeID": 2,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_body"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag": "Face",
+                    "type": "Mesh Renderer",
+                    "shapeID": 3,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_face"
+                  }
+                ]
+              }
+            ],
+            "components": [
+              {
+                "type": "Spot Light",
+                "diffuseColor": [1, 0, 0],
+                "intensity": 10,
+                "attenuation": [1,0,0]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

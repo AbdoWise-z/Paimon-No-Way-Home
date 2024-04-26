@@ -12,6 +12,13 @@
 #include "systems/orbital-camera-controller.hpp"
 #include "systems/paimon-movement.hpp"
 #include "audio/audio.hpp"
+#include <irrKlang.h>
+using namespace irrklang;
+
+
+
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+ISoundEngine *SoundEngine = createIrrKlangDevice();
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -68,7 +75,11 @@ class Playstate: public our::State {
         }
         if(keyboard.justPressed(GLFW_KEY_F)){
             // If the escape  key is pressed in this frame, go to the play state
-            our::AssetLoader<our::AudioPlayer>::get("music")->play();
+            SoundEngine->play2D("assets/sounds/breakout.mp3", true);
+        }
+        if(keyboard.justPressed(GLFW_KEY_T)){
+            // If the escape  key is pressed in this frame, go to the play state
+            SoundEngine->play2D("assets/sounds/bleep.mp3", true);
         }
     }
 
