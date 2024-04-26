@@ -142,6 +142,8 @@ void main(){
         }
     }
 
-    vec3 totalLight = (specularLight * material.specularReflectivity) + ((directionalLight + spotLight + coneLight) * material.diffuseReflectivity) + ((areaLight + ambientLight) * material.ambientReflectivity);
+    vec3 totalLight = (specularLight * material.specularReflectivity) +
+                    ((directionalLight + spotLight + coneLight) * material.diffuseReflectivity) +
+                    ((areaLight + ambientLight) * material.ambientReflectivity);
     frag_color = baseColor * vec4(totalLight , 1.0);
 }
