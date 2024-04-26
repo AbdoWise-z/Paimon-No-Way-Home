@@ -8,7 +8,8 @@
 #include "mesh/mesh-utils.hpp"
 #include "material/material.hpp"
 #include "deserialize-utils.hpp"
-
+#include "audio/audio.hpp"
+#include <string>
 namespace our {
 
     // This will load all the shaders defined in "data"
@@ -72,6 +73,27 @@ namespace our {
             }
         }
     };
+    template<>
+    void AssetLoader<AudioPlayer>::deserialize(const nlohmann::json& data) {
+        if(data.is_object()){
+            auto sounds = data.find("sounds");
+            auto volumes = data.find("volume");
+                for(auto& [name, desc] : sounds->items()) {
+                    auto path = desc.get<std::string>();
+                    auto volume = volumes->find(name);
+                    if (volume != volumes->end() && volume->is_number_integer()) {
+                        int volumeLevel = volume->get<int>();
+                        auto audio = new AudioPlayer();
+                        audio->load(path);
+                        std::printf("%d",volumeLevel);
+                        audio->setVolume(volumeLevel);
+                        assets[name] = audio;
+                    }
+
+            }
+        }
+    };
+
 
     // This will load all the materials defined in "data"
     // Material deserialization depends on shaders, textures and samplers
@@ -109,6 +131,8 @@ namespace our {
             AssetLoader<Mesh>::deserialize(assetData["meshes"]);
         if(assetData.contains("materials"))
             AssetLoader<Material>::deserialize(assetData["materials"]);
+        if(assetData.contains("audio"))
+            AssetLoader<AudioPlayer>::deserialize(assetData["audio"]);
     }
 
     void clearAllAssets(){
@@ -117,6 +141,7 @@ namespace our {
         AssetLoader<Sampler>::clear();
         AssetLoader<Mesh>::clear();
         AssetLoader<Material>::clear();
+        AssetLoader<AudioPlayer>::clear();
     }
 
 }
