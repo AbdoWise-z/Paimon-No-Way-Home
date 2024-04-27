@@ -12,6 +12,7 @@
 #include "systems/orbital-camera-controller.hpp"
 #include "systems/paimon-movement.hpp"
 #include "audio/audio.hpp"
+#include "systems/state-system.hpp"
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -24,6 +25,7 @@ class Playstate: public our::State {
     our::LevelMapping levelMapping;
     our::OrbitalCameraControllerSystem orbitalCameraControllerSystem;
     our::PaimonMovement paimonMovement;
+    our::StateSystem stateSystem;
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -39,16 +41,23 @@ class Playstate: public our::State {
 
         // We initialize the camera controller system since it needs a pointer to the app
         cameraController.enter(getApp());
+
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+
+        our::Events::Init(getApp() , &world);
+        stateSystem.init(&world);
         levelMapping.init(getApp() , &world);
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
+
     }
 
     void onDraw(double deltaTime) override {
         // Here, we just run a bunch of systems to control the world logic
+        our::Events::Update((float) deltaTime);
+        stateSystem.update(&world , (float) deltaTime);
         movementSystem.update(&world, (float)deltaTime);
         cameraController.update(&world, (float)deltaTime);
         paimonIdleSystem.update(&world, (float)deltaTime);

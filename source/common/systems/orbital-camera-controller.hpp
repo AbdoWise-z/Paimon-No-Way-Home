@@ -44,7 +44,31 @@ namespace our{
             glm::mat4 rotationMat = glm::yawPitchRoll(rotation.y, rotation.x, rotation.z);
             auto pos = rotationMat * initial;
 
-            camera->getOwner()->localTransform.position = pos * controller->Distance;
+            //calculate where our center point should be
+            glm::vec3 shouldFocus = controller->BasePosition;
+            std::vector<Entity*> targets;
+            auto followVec = controller->follow;
+
+            float div = 0;
+            for(auto entity : world->getEntities()){
+                if (std::count(followVec.begin() , followVec.end() , entity->name)){
+                    div++;
+                    shouldFocus += entity->getWorldPosition();
+                }
+            }
+
+            if (div != 0){
+                shouldFocus = shouldFocus / div;
+            }
+
+            auto diff =  shouldFocus - controller->_currentLocation;
+            float lDiff = glm::length(diff);
+            if (lDiff > 0.001){
+                diff = diff / lDiff * sqrt(lDiff);
+                controller->_currentLocation += diff * deltaTime * controller->speed;
+            }
+
+            camera->getOwner()->localTransform.position = glm::vec3(pos * controller->Distance) + controller->_currentLocation;
             camera->getOwner()->localTransform.rotation = rotation;
 
             if (controller->_switchProgress > 0.0001){
@@ -52,18 +76,19 @@ namespace our{
                 if (controller->_switchProgress < 0) controller->_switchProgress = 0;
             }else{
 
-                if (app->getKeyboard().isPressed(GLFW_KEY_Q)){
-                    controller->_currentPos--;
-                    controller->_switchDirection = -1;
-                    controller->_switchProgress = 1;
-                }
+                if (controller->inputEnabled) {
+                    if (app->getKeyboard().isPressed(GLFW_KEY_Q)) {
+                        controller->_currentPos--;
+                        controller->_switchDirection = -1;
+                        controller->_switchProgress = 1;
+                    }
 
-                if (app->getKeyboard().isPressed(GLFW_KEY_E)){
-                    controller->_currentPos++;
-                    controller->_switchDirection = 1;
-                    controller->_switchProgress = 1;
+                    if (app->getKeyboard().isPressed(GLFW_KEY_E)) {
+                        controller->_currentPos++;
+                        controller->_switchDirection = 1;
+                        controller->_switchProgress = 1;
+                    }
                 }
-
             }
         }
     };

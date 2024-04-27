@@ -7,12 +7,13 @@
 
 #include "Level-mapping.hpp"
 
-#define BLOCK_REACH_MAX_DIFF 0.05
+#define BLOCK_REACH_MAX_DIFF 0.1
 
 namespace our {
     class PaimonMovement {
     private:
         Application* app{};
+        DefaultMaterial* lastTargetMaterial = nullptr;
         Ground* currentTarget;
         Ground* nextBlock;
         glm::vec3 nextBlockPosition;
@@ -66,51 +67,75 @@ namespace our {
             //first we get paimon
             Paimon* paimon = nullptr;
             CameraComponent* camera = nullptr;
-
+            OrbitalCameraComponent* orbitalCameraComponent = nullptr;
             for (auto k : world->getEntities()){
                 if (paimon == nullptr) paimon = k->getComponent<Paimon>();
                 if (camera == nullptr) camera = k->getComponent<CameraComponent>();
+                if (orbitalCameraComponent == nullptr) orbitalCameraComponent = k->getComponent<OrbitalCameraComponent>();
             }
 
 
-            if (!camera || !paimon) return;
+            if (!camera || !paimon || !orbitalCameraComponent) return;
             level->update();
+
+            auto target = level->ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y);
+            if (target != nullptr){ //highlight it
+                auto mat = ((DefaultMaterial*) target->getOwner()->getComponent<MeshRendererComponent>()->material);
+                if (mat != lastTargetMaterial){
+                    if (lastTargetMaterial != nullptr)
+                        lastTargetMaterial->tint /= 2.0f;
+                    lastTargetMaterial = mat;
+                    lastTargetMaterial->tint *= 2.0f;
+                }
+            }else{
+                if (lastTargetMaterial != nullptr){
+                    lastTargetMaterial->tint /= 2.0f;
+                    lastTargetMaterial = nullptr;
+                }
+            }
+
 
             glm::vec3 paimonUp       = glm::vec3(
                     camera->getViewMatrix() * paimon->getOwner()->getLocalToWorldMatrix() *
                     glm::vec4(0 , 1 , 0 , 0.0)
             );
-            paimonUp = glm::normalize(paimonUp);
 
-            auto target = level->ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y);
+            auto camInverse = glm::inverse(camera->getViewMatrix());
+            auto cam        = camera->getViewMatrix();
+
+            paimonUp = glm::normalize(paimonUp);
 
             if (returnToBlockCenter){
                 auto pos1 = glm::vec3(camera->getViewMatrix() * glm::vec4(paimon->getOwner()->localTransform.position , 1.0));
-                auto pos2 = nextBlockPosition + paimonUp * PAIMON_TO_BLOCK_OFFSET;
+                auto pos2 = glm::vec3((cam * glm::vec4(nextBlockPosition , 1.0))) + paimonUp * PAIMON_TO_BLOCK_OFFSET;
                 auto diff = pos2 - pos1;
                 diff.z = 0;
                 pos1.z = glm::max(pos1.z , pos2.z + PAIMON_TO_BLOCK_OFFSET);
                 pos1 += glm::normalize(diff) * paimon->speed * deltaTime;
                 paimon->getOwner()->localTransform.position = glm::vec3(glm::inverse(camera->getViewMatrix()) * glm::vec4(pos1 , 1.0));
                 update_angle(paimon, camera, diff , deltaTime);
-                auto dis = level->getPaimonDistanceToGround2D(nextBlockPosition);
+                auto dis = level->getPaimonDistanceToGround2D(glm::vec3((cam * glm::vec4(nextBlockPosition , 1.0))));
                 if (dis <= BLOCK_REACH_MAX_DIFF){
+                    // std::cout << "Return to Center" << std::endl;
                     returnToBlockCenter = false;
                     paimon->getOwner()->localTransform.position = glm::vec3(glm::inverse(camera->getViewMatrix()) * glm::vec4(pos2 , 1.0));
                 }
             }
 
             if (currentTarget && nextBlock){
-                auto dis = level->getPaimonDistanceToGround2D(nextBlockPosition);
+                auto dis = level->getPaimonDistanceToGround2D(glm::vec3((cam * glm::vec4(nextBlockPosition , 1.0))));
                 if (dis <= BLOCK_REACH_MAX_DIFF){
-                    //block reached
+                    //TODO: this condition should never happen, but I'm keeping it
+                    //      just for case.
 
+                    //block reached
                     auto route = level->findRoute(currentTarget);
                     if (route.size() > 1){
                         nextBlock = route[1].ground;
-                        nextBlockPosition = route[1].fakePosition;
-                        //std::cout << "Next block end: " << route[1].blockIndex << std::endl;
+                        nextBlockPosition =  camInverse * glm::vec4(route[1].fakePosition , 1.0);
                     } else {
+                        std::cout << "Reached end" << std::endl;
+                        paimon->getOwner()->localTransform.position = nextBlockPosition + glm::vec3(0,1,0) * PAIMON_TO_BLOCK_OFFSET;
                         currentTarget = nullptr;
                         nextBlock = nullptr;
                     }
@@ -122,40 +147,40 @@ namespace our {
                         currentTarget = nullptr;
                         nextBlock = nullptr;
                         returnToBlockCenter = true;
-                        nextBlockPosition = myBlock;
-                        // std::cout << "Return to center" << std::endl;
+                        nextBlockPosition = camInverse * glm::vec4(myBlock , 1.0);
                         return;
                     }
 
-                    float distance = level->getPaimonDistanceToGround(myBlock);
+                    float distance = level->getPaimonDistanceToGround2D(myBlock);
                     if (distance >= BLOCK_WIDTH){
+                        our::Events::onPaimonExit(paimon->ground);
                         paimon->ground = nextBlock;
+                        our::Events::onPaimonEnter(paimon->ground);
                         level->update();
                     }
 
-
                     auto pos1 = glm::vec3(camera->getViewMatrix() * glm::vec4(paimon->getOwner()->localTransform.position , 1.0));
-                    auto pos2 = nextBlockPosition + paimonUp * PAIMON_TO_BLOCK_OFFSET;
+                    auto pos2 = glm::vec3((cam * glm::vec4(nextBlockPosition , 1.0))) + paimonUp * PAIMON_TO_BLOCK_OFFSET;
                     auto diff = pos2 - pos1;
                     diff.z = 0;
                     pos1.z = glm::max(myBlock.z , pos2.z) + PAIMON_TO_BLOCK_OFFSET;
                     diff   = glm::normalize(diff);
-                    pos1 += diff * paimon->speed * deltaTime;
+                    pos1  += diff * paimon->speed * deltaTime;
                     paimon->getOwner()->localTransform.position = glm::vec3(glm::inverse(camera->getViewMatrix()) * glm::vec4(pos1 , 1.0));
 
                     update_angle(paimon, camera, diff , deltaTime);
                 }
-
                 return;
             }
 
-
+            orbitalCameraComponent->inputEnabled = true;
             if (app->getMouse().isPressed(0)){ //left click
                 auto route = level->findRoute(target);
                 if (route.size() > 1){
                     currentTarget = target;
                     nextBlock = route[1].ground;
-                    nextBlockPosition = route[1].fakePosition;
+                    nextBlockPosition =  camInverse * glm::vec4(route[1].fakePosition , 1.0);
+                    orbitalCameraComponent->inputEnabled = false;
                 }
             }
         }

@@ -223,6 +223,32 @@
     },
     "world":[
       {
+        "components":[
+          {
+            "type": "Event Controller",
+            "events": [
+              {
+                "trigger": 0,
+                "object": "test_ground",
+                "actions": [
+                  {
+                    "target": "test_block",
+                    "receiverID": "State Animator",
+                    "triggerCount": 1,
+                    "triggerDelay": 0,
+                    "triggerInterval": 0,
+                    "data": {
+                      "inc": 1,
+                      "duration": 0.5
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "name": "Camera",
         "position": [-15, 30, 20],
         "rotation": [-45 , -45, 0],
@@ -236,7 +262,16 @@
             "near": 0.001
           },
           {
-            "type": "Orbital Camera Component"
+            "type": "Orbital Camera Component",
+            "follow": [
+              "Paimon"
+            ],
+            "speed": 2.0,
+            "OrthoZoom": 18,
+            "Distance": 100,
+            "switchSpeed": 0.5,
+            "Divisions": 8,
+            "inputEnabled": true
           }
         ]
       },
@@ -661,7 +696,7 @@
             "position": [2, 0, 2],
             "children": [
               {
-                "name": "g1",
+                "name": "test_ground",
                 "position": [0, 0, -2],
                 "components": [
                   {
@@ -685,7 +720,7 @@
           },
 
           {
-            "name": "g2",
+            "name": "test_block",
             "position": [-2, 0, 14],
             "components": [
               {
@@ -696,6 +731,35 @@
               },
               {
                 "type": "Ground"
+              },
+              {
+                "type": "State Animator",
+                "initialState": 0,
+                "rotation": false,
+                "scale": false,
+
+                "states": [
+                  {
+                    "position": [-2, 0, 14],
+                    "tint": [1,0,0,1]
+                  },
+                  {
+                    "position": [-2, 0, 10],
+                    "tint": [1,1,0,1]
+                  },
+                  {
+                    "position": [-2, 0, 8],
+                    "tint": [1,1,1,1]
+                  },
+                  {
+                    "position": [-2, 0, 6],
+                    "tint": [0,0,1,1]
+                  },
+                  {
+                    "position": [-2, 0, 4],
+                    "tint": [0,1,1,1]
+                  }
+                ]
               }
             ]
           },
