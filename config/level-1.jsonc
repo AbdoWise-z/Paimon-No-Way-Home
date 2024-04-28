@@ -243,6 +243,40 @@
                     }
                   }
                 ]
+              },
+              {
+                "trigger": 0,
+                "object": "test_movement",
+                "actions": [
+                  {
+                    "target": "test_movement",
+                    "receiverID": "State Animator",
+                    "triggerCount": 1,
+                    "triggerDelay": 0.2,
+                    "triggerInterval": 0,
+                    "data": {
+                      "inc": 1,
+                      "duration": 0.5
+                    }
+                  }
+                ]
+              },
+              {
+                "trigger": 1,
+                "object": "test_movement",
+                "actions": [
+                  {
+                    "target": "test_movement",
+                    "receiverID": "State Animator",
+                    "triggerCount": 1,
+                    "triggerDelay": 0.2,
+                    "triggerInterval": 0,
+                    "data": {
+                      "inc": 1,
+                      "duration": 0.5
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -796,7 +830,7 @@
             ]
           },
           {
-            "name": "testing_target",
+            "name": "test_movement",
             "position": [8, -2, -2],
             "components": [
               {
@@ -807,6 +841,22 @@
               },
               {
                 "type": "Ground"
+              },
+              {
+                "type": "State Animator",
+                "initialState": 0,
+                "rotation": false,
+                "scale": false,
+                "tint": false,
+
+                "states": [
+                  {
+                    "position": [8, -2, -2]
+                  },
+                  {
+                    "position": [0, 0 , -2]
+                  }
+                ]
               }
             ]
           },

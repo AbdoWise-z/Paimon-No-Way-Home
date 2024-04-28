@@ -8,6 +8,7 @@
 #include "ecs/world.hpp"
 #include "components/actions/StateAnimator.h"
 #include "components/mesh-renderer.hpp"
+#include "ground-system.hpp"
 
 namespace our{
     class StateSystem {
@@ -53,9 +54,15 @@ namespace our{
                 );
 
                 auto k = state->getOwner();
-                if (state->position) k->localTransform.position = pos;
-                if (state->position) k->localTransform.scale    = scl;
-                if (state->position) k->localTransform.rotation = rot;
+                if (state->position) {
+                    auto diff = k->getWorldPosition();
+                    k->localTransform.position = pos;
+                    diff = k->getWorldPosition() - diff;
+                    auto g = k->getComponent<Ground>();
+                    if (g) our::GroundSystem::onGroundMoved(g , diff);
+                }
+                if (state->scale)    k->localTransform.scale    = scl;
+                if (state->rotation) k->localTransform.rotation = rot;
                 if (state->tint) {
                     auto renderer = k->getComponent<MeshRendererComponent>();
                     if (renderer != nullptr) {

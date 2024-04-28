@@ -143,6 +143,9 @@ set(STATES_SOURCES
         source/common/components/actions/StateAnimator.cpp
         source/common/components/actions/StateAnimator.h
         source/common/systems/state-system.hpp
+        source/common/systems/ground-system.hpp
+        source/common/systems/paimon-movement.cpp
+        source/common/systems/ground-system.cpp
 )
 
 # For each example, we add an executable target
