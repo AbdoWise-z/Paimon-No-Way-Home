@@ -12,6 +12,8 @@
 #include "Paimon.hpp"
 #include "Ground.hpp"
 #include "OrbitalCameraComponent.h"
+#include "event-controller.h"
+#include "components/actions/StateAnimator.h"
 
 namespace our {
 
@@ -43,7 +45,12 @@ namespace our {
             component = entity->addComponent<Ground>();
         } else if (type == OrbitalCameraComponent::getID()){
             component = entity->addComponent<OrbitalCameraComponent>();
+        } else if (type == EventController::getID()){
+            component = entity->addComponent<EventController>();
+        } else if (type == StateAnimator::getID()){
+            component = entity->addComponent<StateAnimator>();
         }
+
         if (component) component->deserialize(data);
     }
 

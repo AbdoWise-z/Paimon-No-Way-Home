@@ -112,6 +112,7 @@ namespace our {
                 if (dynamic_cast<Component*>(k)){
                     delete k;
                     components.remove(k);
+                    break;
                 }
                 it++;
             }
@@ -137,6 +138,7 @@ namespace our {
                 if (k == component){
                     delete k;
                     components.erase(it);
+                    break;
                 }
                 std::advance(it, 1);
             }

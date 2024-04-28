@@ -77,7 +77,7 @@ namespace our {
                         + orthoHeight/2,
                         near,
                         far
-                        );
+                );
                 break;
         }
 

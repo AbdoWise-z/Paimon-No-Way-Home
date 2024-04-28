@@ -13,6 +13,8 @@
 #include "systems/paimon-movement.hpp"
 #include "audio/audio.hpp"
 #include <irrKlang.h>
+#include "systems/state-system.hpp"
+
 using namespace irrklang;
 
 
@@ -31,6 +33,8 @@ class Playstate: public our::State {
     our::LevelMapping levelMapping;
     our::OrbitalCameraControllerSystem orbitalCameraControllerSystem;
     our::PaimonMovement paimonMovement;
+    our::StateSystem stateSystem;
+
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -49,6 +53,8 @@ class Playstate: public our::State {
         // Then we initialize the renderer
         auto size = getApp()->getFrameBufferSize();
         renderer.initialize(size, config["renderer"]);
+        our::Events::Init(getApp() , &world);
+        stateSystem.init(&world);
         levelMapping.init(getApp() , &world);
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
@@ -56,6 +62,8 @@ class Playstate: public our::State {
 
     void onDraw(double deltaTime) override {
         // Here, we just run a bunch of systems to control the world logic
+        our::Events::Update((float) deltaTime);
+        stateSystem.update(&world , (float) deltaTime);
         movementSystem.update(&world, (float)deltaTime);
         cameraController.update(&world, (float)deltaTime);
         paimonIdleSystem.update(&world, (float)deltaTime);

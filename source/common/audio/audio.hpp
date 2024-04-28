@@ -3,24 +3,27 @@
 //
 
 #include <string>
+#include "json/json.hpp"
+
 namespace our {
     class AudioPlayer {
     public:
         AudioPlayer();
-
         ~AudioPlayer();
-        bool load(const std::string& filePath);
-        bool load(const std::string& filePath, int volumeLevel);
+
         void play(bool loop = false);
 
         void stop();
 
-        bool isPlaying() const;
+        [[nodiscard]] bool isPlaying() const;
         bool setVolume(int volumeLevel);
+
+        void deserialize(const nlohmann::json& data);
 
     private:
         bool m_isPlaying;
         int m_volumeLevel;
+        bool load(const std::string& filePath);
     };
 
 }

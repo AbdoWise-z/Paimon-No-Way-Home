@@ -13,7 +13,7 @@
         "renderer":{
             "sky": "assets/textures/sky.jpg",
             "postprocess": "assets/shaders/postprocess/vignette.frag",
-            "areaLight": [0.1,0.1,0.1]
+            "areaLight": [0.8,0.8,0.8]
         },
         "assets":{
             "shaders":{
@@ -47,7 +47,13 @@
                 "arlecchino_hair_n": "assets/textures/arlecchino/hair_n.png",
                 "arlecchino_face": "assets/textures/arlecchino/face.png",
                 "arlecchino_body": "assets/textures/arlecchino/body.png",
-                "arlecchino_body_n": "assets/textures/arlecchino/body_n.png"
+                "arlecchino_body_n": "assets/textures/arlecchino/body_n.png",
+
+                "ayaka1": "assets/textures/ayaka/ayaka1.png",
+                "ayaka2": "assets/textures/ayaka/ayaka2.png",
+                "ayaka3": "assets/textures/ayaka/ayaka3.png",
+                "ayaka4": "assets/textures/ayaka/ayaka4.png",
+                "ayaka5": "assets/textures/ayaka/ayaka5.png"
             },
             "meshes":{
                 "cube": "assets/models/cube.obj",
@@ -58,16 +64,18 @@
                 "paimon": "assets/models/paimon.obj",
                 "arlecchino": "assets/models/arlecchino.obj",
                 "mora": "assets/models/mora.obj",
-                "test": "assets/models/air.obj"
+                "test": "assets/models/air.obj",
+                "ayaka": "assets/models/ayaka.obj"
             },
             "audio":{
-                "volume":{
-                    "music": 50,
-                    "clicksound": 100
-                    },
-                "sounds":{
-                    "music": "assets/sounds/breakout.mp3",
-                    "clicksound": "assets/sounds/breakout.mp3"
+                "music": {
+                    "path": "assets/sounds/breakout.mp3",
+                    "volume": 50
+                },
+
+                "clicksound": {
+                    "path": "assets/sounds/breakout.mp3",
+                    "volume": 100
                 }
             },
             "samplers":{
@@ -90,7 +98,6 @@
                     },
                     "tint": [1, 1, 1, 1]
                 },
-
                 "red":{
                     "type": "default",
                     "shader": "default",
@@ -104,7 +111,6 @@
                     },
                     "tint": [1, 0, 0, 1]
                 },
-
                 "blue":{
                     "type": "default",
                     "shader": "default",
@@ -457,6 +463,83 @@
                     "sampler": "default",
                     "reflectivity": 0.4,
                     "isSkybox": false
+                },
+
+                "ayaka1":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "ayaka1",
+                    "sampler": "default",
+                    "transparent": true
+                },
+                "ayaka2":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "ayaka2",
+                    "sampler": "default"
+                },
+                "ayaka3":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "ayaka3",
+                    "sampler": "default"
+                },
+                "ayaka4":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "ayaka4",
+                    "sampler": "default"
+                },
+                "ayaka5":{
+                    "type": "default",
+                    "shader": "default",
+                    "pipelineState": {
+                        "faceCulling":{
+                            "enabled": false
+                        },
+                        "depthTesting":{
+                            "enabled": true
+                        }
+                    },
+                    "tint": [1, 1, 1, 1],
+                    "texture": "ayaka5",
+                    "sampler": "default"
                 }
             }
         },
@@ -693,7 +776,269 @@
                     }
                 ]
             },
+            {
+                "position": [19 , 0 , 15],
+                "rotation": [0 , 0 , 0],
+                "scale": [0.2, 0.2, 0.2],
+                "name": "Ayaka",
+                "children": [
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 0,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 3,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 5,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 9,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 14,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 17,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 19,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 21,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 24,
+                                "material": "ayaka3"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 2,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 6,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 8,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 11,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 13,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 15,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },{
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 18,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },{
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 20,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 23,
+                                "material": "ayaka5"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 16,
+                                "material": "ayaka4"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 1,
+                                "material": "ayaka2"
+                            }
+                        ]
+                    },
 
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 4,
+                                "material": "ayaka2"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 7,
+                                "material": "ayaka2"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 10,
+                                "material": "ayaka2"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 22,
+                                "material": "ayaka2"
+                            }
+                        ]
+                    },
+                    {
+                        "components": [
+                            {
+                                "type": "Mesh Renderer",
+                                "mesh": "ayaka",
+                                "shapeID": 12,
+                                "material": "ayaka1"
+                            }
+                        ]
+                    }
+                ],
+                "components": [
+                    {
+                        "type": "Movement",
+                        "linearVelocity": [0.5,0 , 0]
+                    }
+                ]
+            },
             {
                 "position": [15 , 0 , 15],
                 "rotation": [0 , 0 , 0],

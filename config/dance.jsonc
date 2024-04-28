@@ -1,0 +1,1516 @@
+{
+  "start-scene": "play",
+  "window":
+  {
+    "title":"Default Game Window",
+    "size":{
+      "width":1280,
+      "height":720
+    },
+    "fullscreen": false
+  },
+  "scene": {
+    "renderer":{
+      "sky": "assets/textures/sky.jpg",
+      "postprocess": "assets/shaders/postprocess/vignette.frag",
+      "areaLight": [0.4,0.4,0.4]
+    },
+    "assets":{
+      "shaders":{
+        "tinted":{
+          "vs":"assets/shaders/tinted.vert",
+          "fs":"assets/shaders/tinted.frag"
+        },
+        "textured":{
+          "vs":"assets/shaders/textured.vert",
+          "fs":"assets/shaders/textured.frag"
+        },
+        "default":{
+          "vs":"assets/shaders/default.vert",
+          "fs":"assets/shaders/default.frag"
+        }
+      },
+      "textures":{
+        "moon": "assets/textures/moon.jpg",
+        "grass": "assets/textures/grass_ground_d.jpg",
+        "wood": "assets/textures/wood.jpg",
+        "glass": "assets/textures/glass-panels.png",
+        "monkey": "assets/textures/monkey.png",
+        "paimon_cape": "assets/textures/paimon/cape.jpg",
+        "paimon_face": "assets/textures/paimon/face.jpg",
+        "paimon_hair": "assets/textures/paimon/hair.jpg",
+        "paimon_shirt": "assets/textures/paimon/shirt.jpg",
+
+        "mora": "assets/textures/mora.png",
+
+        "arlecchino_hair": "assets/textures/arlecchino/hair.png",
+        "arlecchino_hair_n": "assets/textures/arlecchino/hair_n.png",
+        "arlecchino_face": "assets/textures/arlecchino/face.png",
+        "arlecchino_body": "assets/textures/arlecchino/body.png",
+        "arlecchino_body_n": "assets/textures/arlecchino/body_n.png",
+
+        "ayaka1": "assets/textures/ayaka/ayaka1.png",
+        "ayaka2": "assets/textures/ayaka/ayaka2.png",
+        "ayaka3": "assets/textures/ayaka/ayaka3.png",
+        "ayaka4": "assets/textures/ayaka/ayaka4.png",
+        "ayaka5": "assets/textures/ayaka/ayaka5.png"
+      },
+      "meshes":{
+        "cube": "assets/models/cube.obj",
+        "monkey": "assets/models/monkey.obj",
+        "plane": "assets/models/plane.obj",
+        "sphere": "assets/models/high_res_sphere.obj",
+        "cubes": "assets/models/untitled.obj",
+        "paimon": "assets/models/paimon.obj",
+        "arlecchino": "assets/models/arlecchino.obj",
+        "mora": "assets/models/mora.obj",
+        "test": "assets/models/air.obj",
+        "ayaka": "assets/models/ayaka.obj"
+      },
+      "audio":{
+        "music": {
+          "path": "assets/sounds/breakout.mp3",
+          "volume": 50
+        },
+
+        "clicksound": {
+          "path": "assets/sounds/breakout.mp3",
+          "volume": 100
+        }
+      },
+      "samplers":{
+        "default":{},
+        "pixelated":{
+          "MAG_FILTER": "GL_NEAREST"
+        }
+      },
+      "materials":{
+        "white":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1]
+        },
+        "red":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 0, 0, 1]
+        },
+        "blue":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [0, 0, 1, 1]
+        },
+
+        "paimon_hair":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_hair",
+          "sampler": "default"
+        },
+        "paimon_cape":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_cape",
+          "sampler": "default"
+        },
+        "paimon_face":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_face",
+          "sampler": "default"
+        },
+        "paimon_shirt":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "paimon_shirt",
+          "sampler": "default"
+        },
+
+        "arlecchino_hair":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_hair",
+          "sampler": "default",
+          "specularReflectivity": [0,0,0],
+          "diffuseReflectivity": [4,4,4]
+        },
+        "arlecchino_hair_n":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_hair_n",
+          "sampler": "default"
+        },
+        "arlecchino_face":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_face",
+          "sampler": "default"
+        },
+        "arlecchino_body":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_body",
+          "sampler": "default"
+        },
+        "arlecchino_body_n":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "arlecchino_body_n",
+          "sampler": "default"
+        },
+
+        "mora": {
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "mora",
+          "sampler": "default"
+        },
+
+        "metal":{
+          "type": "tinted",
+          "shader": "tinted",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [0.45, 0.4, 0.5, 1]
+        },
+        "metal2":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [0.45, 0.4, 0.5, 1],
+          "reflectivity": 0.4,
+          "isSkybox": false
+        },
+        "glass":{
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            },
+            "blending":{
+              "enabled": true,
+              "sourceFactor": "GL_SRC_ALPHA",
+              "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+            },
+            "depthMask": false
+          },
+          "transparent": true,
+          "tint": [1, 1, 1, 1],
+          "texture": "glass",
+          "sampler": "pixelated"
+        },
+        "glass2":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            },
+            "blending":{
+              "enabled": true,
+              "sourceFactor": "GL_SRC_ALPHA",
+              "destinationFactor": "GL_ONE_MINUS_SRC_ALPHA"
+            },
+            "depthMask": false
+          },
+          "transparent": true,
+          "tint": [1, 1, 1, 1],
+          "texture": "glass",
+          "sampler": "pixelated",
+          "reflectivity": 0.4,
+          "isSkybox": false
+        },
+        "grass":{
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "grass",
+          "sampler": "default"
+        },
+        "grass2":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "grass",
+          "sampler": "default",
+          "reflectivity": 0.4,
+          "isSkybox": false
+        },
+        "monkey":{
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "monkey",
+          "sampler": "default"
+        },
+        "moon":{
+          "type": "textured",
+          "shader": "textured",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "moon",
+          "sampler": "default"
+        },
+        "moon2":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "moon",
+          "sampler": "default",
+          "isSkybox": false
+        },
+        "sphere":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "isSkybox": false,
+          "specularIntensity": 10
+        },
+        "monkey2":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "monkey",
+          "sampler": "default",
+          "reflectivity": 0.4,
+          "isSkybox": false
+        },
+
+        "ayaka1":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "ayaka1",
+          "sampler": "default",
+          "transparent": true
+        },
+        "ayaka2":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "ayaka2",
+          "sampler": "default"
+        },
+        "ayaka3":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "ayaka3",
+          "sampler": "default"
+        },
+        "ayaka4":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "ayaka4",
+          "sampler": "default"
+        },
+        "ayaka5":{
+          "type": "default",
+          "shader": "default",
+          "pipelineState": {
+            "faceCulling":{
+              "enabled": false
+            },
+            "depthTesting":{
+              "enabled": true
+            }
+          },
+          "tint": [1, 1, 1, 1],
+          "texture": "ayaka5",
+          "sampler": "default"
+        }
+      }
+    },
+    "world":[
+      {
+        "position": [0, 0, 10],
+        "components": [
+          {
+            "type": "Camera",
+            "cameraType": "perspective",
+            "orthoHeight": 1,
+            "far": 10000,
+            "near": 0.001
+          },
+          {
+            "type": "Free Camera Controller"
+          },
+
+          {
+            "type": "Cone Light",
+            "range": [0.7 , 1],
+            "direction": [0 , 0.4 , -1],
+            "diffuseColor": [1 ,0 ,0],
+            "smoothing": 2,
+            "intensity": 1
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.7 , 1],
+            "direction": [-0.346 , -0.2 , -1],
+            "diffuseColor": [0 ,1 ,0],
+            "smoothing": 2,
+            "intensity": 1
+
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.7 , 1],
+            "direction": [0.346 , -0.2 , -1],
+            "diffuseColor": [0 ,0 ,1],
+            "smoothing": 2,
+            "intensity": 1
+          }
+        ],
+        "children": [
+          {
+            "position": [1, -1, -1],
+            "rotation": [45, 45, 0],
+            "scale": [0.1, 0.1, 1.0],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "cube",
+                "material": "metal2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "position": [-7, 4, 5],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1],
+        "children": [
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 0,
+                "material": "blue"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 1,
+                "material": "red"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 2,
+                "material": "white"
+              },
+              {
+                "type": "Movement",
+                "angularVelocity": [0, 90, 0]
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 3,
+                "material": "white"
+              },
+              {
+                "type": "Movement",
+                "angularVelocity": [0, 800, 0]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "position": [8, 6, -7],
+        "rotation": [0, 0, 0],
+        "scale": [1, 1, 1],
+        "children": [
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 0,
+                "material": "blue"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 1,
+                "material": "red"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 2,
+                "material": "white"
+              },
+              {
+                "type": "Movement",
+                "angularVelocity": [0, 90, 0]
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "test",
+                "shapeID": 3,
+                "material": "white"
+              },
+              {
+                "type": "Movement",
+                "angularVelocity": [0, 800, 0]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "rotation": [-45, 0, 0],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "monkey",
+            "material": "monkey2"
+          },
+          {
+            "type": "Movement",
+            "linearVelocity": [0, 0.1, 0],
+            "angularVelocity": [0, 180, 0]
+          }
+        ]
+      },
+
+      {
+        "rotation": [-45, 0, 0],
+        "position": [1,2,7],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "monkey",
+            "material": "monkey2"
+          },
+          {
+            "type": "Movement",
+            "linearVelocity": [0, 0.1, 0],
+            "angularVelocity": [0, 180, 0]
+          }
+        ]
+      },
+
+      {
+        "rotation": [-45, 0, 0],
+        "position": [-1,2,7],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "monkey",
+            "material": "monkey2"
+          },
+          {
+            "type": "Movement",
+            "linearVelocity": [0, 0.1, 0],
+            "angularVelocity": [0, 180, 0]
+          }
+        ]
+      },
+
+      {
+        "components": [
+          {
+            "type": "Directional Light",
+            "intensity": 0.2,
+            "direction": [-1 , -1 , -1],
+            "diffuseColor": [ 0.2, 0.2, 0.2],
+            "specularColor": [ 0.0, 0.0, 0.0]
+          }
+        ]
+      },
+
+      {
+        "position": [0, 1, 2],
+        "rotation": [0, 0, 0],
+        "scale": [2, 2, 2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "plane",
+            "material": "glass2"
+          }
+        ]
+      },
+      {
+        "position": [0, 1, -2],
+        "rotation": [0, 0, 0],
+        "scale": [2, 2, 2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "plane",
+            "material": "glass2"
+          }
+        ]
+      },
+      {
+        "position": [2, 1, 0],
+        "rotation": [0, 90, 0],
+        "scale": [2, 2, 2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "plane",
+            "material": "glass2"
+          }
+        ]
+      },
+      {
+        "position": [-2, 1, 0],
+        "rotation": [0, 90, 0],
+        "scale": [2, 2, 2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "plane",
+            "material": "glass2"
+          }
+        ]
+      },
+      {
+        "position": [0, 3, 0],
+        "rotation": [90, 0, 0],
+        "scale": [2, 2, 2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "plane",
+            "material": "glass2"
+          }
+        ]
+      },
+      {
+        "name": "Light Ball",
+        "position": [0, 8, 0],
+        "rotation": [0, 0, 0],
+        "scale": [2, 2, 2],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "sphere",
+            "material": "sphere"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [45, 180, 23 ]
+          },
+
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [0 , -1 , -1],
+            "diffuseColor": [1 ,0 ,0],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [-1 , 0 , -1],
+            "diffuseColor": [0 ,1 ,0],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [-1 , -1 , 0],
+            "diffuseColor": [0 ,0 ,1],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [1, 1 , 0],
+            "diffuseColor": [1 ,1 ,0],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [0, 1 , 1],
+            "diffuseColor": [0 ,1 ,1],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [1, 0 , 1],
+            "diffuseColor": [1 ,0 ,1],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [0 , -1 , 0],
+            "diffuseColor": [1 ,0 ,0],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [0 , 0 , -1],
+            "diffuseColor": [0 ,1 ,0],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [-1 , 0 , 0],
+            "diffuseColor": [0 ,0 ,1],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [1, 0 , 0],
+            "diffuseColor": [1 ,1 ,0],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [0, 1 , 0],
+            "diffuseColor": [0 ,1 ,1],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          },
+          {
+            "type": "Cone Light",
+            "range": [0.98 , 1],
+            "direction": [0, 0 , 1],
+            "diffuseColor": [1 ,0 ,1],
+            "smoothing": 2,
+            "intensity": 15,
+            "attenuation": [0 , 1 , 0]
+          }
+        ]
+      },
+
+      {
+        "position": [15, 5, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 10, 15],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "sphere"
+          }
+        ]
+      },
+
+      {
+        "position": [0, 5, 15],
+        "rotation": [0, 0, 0],
+        "scale": [15, 10, 1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "sphere"
+          }
+        ]
+      },
+
+      {
+        "position": [0, 5, -15],
+        "rotation": [0, 0, 0],
+        "scale": [15, 10, 1],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "sphere"
+          }
+        ]
+      },
+
+      {
+        "position": [-15, 5, 0],
+        "rotation": [0, 0, 0],
+        "scale": [1, 10, 15],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "sphere"
+          }
+        ]
+      },
+
+
+      {
+        "position": [0, 10, 0],
+        "rotation": [0, 0, 0],
+        "scale": [15, 1, 15],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "sphere"
+          }
+        ]
+      },
+
+      {
+        "position": [0, -5, 0],
+        "rotation": [0, 0, 0],
+        "scale": [15, 1, 15],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "cube",
+            "material": "sphere"
+          }
+        ]
+      },
+
+      {
+        "position": [19 , 0 , 15],
+        "rotation": [0 , 0 , 0],
+        "scale": [0.2, 0.2, 0.2],
+        "name": "Ayaka",
+        "children": [
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 0,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 3,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 5,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 9,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 14,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 17,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 19,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 21,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 24,
+                "material": "ayaka3"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 2,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 6,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 8,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 11,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 13,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 15,
+                "material": "ayaka5"
+              }
+            ]
+          },{
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 18,
+                "material": "ayaka5"
+              }
+            ]
+          },{
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 20,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 23,
+                "material": "ayaka5"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 16,
+                "material": "ayaka4"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 1,
+                "material": "ayaka2"
+              }
+            ]
+          },
+
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 4,
+                "material": "ayaka2"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 7,
+                "material": "ayaka2"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 10,
+                "material": "ayaka2"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 22,
+                "material": "ayaka2"
+              }
+            ]
+          },
+          {
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "ayaka",
+                "shapeID": 12,
+                "material": "ayaka1"
+              }
+            ]
+          }
+        ],
+        "components": [
+          {
+            "type": "Movement",
+            "linearVelocity": [0.5,0 , 0]
+          }
+        ]
+      },
+      {
+        "position": [15 , 0 , 15],
+        "rotation": [0 , 0 , 0],
+        "scale": [0.2, 0.2, 0.2],
+        "name": "Paimon",
+        "children" : [
+          {
+            "children": [
+              {
+                "components": [
+                  {
+                    "tag" : "Face-Parts",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 0,
+                    "material": "paimon_face"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Eyes",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 1,
+                    "material": "paimon_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Face-Skin",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 2,
+                    "material": "paimon_face"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Metal-Parts + Legs",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 3,
+                    "material": "paimon_face"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Cloth",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 4,
+                    "material": "paimon_shirt"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Hair",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 5,
+                    "material": "paimon_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag" : "Cape",
+                    "type": "Mesh Renderer",
+                    "mesh": "paimon",
+                    "shapeID": 6,
+                    "material": "paimon_cape"
+                  }
+                ]
+              }
+            ],
+            "components" : [
+              {
+                "type": "Paimon Idle",
+                "top": [0, 1, 0],
+                "forward": [0 , 0 , 1]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "position": [17 , 0 , 15],
+        "scale": [0.0005, 0.0005, 0.0005],
+        "name": "Arlecchino",
+        "children": [
+          {
+            "children" : [
+              {
+                "components": [
+                  {
+                    "tag": "Hair & Arms & Shoes",
+                    "type": "Mesh Renderer",
+                    "shapeID": 0,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag": "Legs Rings & Arms Rings",
+                    "type": "Mesh Renderer",
+                    "shapeID": 1,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_hair"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag": "Body (Torso & Legs)",
+                    "type": "Mesh Renderer",
+                    "shapeID": 2,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_body"
+                  }
+                ]
+              },
+              {
+                "components": [
+                  {
+                    "tag": "Face",
+                    "type": "Mesh Renderer",
+                    "shapeID": 3,
+                    "mesh": "arlecchino",
+                    "material": "arlecchino_face"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "position": [16, 0, 15],
+        "scale": [0.001, 0.001, 0.001],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "mora",
+            "material": "mora"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [0, 90, 0]
+          }
+        ]
+      },
+      {
+        "position": [14, 0, 15],
+        "scale": [0.001, 0.001, 0.001],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "mora",
+            "material": "mora"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [0, 90, 0]
+          }
+        ]
+      },
+      {
+        "position": [15, 2, 15],
+        "scale": [0.001, 0.001, 0.001],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "mora",
+            "material": "mora"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [0, 90, 0]
+          }
+        ]
+      },
+      {
+        "position": [15, -1, 15],
+        "scale": [0.001, 0.001, 0.001],
+        "components": [
+          {
+            "type": "Mesh Renderer",
+            "mesh": "mora",
+            "material": "mora"
+          },
+          {
+            "type": "Movement",
+            "angularVelocity": [0, 90, 0]
+          }
+        ]
+      }
+    ]
+  }
+}
