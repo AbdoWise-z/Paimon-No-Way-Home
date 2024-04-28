@@ -1,72 +1,47 @@
 #include "audio.hpp"
 #include <iostream>
 #include<windows.h>
-#include <Mmsystem.h>
-//these two headers are already included in the <Windows.h> header
-#pragma comment(lib, "Winmm.lib")
-namespace our {
-    AudioPlayer::AudioPlayer() : m_isPlaying(false),m_volumeLevel(100) {}
 
-    bool AudioPlayer::load(const std::string &filePath) {
-        // Open the audio file with an alias name
-        if (mciSendString(("open \"" + filePath + "\" type mpegvideo alias mp3").c_str(), NULL, 0, NULL) != 0) {
-            std::cerr << "Failed to open audio file" << std::endl;
-            return false;
-        }
-        return true;
-    }
-    bool AudioPlayer::load(const std::string& filePath, int volumeLevel) {
-        // Open the audio file with an alias name
-        if (mciSendString(("open \"" + filePath + "\" type mpegvideo alias mp3").c_str(), NULL, 0, NULL) != 0) {
-            std::cerr << "Failed to open audio file" << std::endl;
-            return false;
-        }
-        // Set the volume level
-        if (!setVolume(volumeLevel)) {
-            std::cerr << "Failed to set volume level" << std::endl;
-            return false;
-        }
-        return true;
-    }
-    void AudioPlayer::play(bool loop) {
-        // Play the audio file
-        std::string command = "play mp3";
-        if (loop) {
-            command += " repeat";
-        }
-        if (mciSendString(command.c_str(), NULL, 0, NULL) != 0) {
-            std::cerr << "Failed to play audio file" << std::endl;
-        } else {
-            m_isPlaying = true;
-        }
-    }
-    bool AudioPlayer::setVolume(int volumeLevel) {
-        // Set the volume level
-        std::string command = "setaudio mp3 volume to " + std::to_string(volumeLevel);
-        if (mciSendString(command.c_str(), NULL, 0, NULL) != 0) {
-            std::cerr << "Failed to set volume level" << std::endl;
-            return false;
-        } else {
-            m_volumeLevel = volumeLevel;
-            return true;
-        }
-    }
 
-    void AudioPlayer::stop() {
-        // Stop playing the audio file
-        if (mciSendString("stop mp3", NULL, 0, NULL) != 0) {
-            std::cerr << "Failed to stop audio file" << std::endl;
-        } else {
-            m_isPlaying = false;
+// Define the static member variable
+irrklang::ISoundEngine* our::AudioPlayer::SoundEngine = nullptr;
+our::AudioPlayer* our::AudioPlayer::instance = nullptr;
+
+// Constructor
+our::AudioPlayer::AudioPlayer() {
+    // Initialize SoundEngine if it's not already initialized
+    if (!SoundEngine) {
+        SoundEngine = irrklang::createIrrKlangDevice();
+        // If creation fails, handle the error appropriately
+        if (!SoundEngine) {
+            // Handle initialization failure
         }
     }
+}
 
-    bool AudioPlayer::isPlaying() const {
-        return m_isPlaying;
+// Destructor
+our::AudioPlayer::~AudioPlayer() {
+    // Destroy SoundEngine only if it's initialized
+    if (SoundEngine) {
+        SoundEngine->drop(); // Release resources
+        SoundEngine = nullptr; // Reset the pointer
     }
+}
 
-    AudioPlayer::~AudioPlayer() {
-        // Close the audio file
-        mciSendString("close mp3", NULL, 0, NULL);
+void our::AudioPlayer::playSound(const char* soundFile, bool looped, float volume) {
+    if (SoundEngine) {
+        // Play the sound with the specified volume
+        SoundEngine->play2D(soundFile, looped, false, true, ESM_AUTO_DETECT, false)->setVolume(volume);
     }
+}
+bool our::AudioPlayer::isPlaying(const char* soundFile) {
+        // Play the sound with the specified volume
+        return SoundEngine->isCurrentlyPlaying(soundFile);
+}
+// Function to get the singleton instance
+our::AudioPlayer* our::AudioPlayer::getInstance() {
+    if (!instance) {
+        instance = new AudioPlayer();
+    }
+    return instance;
 }

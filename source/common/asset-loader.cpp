@@ -74,25 +74,28 @@ namespace our {
         }
     };
     template<>
-    void AssetLoader<AudioPlayer>::deserialize(const nlohmann::json& data) {
-        if(data.is_object()){
-            auto sounds = data.find("sounds");
-            auto volumes = data.find("volume");
-                for(auto& [name, desc] : sounds->items()) {
-                    auto path = desc.get<std::string>();
-                    auto volume = volumes->find(name);
-                    if (volume != volumes->end() && volume->is_number_integer()) {
-                        int volumeLevel = volume->get<int>();
-                        auto audio = new AudioPlayer();
-                        audio->load(path);
-                        std::printf("%d",volumeLevel);
-                        audio->setVolume(volumeLevel);
-                        assets[name] = audio;
-                    }
+    void AssetLoader<std::pair<std::string, float>>::deserialize(const nlohmann::json& data) {
+        if (data.is_object()) {
+                for (auto& [audioName, audioDesc] : data.items()) {
+                    if (audioDesc.is_object()) {
+                        auto musicPath = audioDesc.find("music");
+                        auto volume = audioDesc.find("volume");
+                        if (musicPath != audioDesc.end() && volume != audioDesc.end()) {
+                            if (musicPath->is_string() && volume->is_number_float()) {
+                                std::string path = musicPath->get<std::string>(); // Extract the string value
+                                float volumeLevel = volume->get<float>();    // Extract the float value
+                                //std::cout<<audioName << " "<< path<<std::endl;
+                                auto newPair = new std::pair<std::string, float>(path, volumeLevel);
+                                assets[audioName] = newPair;
 
-            }
+                                //std::cout<< assets[audioName]->first<<std::endl;
+                            }
+                        }
+                    }
+                }
         }
     };
+
 
 
     // This will load all the materials defined in "data"
@@ -132,7 +135,7 @@ namespace our {
         if(assetData.contains("materials"))
             AssetLoader<Material>::deserialize(assetData["materials"]);
         if(assetData.contains("audio"))
-            AssetLoader<AudioPlayer>::deserialize(assetData["audio"]);
+            AssetLoader<std::pair<std::string, float>>::deserialize(assetData["audio"]);
     }
 
     void clearAllAssets(){
@@ -141,7 +144,7 @@ namespace our {
         AssetLoader<Sampler>::clear();
         AssetLoader<Mesh>::clear();
         AssetLoader<Material>::clear();
-        AssetLoader<AudioPlayer>::clear();
+        AssetLoader<std::pair<std::string, float>>::clear();
     }
 
 }

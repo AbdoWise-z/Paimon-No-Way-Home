@@ -12,13 +12,7 @@
 #include "systems/orbital-camera-controller.hpp"
 #include "systems/paimon-movement.hpp"
 #include "audio/audio.hpp"
-#include <irrKlang.h>
-using namespace irrklang;
-
-
-
-#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
-ISoundEngine *SoundEngine = createIrrKlangDevice();
+#include <random>
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
@@ -31,6 +25,9 @@ class Playstate: public our::State {
     our::LevelMapping levelMapping;
     our::OrbitalCameraControllerSystem orbitalCameraControllerSystem;
     our::PaimonMovement paimonMovement;
+    our::AudioPlayer* audioPlayer = our::AudioPlayer::getInstance();
+    int randomIndex = 0;
+
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -52,6 +49,21 @@ class Playstate: public our::State {
         levelMapping.init(getApp() , &world);
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
+
+        auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio1");
+        if (audioAsset) {
+            auto music = audioAsset->first;
+            auto volume = audioAsset->second;
+            //std::cout<< music<<std::endl;
+            std::cout<< volume<<std::endl;
+
+            if (!music.empty()) {
+                audioPlayer->playSound(music.c_str(), true, volume); // Play a sound with volume 0.5
+            }
+        }else{
+            std::cout<< "audio is not found" <<std::endl;
+        }
+
     }
 
     void onDraw(double deltaTime) override {
@@ -73,14 +85,22 @@ class Playstate: public our::State {
             // If the escape  key is pressed in this frame, go to the play state
             getApp()->changeState("menu");
         }
-        if(keyboard.justPressed(GLFW_KEY_F)){
-            // If the escape  key is pressed in this frame, go to the play state
-            SoundEngine->play2D("assets/sounds/breakout.mp3", true);
+        auto mouse = getApp()->getMouse();
+        auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio2");
+
+        if (audioAsset) {
+            auto music = audioAsset->first;
+            auto volume = audioAsset->second;
+            auto isplaying = audioPlayer->isPlaying(music.c_str());
+
+            if (!music.empty() && mouse.isPressed(0)&& ! isplaying) {
+                audioPlayer->playSound(music.c_str(), false, volume);
+                randomIndex = std::rand() % 2;
+            }
+        }else{
+            std::cout<< "audio is not found" <<std::endl;
         }
-        if(keyboard.justPressed(GLFW_KEY_T)){
-            // If the escape  key is pressed in this frame, go to the play state
-            SoundEngine->play2D("assets/sounds/bleep.mp3", false);
-        }
+
     }
 
     void onDestroy() override {

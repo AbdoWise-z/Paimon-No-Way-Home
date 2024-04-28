@@ -60,16 +60,6 @@
                 "mora": "assets/models/mora.obj",
                 "test": "assets/models/air.obj"
             },
-            "audio":{
-                "volume":{
-                    "music": 50,
-                    "clicksound": 100
-                    },
-                "sounds":{
-                    "music": "assets/sounds/breakout.mp3",
-                    "clicksound": "assets/sounds/breakout.mp3"
-                }
-            },
             "samplers":{
                 "default":{},
                 "pixelated":{

@@ -52,14 +52,17 @@
       },
       "samplers":{
         "default":{}
-      },"audio":{
-        "volume":{
-          "music": 50,
-          "clicksound": 100
-        },
-        "sounds":{
-          "music": "assets/sounds/breakout.mp3",
-          "clicksound": "assets/sounds/bleep.mp3"
+      },
+      "audio":{
+        "audio1":{
+          "music": "assets/sounds/According to the judgement of the Oratrice Mechanique Danalyse Cardinale.mp3",
+          "volume": 0.5
+        },"audio2":{
+          "music": "assets/sounds/oi-paimon.mp3",
+          "volume": 10.0
+        },"audio3":{
+          "music": "assets/sounds/ehe_te_nandayo.mp3",
+          "volume": 3.0
         }
       },
       "materials":{
