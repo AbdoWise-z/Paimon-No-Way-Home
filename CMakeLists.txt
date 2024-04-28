@@ -136,6 +136,7 @@ set(STATES_SOURCES
         source/common/systems/orbital-camera-controller.hpp
         source/common/systems/paimon-movement.hpp
         source/common/systems/common.h
+        source/states/level-menu-state.h
 )
 
 # For each example, we add an executable target

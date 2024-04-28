@@ -4,6 +4,8 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include<iostream>
+#include <fstream>
 
 #include <string>
 #include <unordered_map>
@@ -107,6 +109,17 @@ namespace our {
         // Closes the Application
         void close(){
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+        }
+
+        void setConfig(const std::string& config_path) {
+            std::ifstream file_in(config_path);
+            if(!file_in){
+                std::cerr << "Couldn't open file: " << config_path << std::endl;
+                return;
+            }
+            // Read the file into a json object then close the file
+            app_config = nlohmann::json::parse(file_in, nullptr, true, true);
+            file_in.close();
         }
 
         // Class Getters.
