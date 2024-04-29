@@ -56,7 +56,7 @@
       "audio":{
         "audio1":{
           "music": "assets/sounds/According to the judgement of the Oratrice Mechanique Danalyse Cardinale.mp3",
-          "volume": 0.5
+          "volume": 0.2
         },"audio2":{
           "music": "assets/sounds/oi-paimon.mp3",
           "volume": 10.0
@@ -882,21 +882,30 @@
         "name": "Mora",
         "position": [4, 2, 0],
         "scale": [0.003, 0.003, 0.003],
+        "children" :
+        [{
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "mora",
+              "material": "mora"
+            },
+            {
+              "type": "Movement",
+              "angularVelocity" : [0, 90, 0]
+            },
+            {
+              "type": "Spot Light",
+              "diffuseColor": [1, 1, 0],
+              "intensity": 1,
+              "attenuation": [1,0,0]
+            }
+          ]
+          }
+        ],
         "components": [
           {
-            "type": "Mesh Renderer",
-            "mesh": "mora",
-            "material": "mora"
-          },
-          {
-            "type": "Movement",
-            "angularVelocity" : [0, 90, 0]
-          },
-          {
-            "type": "Spot Light",
-            "diffuseColor": [1, 1, 0],
-            "intensity": 1,
-            "attenuation": [1,0,0]
+            "type": "Mora"
           }
         ]
       },

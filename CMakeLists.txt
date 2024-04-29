@@ -85,6 +85,10 @@ set(COMMON_SOURCES
         source/common/systems/movement.hpp
         source/common/audio/audio.hpp
         source/common/audio/audio.cpp
+        source/common/systems/collision.hpp
+        source/common/systems/collision.cpp
+        source/common/components/Mora.hpp
+        source/common/components/Mora.cpp
 )
 
 # Define the directories in which to search for the included headers

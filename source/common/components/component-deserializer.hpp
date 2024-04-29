@@ -12,7 +12,7 @@
 #include "Paimon.hpp"
 #include "Ground.hpp"
 #include "OrbitalCameraComponent.h"
-
+#include "Mora.hpp"
 namespace our {
 
     // Given a json object, this function picks and creates a component in the given entity
@@ -39,6 +39,8 @@ namespace our {
             component = entity->addComponent<PaimonIdle>();
         } else if (type == Paimon::getID()){
             component = entity->addComponent<Paimon>();
+        } else if (type == Mora::getID()){
+            component = entity->addComponent<Mora>();
         } else if (type == Ground::getID()){
             component = entity->addComponent<Ground>();
         } else if (type == OrbitalCameraComponent::getID()){

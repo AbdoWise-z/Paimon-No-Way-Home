@@ -11,12 +11,13 @@
 #include "systems/Level-mapping.hpp"
 #include "systems/orbital-camera-controller.hpp"
 #include "systems/paimon-movement.hpp"
-#include "audio/audio.hpp"
+#include "systems/collision.hpp"
 #include <random>
 
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
 
+    our::CollisionSystem collisionSystem;
     our::World world;
     our::ForwardRenderer renderer;
     our::FreeCameraControllerSystem cameraController;
@@ -26,8 +27,7 @@ class Playstate: public our::State {
     our::OrbitalCameraControllerSystem orbitalCameraControllerSystem;
     our::PaimonMovement paimonMovement;
     our::AudioPlayer* audioPlayer = our::AudioPlayer::getInstance();
-    int randomIndex = 0;
-
+    bool gameoverflag = 0;
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
@@ -49,7 +49,7 @@ class Playstate: public our::State {
         levelMapping.init(getApp() , &world);
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
-
+        collisionSystem.init(getApp());
         auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio1");
         if (audioAsset) {
             auto music = audioAsset->first;
@@ -74,7 +74,7 @@ class Playstate: public our::State {
         //levelMapping.update();
         orbitalCameraControllerSystem.update(&world , (float) deltaTime);
         paimonMovement.update(&world , &levelMapping, (float) deltaTime);
-
+        collisionSystem.update(&world, &renderer, gameoverflag, audioPlayer);
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
 
@@ -95,7 +95,6 @@ class Playstate: public our::State {
 
             if (!music.empty() && mouse.isPressed(0)&& ! isplaying) {
                 audioPlayer->playSound(music.c_str(), false, volume);
-                randomIndex = std::rand() % 2;
             }
         }else{
             std::cout<< "audio is not found" <<std::endl;
