@@ -30,7 +30,6 @@ namespace our {
 
                 if (glm::length(paimonPos - moraVec) <  1  ) {
                     moraObject->getOwner()->localTransform.position[1] = 100;
-                    id++;
                     //TODO: delete mora
                 }
             }
