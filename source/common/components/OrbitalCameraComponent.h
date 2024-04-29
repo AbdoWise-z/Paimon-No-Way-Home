@@ -19,7 +19,7 @@ namespace our {
         float Divisions = 8;
         bool inputEnabled = true;
 
-        float _switchProgress = 1;
+        float _switchProgress = 0;
         float _currentPos = 0;
         float _switchDirection = 1;
         glm::vec3 _currentLocation = glm::vec3(0,0,0);
