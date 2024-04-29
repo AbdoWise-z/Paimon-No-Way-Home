@@ -1,8 +1,11 @@
 //
 // Created by HIMA on 4/26/2024.
 //
+
+#pragma once
 #include <string>
 #include <irrKlang.h>
+
 using namespace irrklang;
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 namespace our {

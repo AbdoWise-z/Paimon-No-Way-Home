@@ -1,3 +1,6 @@
+
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
 #include <iostream>
 #include <fstream>
 #include <flags/flags.h>

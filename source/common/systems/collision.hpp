@@ -28,7 +28,7 @@ namespace our
 
     public:
         void init(Application *app);
-        void update(World *world, ForwardRenderer *forwardRenderer, bool &gameOverflag, AudioPlayer *audioPlayer);
+        int update(World *world);
         void checkGameOver(bool gameOverflag);
         void exit();
     };

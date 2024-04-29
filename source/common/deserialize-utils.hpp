@@ -112,5 +112,4 @@ namespace our {
                 {"GL_MAX", GL_MAX}
         };
     }
-
 }

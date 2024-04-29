@@ -154,7 +154,6 @@ set(STATES_SOURCES
         source/common/systems/paimon-movement.cpp
         source/common/systems/ground-system.cpp
         source/common/systems/CollectablesSystem.h
-        source/common/components/Mora.h
         source/common/components/Mora.cpp
         source/common/components/Mora.cpp
 )

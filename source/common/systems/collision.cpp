@@ -11,7 +11,8 @@ namespace our {
         counter = 0;
     }
 
-    void CollisionSystem::update(World *world, ForwardRenderer *forwardRenderer, bool &gameOverflag, AudioPlayer *audioPlayer) {
+    int CollisionSystem::update(World *world) {
+        int count = 0;
         for (auto entity: world->getEntities()) {
             if (entity->getComponent<Paimon>() != nullptr) {
                 paimonPos = entity->getWorldPosition();
@@ -20,20 +21,24 @@ namespace our {
                 break;
             }
         }
-        Mora *moraObject = nullptr;
         for (auto entity: world->getEntities()) {
-            std::string name = entity->name;
             glm::vec3 moraVec = entity->getWorldPosition();
-            moraObject = entity->getComponent<Mora>();
+            Mora *moraObject = entity->getComponent<Mora>();
 
             if (moraObject != nullptr) {
+                auto len = glm::length(paimonPos - moraVec);
+                //std::cout << "Len: " << len << std::endl;
 
-                if (glm::length(paimonPos - moraVec) <  1  ) {
-                    moraObject->getOwner()->localTransform.position[1] = 100;
-                    //TODO: delete mora
+                if (len <  1.1f) {
+                    //moraObject->getOwner()->localTransform.position[1] = 100;
+                    //std::cout << "Mora Hit" << std::endl;
+                    world->markForRemoval(entity);
+                    count ++;
                 }
             }
         }
+
+        return count;
     }
 
     void CollisionSystem::checkGameOver(bool gameOverflag) {

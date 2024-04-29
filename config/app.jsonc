@@ -64,7 +64,8 @@
                 "paimon": "assets/models/paimon.obj",
                 "arlecchino": "assets/models/arlecchino.obj",
                 "mora": "assets/models/mora.obj",
-                "test": "assets/models/air.obj"
+                "test": "assets/models/air.obj",
+                "ayaka": "assets/models/ayaka.obj"
             },
             "audio":{
                 "music": {

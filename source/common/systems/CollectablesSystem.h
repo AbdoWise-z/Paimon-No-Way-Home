@@ -1,5 +1,5 @@
 #pragma once
-#include "components/Mora.h"
+#include "components/Mora.hpp"
 #include <queue>
 
 namespace our
@@ -74,12 +74,7 @@ namespace our
             for(auto entity : world->getEntities()) {
                 Mora* mora = entity->getComponent<Mora>();
                 if(mora) {
-                    if((accumalatedTime - (int)accumalatedTime) <= 0.01) { //TODO: collision system
-                        currentlyPlaying.push(mora);
-                        count++;
-                        if(count > 99) count = 0;
-                        our::Events::onPaimonPickMora(mora->name);
-                    }
+                    //TODO : collision system
                 }
             }
         }
