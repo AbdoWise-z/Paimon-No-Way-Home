@@ -13,14 +13,20 @@ namespace our {
     class OrbitalCameraComponent: public Component {
     public:
         float Distance = 50;
-        float OrthoZoom = 15;
+        float OrthoZoom = 10;
         float switchSpeed = 0.8; //in sec
-        float _switchProgress = 1;
+        float speed = 4;
         float Divisions = 8;
+        bool inputEnabled = true;
+
+        float _switchProgress = 1;
         float _currentPos = 0;
         float _switchDirection = 1;
+        glm::vec3 _currentLocation = glm::vec3(0,0,0);
+
         glm::vec3 BaseAngle = glm::vec3(-45 , -45 , 0);
-        glm::vec3 Focus = glm::vec3(0 , 0 , 0);
+        glm::vec3 BasePosition = glm::vec3(0 , 0 , 0);
+        std::vector<std::string> follow;
 
         static std::string getID() { return "Orbital Camera Component"; }
         void deserialize(const nlohmann::json& data) override;

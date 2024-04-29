@@ -10,6 +10,7 @@
 #include "components/Ground.hpp"
 #include "components/camera.hpp"
 #include "application.hpp"
+#include "events-system-controller.hpp"
 
 #include <glm/gtx/intersect.hpp>
 #include <queue>
@@ -81,14 +82,21 @@ namespace our{
             int initial;
             //add the initial block
             if (paimon->ground == nullptr) {
+
+                //trigger enter event :)
+                our::Events::onPaimonEnterWorld();
+
                 initial = findBlockNear(
                         pos,
                         up,
                         visited
                 );
+
                 if (initial == -1) return -1;
 
                 paimon->ground = blocks[initial].ground;
+                our::Events::onPaimonEnter(paimon->ground);
+
             }else{
                 initial = -1;
                 for (int i = 0;i < blocks.size();i++){
@@ -113,6 +121,11 @@ namespace our{
         World* world{};
 
         void init(Application* a, World* mWorld){
+            this->paimon = nullptr;
+            this->camera = nullptr;
+            this->marker = nullptr;
+            this->blocks.clear();
+            this->groundMap.clear();
             this->app = a;
             this->world = mWorld;
             update();
@@ -309,7 +322,7 @@ namespace our{
                 index++;
             }
 
-            if (hitI != -1) ((DefaultMaterial*) blocks[hitI].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 2 , 2 , 1);
+            //if (hitI != -1) ((DefaultMaterial*) blocks[hitI].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 2 , 2 , 1);
             if (hitI == -1) return nullptr;
 
             return blocks[hitI].ground;
@@ -336,7 +349,7 @@ namespace our{
                 auto g = k->getComponent<Ground>();
                 if (g){
                     ground_blocks.emplace_back(g);
-                    ((DefaultMaterial*) k->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(1, 0.5 , 0.5 , 1);
+                    //((DefaultMaterial*) k->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(1, 0.5 , 0.5 , 1);
                 }
             }
 
@@ -410,17 +423,18 @@ namespace our{
                 PUSH(index , b);
             }
 
-            auto it = groundMap.begin();
-            while (it != groundMap.end()){
-                ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
-                it++;
-            }
+
+//            auto it = groundMap.begin();
+//            while (it != groundMap.end()){
+//                ((DefaultMaterial*) blocks[it->first].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0.5, 1 , 0.5 , 1);
+//                it++;
+//            }
 
             //try to find route to the last block
-            auto test = findRoute(ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y));
-            for (auto k : test){
-                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
-            }
+//            auto test = findRoute(ScreenToGroundCast(app->getMouse().getMousePosition().x , app->getMouse().getMousePosition().y));
+//            for (auto k : test){
+//                ((DefaultMaterial*) blocks[k.blockIndex].et->getComponent<MeshRendererComponent>()->material)->tint = glm::vec4(0, 0 , 1 , 1);
+//            }
         }
     };
 }

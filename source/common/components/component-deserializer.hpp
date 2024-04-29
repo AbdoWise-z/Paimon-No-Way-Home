@@ -13,6 +13,9 @@
 #include "Ground.hpp"
 #include "OrbitalCameraComponent.h"
 #include "Mora.hpp"
+#include "event-controller.h"
+#include "components/actions/StateAnimator.h"
+
 namespace our {
 
     // Given a json object, this function picks and creates a component in the given entity
@@ -39,13 +42,18 @@ namespace our {
             component = entity->addComponent<PaimonIdle>();
         } else if (type == Paimon::getID()){
             component = entity->addComponent<Paimon>();
-        } else if (type == Mora::getID()){
-            component = entity->addComponent<Mora>();
         } else if (type == Ground::getID()){
             component = entity->addComponent<Ground>();
         } else if (type == OrbitalCameraComponent::getID()){
             component = entity->addComponent<OrbitalCameraComponent>();
+        } else if (type == EventController::getID()){
+            component = entity->addComponent<EventController>();
+        } else if (type == StateAnimator::getID()){
+            component = entity->addComponent<StateAnimator>();
+        } else if (type == Mora::getID()){
+            component = entity->addComponent<Mora>();
         }
+
         if (component) component->deserialize(data);
     }
 

@@ -140,6 +140,23 @@ set(STATES_SOURCES
         source/common/systems/orbital-camera-controller.hpp
         source/common/systems/paimon-movement.hpp
         source/common/systems/common.h
+        source/states/level-menu-state.h
+        source/common/systems/events-system-controller.hpp
+        source/common/systems/events-system-controller.cpp
+        source/common/components/event-controller.cpp
+        source/common/components/event-controller.h
+        source/common/components/actions/action-receiver.cpp
+        source/common/components/actions/action-receiver.h
+        source/common/components/actions/StateAnimator.cpp
+        source/common/components/actions/StateAnimator.h
+        source/common/systems/state-system.hpp
+        source/common/systems/ground-system.hpp
+        source/common/systems/paimon-movement.cpp
+        source/common/systems/ground-system.cpp
+        source/common/systems/CollectablesSystem.h
+        source/common/components/Mora.h
+        source/common/components/Mora.cpp
+        source/common/components/Mora.cpp
 )
 
 # For each example, we add an executable target
