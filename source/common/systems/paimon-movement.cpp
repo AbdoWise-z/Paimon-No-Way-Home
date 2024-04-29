@@ -161,6 +161,13 @@ void our::PaimonMovement::update_angle(our::Paimon *paimon, our::CameraComponent
 }
 
 void our::PaimonMovement::init(our::Application *a) {
+    this->paimon = nullptr;
+    this->camera = nullptr;
+    this->currentTarget = nullptr;
+    this->nextBlock = nullptr;
+    this->lastTargetMaterial = nullptr;
+    this->orbitalCameraComponent = nullptr;
+    this->returnToBlockCenter = false;
     app = a;
     our::GroundSystem::setPaimonController(this);
 }

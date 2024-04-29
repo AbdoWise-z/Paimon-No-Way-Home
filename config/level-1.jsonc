@@ -1,5 +1,5 @@
 {
-  "start-scene": "play",
+  "start-scene": "menu",
   "window":
   {
     "title":"Default Game Window",
@@ -269,6 +269,23 @@
                     "target": "test_movement",
                     "receiverID": "State Animator",
                     "triggerCount": 1,
+                    "triggerDelay": 0.2,
+                    "triggerInterval": 0,
+                    "data": {
+                      "inc": 1,
+                      "duration": 0.5
+                    }
+                  }
+                ]
+              },
+              {
+                "trigger": 2,
+                "object": "test_mora",
+                "actions": [
+                  {
+                    "target": "test_mora",
+                    "receiverID": "State Animator",
+                    "triggerCount": 10,
                     "triggerDelay": 0.2,
                     "triggerInterval": 0,
                     "data": {
@@ -797,6 +814,41 @@
               }
             ]
           },
+          {
+            "name": "test_mora",
+            "position": [4, 2, 0],
+            "scale": [0.003,0.003,0.003],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "mora",
+                "material": "mora",
+                "copy": true
+              },
+              {
+                "type": "Mora"
+              },
+              {
+                "type": "Movement",
+                "angularVelocity": [0,90,0]
+              },
+              {
+                "type": "State Animator",
+                "initialState": 0,
+                "scale": false,
+                "states": [
+                  {
+                    "position": [4, 3, 0],
+                    "rotation": [0,90,0]
+                  },
+                  {
+                    "position": [4, 4, 0],
+                    "rotation": [0,180,0]
+                  }
+                ]
+              }
+            ]
+          },
 
           {
             "name": "testing",
@@ -980,28 +1032,28 @@
           }
         ]
       },
-      {
-        "name": "Mora",
-        "position": [4, 2, 0],
-        "scale": [0.003, 0.003, 0.003],
-        "components": [
-          {
-            "type": "Mesh Renderer",
-            "mesh": "mora",
-            "material": "mora"
-          },
-          {
-            "type": "Movement",
-            "angularVelocity" : [0, 90, 0]
-          },
-          {
-            "type": "Spot Light",
-            "diffuseColor": [1, 1, 0],
-            "intensity": 1,
-            "attenuation": [1,0,0]
-          }
-        ]
-      },
+//      {
+//        "name": "Mora",
+//        "position": [4, 2, 0],
+//        "scale": [0.003, 0.003, 0.003],
+//        "components": [
+//          {
+//            "type": "Mesh Renderer",
+//            "mesh": "mora",
+//            "material": "mora"
+//          },
+//          {
+//            "type": "Movement",
+//            "angularVelocity" : [0, 90, 0]
+//          },
+//          {
+//            "type": "Spot Light",
+//            "diffuseColor": [1, 1, 0],
+//            "intensity": 1,
+//            "attenuation": [1,0,0]
+//          }
+//        ]
+//      },
       {
         "position": [10 ,1.7 , 0],
         "rotation": [0, 270, 0],

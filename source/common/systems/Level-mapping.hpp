@@ -121,6 +121,11 @@ namespace our{
         World* world{};
 
         void init(Application* a, World* mWorld){
+            this->paimon = nullptr;
+            this->camera = nullptr;
+            this->marker = nullptr;
+            this->blocks.clear();
+            this->groundMap.clear();
             this->app = a;
             this->world = mWorld;
             update();

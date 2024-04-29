@@ -10,6 +10,7 @@
 #include "ConeLight.h"
 #include "PaimonIdle.hpp"
 #include "Paimon.hpp"
+#include "Mora.h"
 #include "Ground.hpp"
 #include "OrbitalCameraComponent.h"
 #include "event-controller.h"
@@ -49,6 +50,8 @@ namespace our {
             component = entity->addComponent<EventController>();
         } else if (type == StateAnimator::getID()){
             component = entity->addComponent<StateAnimator>();
+        }else if(type == Mora::getID()) {
+            component = entity->addComponent<Mora>();
         }
 
         if (component) component->deserialize(data);
