@@ -283,6 +283,8 @@ class Playstate: public our::State {
         cameraController.update(&world, (float)deltaTime);
         paimonIdleSystem.update(&world, (float)deltaTime);
         orbitalCameraControllerSystem.update(&world , (float) deltaTime);
+
+        levelMapping.update();
         paimonMovement.update(&world , &levelMapping, (float) deltaTime);
 
         mora_count += collisionSystem.update(&world);

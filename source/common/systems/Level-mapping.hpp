@@ -24,28 +24,12 @@
 #define TYPE2_DIRECTION_ALIGNMENT   0.999
 #define BLOCK_WIDTH            1.0f
 
-#define PUSH(i, k) if (k.first >= 0) {groundMap[i].push_back(k); if (!visitedBlocks[k.first]) next.push(k.first);}
+#define PUSH(i, k) if (k.first >= 0) {groundMap[i].push_back(k);}
 
 namespace our{
 
     class LevelMapping {
     private:
-
-        [[nodiscard]] inline int findBlockNear(const glm::vec3& paimonPos,const glm::vec3& paimonUp,const std::vector<bool>& visited) const{
-            for (int i = 0;i < blocks.size();i++){
-                if (visited[i]) continue;
-
-                auto block = blocks[i];
-                if (glm::dot(paimonUp, block.up) < UP_TO_UP_ALIGNMENT) continue;
-
-                auto dis = block.position - paimonPos + paimonUp * PAIMON_TO_BLOCK_OFFSET;
-                if (glm::dot(dis , dis) < PAIMON_TO_BLOCK_DIST){ //a near block
-                    return i;
-                }
-            }
-            return -1;
-        }
-
         [[nodiscard]] inline std::pair<int,glm::vec3> findBlockAlongDirection2(
                 const glm::vec3& direction,
                 const glm::vec3& position,
@@ -78,50 +62,16 @@ namespace our{
             return {ret , block_position};
         }
 
-        inline int getPaimonInitialPosition(const glm::vec3& pos, const glm::vec3& up, std::vector<bool>& visited){
-            int initial;
-            //add the initial block
-            if (paimon->ground == nullptr) {
-
-                //trigger enter event :)
-                our::Events::onPaimonEnterWorld();
-
-                initial = findBlockNear(
-                        pos,
-                        up,
-                        visited
-                );
-
-                if (initial == -1) return -1;
-
-                paimon->ground = blocks[initial].ground;
-                our::Events::onPaimonEnter(paimon->ground);
-
-            }else{
-                initial = -1;
-                for (int i = 0;i < blocks.size();i++){
-                    if (blocks[i].ground == paimon->ground){
-                        initial = i;
-                        break;
-                    }
-                }
-            }
-
-            return initial;
-        }
-
         std::vector<GroundBlock> blocks;
         GroundLinks groundMap;
 
     public:
         Application* app{};
-        Paimon* paimon{};
         CameraComponent* camera{};
         Entity* marker{};
         World* world{};
 
         void init(Application* a, World* mWorld){
-            this->paimon = nullptr;
             this->camera = nullptr;
             this->marker = nullptr;
             this->blocks.clear();
@@ -129,6 +79,26 @@ namespace our{
             this->app = a;
             this->world = mWorld;
             update();
+        }
+
+        [[nodiscard]] inline Ground* findBlockNear(const glm::vec3& paimonPos,const glm::vec3& paimonUp) const{
+            for (auto block : blocks){
+                if (glm::dot(paimonUp, block.up) < UP_TO_UP_ALIGNMENT) continue;
+
+                auto dis = block.position - paimonPos + paimonUp * PAIMON_TO_BLOCK_OFFSET;
+                auto len = glm::length(dis);
+                if (len < PAIMON_TO_BLOCK_DIST){ //a near block
+                    return block.ground;
+                }
+            }
+            return nullptr;
+        }
+
+        inline glm::vec3 getBlockPositionWorld(Ground* g){
+            if (g == nullptr){
+                throw "Ground can't be null";
+            }
+            return g->getOwner()->getWorldPosition();
         }
 
         inline glm::vec3 getBlockPosition(Ground* g){
@@ -143,37 +113,38 @@ namespace our{
             );
             return pos;
         }
-        // block_pos in camera space
-        float getPaimonDistanceToGround(glm::vec3 block_pos){
-            auto PV = camera->getViewMatrix();
-            glm::vec3 paimonUp       = glm::vec3(
-                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0 , 1 , 0 , 0.0)
-            );
 
+        // block_pos in camera space
+        float getPaimonDistanceToGround(glm::vec3 block_pos , glm::vec3 paimonPos , glm::vec3 paimonUp){
+            auto PV = camera->getViewMatrix();
+            paimonUp       = glm::vec3(
+                    PV * glm::vec4(paimonUp , 0.0)
+            );
             paimonUp = glm::normalize(paimonUp);
 
-            glm::vec3 paimonPos       = glm::vec3(
-                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0 , 0 , 0 , 1.0)
+            paimonPos     = glm::vec3(
+                    PV * glm::vec4(paimonPos , 1.0)
             );
 
             auto dis = block_pos - paimonPos + paimonUp * PAIMON_TO_BLOCK_OFFSET;
             return glm::length(dis);
         }
 
-        float getPaimonDistanceToGround2D(glm::vec3 block_pos){
+        // Calculates paimon distance to the ground from camera perspective
+        // block_pos: the block position in world space
+        // paimonPos: paimon position in world space
+        // paimonUp : a vector pointing from paimon upwards in world space
+        float getPaimonDistanceToGround2D(glm::vec3 block_pos , glm::vec3 paimonPos , glm::vec3 paimonUp){
             auto PV = camera->getViewMatrix();
-            glm::vec3 paimonUp       = glm::vec3(
-                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0 , 1 , 0 , 0.0)
+            paimonUp       = glm::vec3(
+                    PV * glm::vec4(paimonUp , 0.0)
             );
-
             paimonUp = glm::normalize(paimonUp);
-
-            glm::vec3 paimonPos       = glm::vec3(
-                    PV * paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0 , 0 , 0 , 1.0)
+            paimonPos     = glm::vec3(
+                    PV * glm::vec4(paimonPos , 1.0)
+            );
+            block_pos     = glm::vec3(
+                    PV * glm::vec4(block_pos , 1.0)
             );
 
             paimonPos.z = 0;
@@ -185,35 +156,30 @@ namespace our{
         }
 
 
-        std::vector<RoutePart> findRoute(Ground* target){
-            if (target == nullptr) return {};
+        std::vector<RoutePart> findRoute(Ground* start , Ground* target){
+            if (target == nullptr || start == nullptr) {
+                std::cout << "Error: Target or Start is equal to null |  target = " << target << " , start = " << start << std::endl;
+                return {};
+            }
+
+            if (start == target){
+                return {};
+            }
+
             auto PV = camera->getViewMatrix();
-
-            glm::vec3 paimonUp       = glm::vec3(
-                    paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0 , 1 , 0 , 0.0)
-            );
-
-            glm::vec3 paimonPosition = glm::vec3(
-                    PV *
-                    paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0,0,0 , 1.0)
-            );
-
-            glm::vec3 paimonViewUp = glm::vec3(PV * glm::vec4(paimonUp , 0.0));
-            paimonViewUp = glm::normalize(paimonViewUp);
-
             std::vector<bool> visited;
-            for (auto k : blocks) visited.push_back(false);
+            int initial = -1;
+            for (int i = 0;i < blocks.size();i++) {
+                visited.push_back(false);
+                if (blocks[i].ground == start){
+                    initial = i;
+                }
+            }
 
-            int initial = getPaimonInitialPosition(paimonPosition, paimonViewUp, visited);
-
-            if (initial == -1) return {};
-            if (blocks[initial].ground == target) return {};
-
-
-            visited.clear();
-            for (auto k : blocks) visited.push_back(false);
+            if (initial == -1) {
+                std::cout << "Error: Failed to find the initial block";
+                return {};
+            }
 
             auto root = new PathTreeNode<std::pair<int,glm::vec3>>();
             root->value = {initial , blocks[initial].position};
@@ -272,6 +238,7 @@ namespace our{
                 };
                 route.emplace_back(p);
             }
+
             return route;
         }
 
@@ -334,7 +301,6 @@ namespace our{
 
         void update() {
             std::vector<Ground*> ground_blocks;
-            std::vector<bool> visitedBlocks;
 
             blocks.clear();
             groundMap.clear();
@@ -344,7 +310,6 @@ namespace our{
                 if (k->name == "marker"){
                     marker = k;
                 }
-                if (paimon == nullptr) paimon = k->getComponent<Paimon>();
                 if (camera == nullptr) camera = k->getComponent<CameraComponent>();
                 auto g = k->getComponent<Ground>();
                 if (g){
@@ -353,7 +318,7 @@ namespace our{
                 }
             }
 
-            if (!camera || !paimon) return;
+            if (!camera) return;
 
             auto PV = camera->getViewMatrix();
             for (auto k : ground_blocks){
@@ -370,57 +335,35 @@ namespace our{
                 };
 
                 blocks.emplace_back(b);
-                visitedBlocks.push_back(false);
             }
 
-            glm::vec3 paimonUp       = glm::vec3(
-                    paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0 , 1 , 0 , 0.0)
-                    );
-
-            glm::vec3 paimonPosition = glm::vec3(
-                    PV *
-                    paimon->getOwner()->getLocalToWorldMatrix() *
-                    glm::vec4(0,0,0 , 1.0)
-                    );
-
-            glm::vec3 paimonViewUp = glm::vec3(PV * glm::vec4(paimonUp , 0.0));
             glm::vec3 left         = glm::vec3(PV * glm::vec4(1,0,0 , 0.0));
             glm::vec3 top          = glm::vec3(PV * glm::vec4(0,1,0 , 0.0));
             glm::vec3 forward      = glm::vec3(PV * glm::vec4(0,0,1 , 0.0));
 
-            paimonViewUp = glm::normalize(paimonViewUp);
             left         = glm::normalize(left);
             forward      = glm::normalize(forward);
             top          = glm::normalize(top);
 
-
             std::queue<int> next;
-            int initial = getPaimonInitialPosition(paimonPosition, paimonViewUp, visitedBlocks);
-
-            if (initial >= 0)
-                next.push(initial);
-
-
-            glm::vec3 camForward = glm::vec3(
-                    glm::mat4(1) * glm::vec4(0,0,1,0)
-                    );
+            for (int i = 0;i < blocks.size();i++){
+                next.push(i);
+            }
 
             while (!next.empty()){
                 auto index = next.front(); next.pop();
-                visitedBlocks[index] = true;
 
                 GroundBlock g = blocks[index];
 
-                auto l = findBlockAlongDirection2(left     , g.position , paimonViewUp, index );
-                auto r = findBlockAlongDirection2(-left    , g.position , paimonViewUp, index );
-                auto f = findBlockAlongDirection2(forward  , g.position , paimonViewUp, index );
-                auto b = findBlockAlongDirection2(-forward , g.position , paimonViewUp, index );
+                auto l = findBlockAlongDirection2(left     , g.position , top, index );
+                auto r = findBlockAlongDirection2(-left    , g.position , top, index );
+                auto f = findBlockAlongDirection2(forward  , g.position , top, index );
+                auto b = findBlockAlongDirection2(-forward , g.position , top, index );
 
-                PUSH(index , l);
-                PUSH(index , r);
-                PUSH(index , f);
-                PUSH(index , b);
+                PUSH(index , l)
+                PUSH(index , r)
+                PUSH(index , f)
+                PUSH(index , b)
             }
 
 
