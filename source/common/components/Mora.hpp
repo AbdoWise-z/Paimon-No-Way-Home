@@ -15,7 +15,7 @@ namespace our {
 
     class Mora : public Component {
     public:
-        int id;
+        glm::vec3 offset = glm::vec3(0,1,0);
         static std::string getID() { return "Mora"; }
         void deserialize(const nlohmann::json& data) override;
     };

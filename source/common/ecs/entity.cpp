@@ -37,4 +37,10 @@ namespace our {
         return {getLocalToWorldMatrix() * glm::vec4(0,0,0,1) };
     }
 
+    bool Entity::hasAncestor(Entity *other) const {
+        if (parent == nullptr)
+            return false;
+        return parent == other || parent->hasAncestor(other);
+    }
+
 }

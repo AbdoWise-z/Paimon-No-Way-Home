@@ -31,7 +31,7 @@ namespace our{
             for(auto entity : world->getEntities()){
                 camera = entity->getComponent<CameraComponent>();
                 controller = entity->getComponent<OrbitalCameraComponent>();
-                if(camera && controller) break;
+                if (camera && controller) break;
             }
 
 
@@ -81,6 +81,7 @@ namespace our{
                         controller->_currentPos--;
                         controller->_switchDirection = -1;
                         controller->_switchProgress = 1;
+                        Events::onPaimonCameraChange(controller->getOwner()->name);
                     }
 
                     if (app->getKeyboard().isPressed(GLFW_KEY_E)) {

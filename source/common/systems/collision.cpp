@@ -3,16 +3,19 @@
 //
 #include "collision.hpp"
 #include "components/Paimon.hpp"
+#include "events-system-controller.hpp"
 
 namespace our {
 
     void CollisionSystem::init(Application *app) {
         this->app = app;
-        counter = 0;
+
     }
 
     int CollisionSystem::update(World *world) {
         int count = 0;
+        glm::vec3 paimonPos;
+        Entity* paimon;
         for (auto entity: world->getEntities()) {
             if (entity->getComponent<Paimon>() != nullptr) {
                 paimonPos = entity->getWorldPosition();
@@ -21,17 +24,19 @@ namespace our {
                 break;
             }
         }
+
+        if (!paimon) return 0;
+
         for (auto entity: world->getEntities()) {
             glm::vec3 moraVec = entity->getWorldPosition();
             Mora *moraObject = entity->getComponent<Mora>();
 
             if (moraObject != nullptr) {
-                auto len = glm::length(paimonPos - moraVec);
-                //std::cout << "Len: " << len << std::endl;
-
-                if (len <  1.1f) {
+                auto len = glm::length(paimonPos - moraVec + moraObject->offset);
+                if (len <  1.5f) {
                     //moraObject->getOwner()->localTransform.position[1] = 100;
                     //std::cout << "Mora Hit" << std::endl;
+                    our::Events::onPaimonPickMora(entity->name);
                     world->markForRemoval(entity);
                     count ++;
                 }
@@ -47,7 +52,5 @@ namespace our {
 
     void CollisionSystem::exit() {
         app = nullptr;
-        mora = nullptr;
-        paimon = nullptr;
     }
 }

@@ -17,7 +17,7 @@ namespace our{
         inline T lerp(const T& a, const T& b, float val){
             return a * (1 - val) + val * b;
         }
-        inline void update_state(StateAnimator* state, float deltaTime){
+        inline void update_state(StateAnimator* state, float deltaTime , World* world){
             if (state->currentState != state->nextState){
                 state->transitionProgress += deltaTime;
 
@@ -53,7 +53,18 @@ namespace our{
                         val
                 );
 
+
                 auto k = state->getOwner();
+
+                std::vector<Entity*> children;
+                std::vector<glm::vec3> positions;
+                for (auto child : world->getEntities()){
+                    if (child->getComponent<Ground>() && child->hasAncestor(k)){
+                        positions.push_back(child->getWorldPosition());
+                        children.push_back(child);
+                    }
+                }
+
                 if (state->position) {
                     auto diff = k->getWorldPosition();
                     k->localTransform.position = pos;
@@ -69,6 +80,11 @@ namespace our{
                         auto mat = (DefaultMaterial *) renderer->material;
                         mat->tint = tnt;
                     }
+                }
+
+                for (int i = 0;i < children.size();i++){
+                    auto diff = children[i]->getWorldPosition() - positions[i];
+                    our::GroundSystem::onGroundMoved(children[i]->getComponent<Ground>() , diff);
                 }
 
                 if (done){
@@ -101,7 +117,7 @@ namespace our{
             for (auto k : world->getEntities()){
                 auto state = k->getComponent<StateAnimator>();
                 if (state && state->currentState != state->nextState){
-                    update_state(state , deltaTime);
+                    update_state(state , deltaTime , world);
                 }
             }
         }

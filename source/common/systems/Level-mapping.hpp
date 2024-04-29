@@ -26,6 +26,8 @@
 
 #define PUSH(i, k) if (k.first >= 0) {groundMap[i].push_back(k);}
 
+#define v3AB(a , b , v) v = glm::vec3(a * b * glm::vec4(v , 1.0))
+
 namespace our{
 
     class LevelMapping {
@@ -68,12 +70,10 @@ namespace our{
     public:
         Application* app{};
         CameraComponent* camera{};
-        Entity* marker{};
         World* world{};
 
         void init(Application* a, World* mWorld){
             this->camera = nullptr;
-            this->marker = nullptr;
             this->blocks.clear();
             this->groundMap.clear();
             this->app = a;
@@ -261,9 +261,6 @@ namespace our{
             auto temp = vsVector;
             temp.z = -1;
             glm::vec4 pos = glm::inverse(camera->getViewMatrix()) * vsVector;
-            marker->localTransform.position.x = pos.x;
-            marker->localTransform.position.y = pos.y;
-            marker->localTransform.position.z = pos.z;
 
             float minDis = 1e15;
             int hitI     = -1;
@@ -271,15 +268,64 @@ namespace our{
             for (auto k: blocks){
                 float val = 0;
 
-                //currently, I'm doing Sphere ray cast cuz it just easier ..
-                if (glm::intersectRaySphere(
-                        glm::vec3(vsVector),
-                        glm::vec3(0,0,1),
-                        k.position,
-                        2.0f,
-                        val
-                        )){
+                auto p = glm::vec3(0);
+                auto Ma = k.et->getLocalToWorldMatrix();
+                auto Mb = camera->getViewMatrix();
+                auto v0 = glm::vec3(-1,-1, 1);
+                auto v1 = glm::vec3( 1,-1, 1);
+                auto v2 = glm::vec3(-1, 1, 1);
+                auto v3 = glm::vec3( 1, 1, 1);
+                auto v4 = glm::vec3(-1,-1,-1);
+                auto v5 = glm::vec3( 1,-1,-1);
+                auto v6 = glm::vec3(-1, 1,-1);
+                auto v7 = glm::vec3( 1, 1,-1);
+                v3AB(Mb , Ma , v0);
+                v3AB(Mb , Ma , v1);
+                v3AB(Mb , Ma , v2);
+                v3AB(Mb , Ma , v3);
+                v3AB(Mb , Ma , v4);
+                v3AB(Mb , Ma , v5);
+                v3AB(Mb , Ma , v6);
+                v3AB(Mb , Ma , v7);
 
+                bool intersect = glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v0,v1,v2,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v2,v1,v3,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v0,v4,v2,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v4,v2,v6,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v6,v2,v7,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v2,v7,v3,
+                                p
+                        );
+
+                if (intersect){
                     if (abs(k.position.z) < minDis){
                         minDis = abs(k.position.z);
                         hitI = index;
@@ -307,9 +353,6 @@ namespace our{
 
             //first we need to get all of our objects ready
             for (auto k : world->getEntities()){
-                if (k->name == "marker"){
-                    marker = k;
-                }
                 if (camera == nullptr) camera = k->getComponent<CameraComponent>();
                 auto g = k->getComponent<Ground>();
                 if (g){

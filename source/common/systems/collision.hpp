@@ -21,11 +21,6 @@ namespace our
     class CollisionSystem
     {
         Application *app;
-        glm::vec3 paimonPos;
-        Entity *mora = nullptr;
-        Entity *paimon = nullptr;
-        int counter = 0;
-
     public:
         void init(Application *app);
         int update(World *world);

@@ -51,6 +51,10 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
 
     if (paimon->ground == nullptr){
         paimon->ground = level->findBlockNear(paimonViewPos , paimonViewUp);
+        if (paimon->ground){
+            Events::onPaimonEnterWorld();
+        }
+
     }
 
     if (paimon->ground == nullptr){
@@ -70,10 +74,12 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
         update_angle(paimon, camera, diff , deltaTime);
         auto dis = level->getPaimonDistanceToGround2D(myBlock , paimonPos , paimonUp);
         if (dis <= BLOCK_REACH_MAX_DIFF){
-            std::cout << "Return to Center" << std::endl;
+            // std::cout << "Return to Center" << std::endl;
             returnToBlockCenter = false;
             paimon->getOwner()->localTransform.position = glm::vec3(glm::inverse(camera->getViewMatrix()) * glm::vec4(pos2 , 1.0));
         }
+
+        return;
     }
 
     if (currentTarget && nextBlock){
@@ -85,7 +91,7 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
                 nextBlock = route[1].ground;
                 nextBlockPosition =  camInverse * glm::vec4(route[1].fakePosition , 1.0);
             } else {
-                std::cout << "Reached end" << std::endl;
+                // std::cout << "Reached end" << std::endl;
                 paimon->getOwner()->localTransform.position = nextBlockPosition + glm::vec3(0,1,0) * PAIMON_TO_BLOCK_OFFSET;
                 currentTarget = nullptr;
                 nextBlock = nullptr;
@@ -95,7 +101,7 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
             auto myBlockView = cam * glm::vec4(myBlock , 1.0);
             auto nextBlockRoute = level->findRoute(paimon->ground , currentTarget);
             if (nextBlockRoute.empty()){
-                std::cout << "Path cut" << std::endl;
+                // std::cout << "Path cut" << std::endl;
                 currentTarget = nullptr;
                 nextBlock = nullptr;
                 returnToBlockCenter = true;
@@ -125,7 +131,7 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
     }
 
     orbitalCameraComponent->inputEnabled = true;
-    if (app->getMouse().isPressed(0)){ //left click
+    if (app->getMouse().isPressed(0) && target != nullptr) { //left click
         auto route = level->findRoute(paimon->ground, target);
         if (route.size() > 1){
             currentTarget = target;

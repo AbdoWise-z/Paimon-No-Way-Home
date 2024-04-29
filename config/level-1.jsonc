@@ -223,6 +223,7 @@
     },
     "world":[
       {
+        "name": "Events",
         "components":[
           {
             "type": "Event Controller",
@@ -280,7 +281,7 @@
               },
               {
                 "trigger": 2,
-                "object": "test_mora",
+                "object": "test_pick",
                 "actions": [
                   {
                     "target": "test_mora",
@@ -326,7 +327,6 @@
           }
         ]
       },
-
       {
         "name": "Light",
         "components": [
@@ -338,7 +338,6 @@
           }
         ]
       },
-
       {
         "name": "Level",
         "position": [0, 0, 0],
@@ -814,6 +813,7 @@
               }
             ]
           },
+
           {
             "name": "test_mora",
             "position": [4, 2, 0],
@@ -836,16 +836,36 @@
                 "type": "State Animator",
                 "initialState": 0,
                 "scale": false,
+                "rotation": false,
                 "states": [
                   {
-                    "position": [4, 3, 0],
-                    "rotation": [0,90,0]
+                    "position": [6, 10, 0]
                   },
                   {
-                    "position": [4, 4, 0],
-                    "rotation": [0,180,0]
+                    "position": [6, 2, 0]
                   }
                 ]
+              }
+            ]
+          },
+
+          {
+            "name": "test_pick",
+            "position": [4, 2, 0],
+            "scale": [0.003,0.003,0.003],
+            "components": [
+              {
+                "type": "Mesh Renderer",
+                "mesh": "mora",
+                "material": "mora",
+                "copy": true
+              },
+              {
+                "type": "Mora"
+              },
+              {
+                "type": "Movement",
+                "angularVelocity": [0,90,0]
               }
             ]
           },
@@ -930,7 +950,6 @@
           }
         ]
       },
-
       {
         "name": "Paimon",
         "position": [0 , 1, 0],
@@ -1032,28 +1051,6 @@
           }
         ]
       },
-//      {
-//        "name": "Mora",
-//        "position": [4, 2, 0],
-//        "scale": [0.003, 0.003, 0.003],
-//        "components": [
-//          {
-//            "type": "Mesh Renderer",
-//            "mesh": "mora",
-//            "material": "mora"
-//          },
-//          {
-//            "type": "Movement",
-//            "angularVelocity" : [0, 90, 0]
-//          },
-//          {
-//            "type": "Spot Light",
-//            "diffuseColor": [1, 1, 0],
-//            "intensity": 1,
-//            "attenuation": [1,0,0]
-//          }
-//        ]
-//      },
       {
         "position": [10 ,1.7 , 0],
         "rotation": [0, 270, 0],
