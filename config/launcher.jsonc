@@ -3,7 +3,7 @@
   "start-scene": "splash",
   "window":
   {
-    "title":"Default Game Window",
+    "title":"Paimon: No Way Home",
     "size":{
       "width":1280,
       "height":720
@@ -11,6 +11,10 @@
     "fullscreen": false
   },
   "levels" : [
-    "config/levels/level-0.jsonc"
+    "config/levels/level-0.jsonc",
+    "config/levels/level-1.jsonc",
+    "config/levels/level-2.jsonc",
+    "config/levels/level-3.jsonc",
+    "config/levels/level-4.jsonc"
   ]
 }

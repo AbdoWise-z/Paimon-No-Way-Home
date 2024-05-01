@@ -28,17 +28,24 @@ our::AudioPlayer::~AudioPlayer() {
     }
 }
 
-void our::AudioPlayer::playSound(const char* soundFile, bool looped, float volume) {
+ISound* our::AudioPlayer::playSound(const char* soundFile, bool looped, float volume) {
     if (SoundEngine) {
         // Play the sound with the specified volume
         auto audio = SoundEngine->play2D(soundFile, looped, false, true, ESM_STREAMING, false);
         audio->setVolume(volume);
         audio->setPlaybackSpeed(1);
+        return audio;
     }
 }
 bool our::AudioPlayer::isPlaying(const char* soundFile) {
         // Play the sound with the specified volume
         return SoundEngine->isCurrentlyPlaying(soundFile);
+}
+void our::AudioPlayer::stopAllSounds() {
+    SoundEngine->stopAllSounds();
+}
+void our::AudioPlayer::stopSound(ISoundSource* src) {
+    SoundEngine->stopAllSoundsOfSoundSource(src);
 }
 // Function to get the singleton instance
 our::AudioPlayer* our::AudioPlayer::getInstance() {

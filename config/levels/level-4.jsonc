@@ -1,7 +1,7 @@
 {
   //this will contain the actual level data :)
   "game": {
-    "remainingTime": 5
+    "remainingTime": 400
   },
   "renderer":{
     "sky": "assets/textures/skybox_0.png",
@@ -56,7 +56,7 @@
         "music": "assets/sounds/osts/Maidens of Sanctity.mp3",
         "volume": 0.2
       },"level_won":{
-        "music": "assets/sounds/sfx/oi-paimon.mp3",
+        "music": "assets/sounds/oi-paimon.mp3",
         "volume": 10.0
       },"level_lost":{
         "music": "assets/sounds/sfx/ehe_te_nandayo.mp3",

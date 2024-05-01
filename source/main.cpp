@@ -10,6 +10,7 @@
 
 #define EXTERN
 #include "globals.h"
+#include "states/level-menu-state.h"
 
 #include "states/play-state.hpp"
 #include "states/main-menu-state.h"
@@ -46,6 +47,7 @@ int main(int argc, char** argv) {
     app.registerState<Playstate>("play");
     app.registerState<MainMenuState>("main-menu");
     app.registerState<SplashScreenState>("splash");
+    app.registerState<LevelMenuState>("level-menu");
 
     // Then choose the state to run based on the option "start-scene" in the config
     if(app_config.contains(std::string{"start-scene"})){

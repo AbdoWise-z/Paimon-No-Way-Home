@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include <string>
+
 #include <irrKlang.h>
 
 using namespace irrklang;
@@ -15,9 +15,11 @@ namespace our {
     public:
         AudioPlayer();
         ~AudioPlayer();
-        void playSound(const char* soundFile, bool looped, float volume);
+        ISound* playSound(const char* soundFile, bool looped, float volume);
         static AudioPlayer* getInstance();
         bool isPlaying(const char* soundFile);
+        void AudioPlayer::stopAllSounds();
+        void AudioPlayer::stopSound(ISoundSource* src);
     };
 
 }

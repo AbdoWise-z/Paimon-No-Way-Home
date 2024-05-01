@@ -125,7 +125,6 @@ set(COMMON_SOURCES
         source/common/systems/ground-system.hpp
         source/common/systems/paimon-movement.cpp
         source/common/systems/ground-system.cpp
-        source/common/systems/CollectablesSystem.h
         source/common/components/Mora.cpp
         source/common/components/Mora.cpp
 )
@@ -151,6 +150,7 @@ set(STATES_SOURCES
         source/states/play-state.hpp
         source/states/main-menu-state.h
         source/states/splash-screen-state.hpp
+        source/states/level-menu-state.h
 )
 
 # For each example, we add an executable target

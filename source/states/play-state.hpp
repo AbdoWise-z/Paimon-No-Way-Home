@@ -7,7 +7,6 @@
 #include <systems/free-camera-controller.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
-#include <imgui_internal.h>
 
 #include "systems/paimon-idle.hpp"
 #include "systems/Level-mapping.hpp"
@@ -16,10 +15,7 @@
 #include "systems/collision.hpp"
 #include <random>
 #include "audio/audio.hpp"
-#include <irrKlang.h>
 
-
-#include "systems/CollectablesSystem.h"
 #include "systems/state-system.hpp"
 #include "texture/texture-utils.hpp"
 
@@ -41,15 +37,12 @@ class Playstate: public our::State {
     our::PaimonMovement paimonMovement;
     our::AudioPlayer* audioPlayer = our::AudioPlayer::getInstance();
     our::StateSystem stateSystem;
-    our::CollectablesSystem collectablesSystem;
     // textures
     our::Texture2D* mora_tex;
     our::Texture2D* game_over_tex;
     our::Texture2D* game_won_tex;
     our::Texture2D* paimon_icon;
     our::Texture2D* button_style;
-    //fonts
-    ImFont* genhsinFont = nullptr;
     // size of framebuffer
     glm::ivec2 size;
     // count of mora
@@ -59,7 +52,7 @@ class Playstate: public our::State {
     // audios
     std::pair<std::string,float>* game_over_audio;
     std::pair<std::string,float>* game_won_audio;
-    std::pair<std::string,float>* ost;
+    ISound* ost;
     // time remaining to lose
     int remainingTime = 3;
     // HUD parameters
@@ -184,7 +177,10 @@ class Playstate: public our::State {
             if(gameState == LOST){
                 getApp()->changeState("play");
             }else {
-                //TODO: go to next level
+                our::curr_level++;
+                our::level_path = getApp()->getConfig()["levels"][our::curr_level % 5].get<std::string>();
+                getApp()->changeState("play");
+                audioPlayer->stopSound(ost->getSoundSource());
             }
             playSound = false;
         }
@@ -213,6 +209,7 @@ class Playstate: public our::State {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             getApp()->changeState("main-menu");
             playSound = false;
+            audioPlayer->stopSound(ost->getSoundSource());
         }
         if(ImGui::IsItemHovered() && !playHoverSound && !exit_hover) {
             audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
@@ -235,9 +232,9 @@ class Playstate: public our::State {
 
     void drawMenu() {
 
-        static bool button1_hover =false;
-        static bool button2_hover =false;
-        static bool button3_hover =false;
+        static bool button1_hover = false;
+        static bool button2_hover = false;
+        static bool button3_hover = false;
         static bool playHoverSound = false;
 
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.5f));
@@ -257,8 +254,9 @@ class Playstate: public our::State {
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.24f, 0.24f, 0.9f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
         if(ImGui::Button("Levels",{buttonWidth, 0})) {
-            //TODO: go to levels menu state
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
+            getApp()->changeState("level-menu");
+            audioPlayer->stopSound(ost->getSoundSource());
         }
         if(ImGui::IsItemHovered() && !button1_hover) {
             audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
@@ -296,6 +294,7 @@ class Playstate: public our::State {
         if(ImGui::Button("Main Menu",{buttonWidth, 0})) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             getApp()->changeState("main-menu");
+            audioPlayer->stopSound(ost->getSoundSource());
         }
         if(ImGui::IsItemHovered() && !button3_hover) {
             audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
@@ -341,7 +340,8 @@ class Playstate: public our::State {
 
         gameState = PLAYING;
         showMenu = false;
-    } //TODO: delete things
+        mora_count = 0;
+    }
 
     void onImmediateGui() override {
         ImGui::ShowDemoWindow(nullptr);
@@ -368,7 +368,6 @@ class Playstate: public our::State {
 
         initHUD();
 
-        collectablesSystem.init();
         renderer.initialize(size, config["renderer"]);
         our::Events::Init(getApp() , &world);
         stateSystem.init(&world);
@@ -378,13 +377,11 @@ class Playstate: public our::State {
         collisionSystem.init(getApp());
         cameraController.enter(getApp());
 
-        ost = our::AssetLoader<std::pair<std::string, float>>::get("ost");
+        auto audio = our::AssetLoader<std::pair<std::string, float>>::get("ost");
         game_over_audio = our::AssetLoader<std::pair<std::string, float>>::get("level_lost");
         game_won_audio = our::AssetLoader<std::pair<std::string, float>>::get("level_won");
-        if (ost) {
-            audioPlayer->playSound(ost->first.c_str(), true, ost->second); // Play a sound with volume 0.5
-        }else{
-            std::cout<< "OST is not found" <<std::endl;
+        if (audio && !audioPlayer->isPlaying(audio->first.c_str())) {
+            ost = audioPlayer->playSound(audio->first.c_str(), true, audio->second); // Play a sound with volume 0.5
         }
     }
 
@@ -421,7 +418,6 @@ class Playstate: public our::State {
 
     void onDestroy() override {
         destroyHUD();
-        collectablesSystem.destroy();
         renderer.destroy();
         cameraController.exit();
         world.clear();

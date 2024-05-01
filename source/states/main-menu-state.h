@@ -2,28 +2,25 @@
 #pragma once
 
 #include <application.hpp>
-#include <shader/shader.hpp>
 #include <texture/texture2d.hpp>
 #include <texture/texture-utils.hpp>
-#include <material/material.hpp>
-#include <mesh/mesh.hpp>
 
-#include <functional>
-#include <array>
+#include "../globals.h"
 
 class MainMenuState : public our::State{
-
-    our::AudioPlayer* audioPlayer = our::AudioPlayer::getInstance();
 
     //textures
     std::vector<our::Texture2D*> main_menu_tex;
     our::Texture2D* main_menu_logo;
     our::Texture2D* button_style;
-
+    //audio
+    our::AudioPlayer* audioPlayer = our::AudioPlayer::getInstance();
+    //background
     int main_menu_index = 0;
     float accumaltedTime = 0;
 
     void onInitialize() override {
+        our::curr_level = 0;
         for(int i = 0; i < 50; i++) {
             std::string path = "assets/textures/main_menu/frame_" + std::to_string(i);
             path += "_delay-0.1s.png";
@@ -31,48 +28,13 @@ class MainMenuState : public our::State{
         }
         main_menu_logo = our::texture_utils::loadImage("assets/textures/main_menu/main_menu.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
+        our::ost_path = "assets/sounds/osts/The Caress of Three Mothers.mp3";
+        if(!audioPlayer->isPlaying(our::ost_path)) {
+            our::ost = audioPlayer->playSound(our::ost_path,true,0.5f);
+        }
     }
 
     void onImmediateGui() override {
-
-        static float tempx = 0;
-        static float tempy = 0;
-        static float posx = 0;
-        static float posy = 0;
-        auto key = getApp()->getKeyboard();
-        if(key.isPressed(GLFW_KEY_1)) {
-            tempx +=0.5f;
-            std::cout<<"sizex=" <<tempx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_2)) {
-            tempy +=0.5f;
-            std::cout<<"sizey=" <<tempy<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_3)) {
-            tempx -=0.5f;
-            std::cout<<"sizex=" <<tempx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_4)) {
-            tempy -=0.5f;
-            std::cout<<"sizey=" <<tempy<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_5)) {
-            posx +=0.5f;
-            std::cout<<"posx=" <<posx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_6)) {
-            posy +=0.05f;
-            std::cout<<"posy=" <<posy<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_7)) {
-            posx -=0.5f;
-            std::cout<<"posx=" <<posx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_8)) {
-            posy -=0.05f;
-            std::cout<<"posy=" <<posy<<std::endl;
-        }
-
         static bool playHoverSound = false;
         static bool start_hover = false;
         static bool exit_hover = false;
@@ -94,10 +56,8 @@ class MainMenuState : public our::State{
 
         ImGui::SetCursorPos({1280/2 - 140/2,500});
         if(ImGui::Button("Start",{140,0})) {
-            //TODO: implement level change logic here
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
-            our::level_path = getApp()->getConfig()["levels"][0].get<std::string>();
-            getApp()->changeState("play");
+            getApp()->changeState("level-menu");
         }
         if(ImGui::IsItemHovered() && !playHoverSound) {
             audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
@@ -115,6 +75,9 @@ class MainMenuState : public our::State{
         ImGui::SetCursorPos({1280/2 - 140/2,500 + 80});
         if(ImGui::Button("Exit",{140,0})) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
+            for(auto i : main_menu_tex) {
+                delete i;
+            }
             getApp()->close();
         }
         if(ImGui::IsItemHovered() && !playHoverSound) {
@@ -143,6 +106,9 @@ class MainMenuState : public our::State{
 
     void onDestroy() override {
 
+        delete main_menu_logo;
+        delete button_style;
+        //audioPlayer->stopSound(our::ost->getSoundSource());
     }
 };
 
