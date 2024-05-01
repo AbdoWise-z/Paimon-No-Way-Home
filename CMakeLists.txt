@@ -150,6 +150,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
 set(STATES_SOURCES
         source/states/play-state.hpp
         source/states/main-menu-state.h
+        source/states/splash-screen-state.hpp
 )
 
 # For each example, we add an executable target

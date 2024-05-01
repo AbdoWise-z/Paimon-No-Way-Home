@@ -13,7 +13,6 @@ namespace our {
         static ISoundEngine *SoundEngine;
         static AudioPlayer* instance;
     public:
-
         AudioPlayer();
         ~AudioPlayer();
         void playSound(const char* soundFile, bool looped, float volume);

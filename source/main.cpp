@@ -13,6 +13,7 @@
 
 #include "states/play-state.hpp"
 #include "states/main-menu-state.h"
+#include "states/splash-screen-state.hpp"
 
 int main(int argc, char** argv) {
 
@@ -44,6 +45,7 @@ int main(int argc, char** argv) {
     // Register all the states of the project in the application
     app.registerState<Playstate>("play");
     app.registerState<MainMenuState>("main-menu");
+    app.registerState<SplashScreenState>("splash");
 
     // Then choose the state to run based on the option "start-scene" in the config
     if(app_config.contains(std::string{"start-scene"})){
