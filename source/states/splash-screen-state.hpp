@@ -37,9 +37,13 @@ class SplashScreenState : public our::State {
     }
 
     void onImmediateGui() override {
-        ImGui::Begin("main_menu" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
-                                            | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
-                                            | ImGuiWindowFlags_NoMove);
+        ImGui::Begin("main_menu" , nullptr,
+                     ImGuiWindowFlags_NoTitleBar |
+                     ImGuiWindowFlags_NoScrollWithMouse |
+                     ImGuiWindowFlags_NoResize |
+                     ImGuiWindowFlags_NoScrollbar |
+                     ImGuiWindowFlags_NoMove
+                     );
         ImGui::SetWindowSize({1280,720});
         ImGui::SetWindowPos({0,0});
 
