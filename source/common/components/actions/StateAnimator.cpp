@@ -25,6 +25,7 @@ namespace our {
             s.scale    = state.value("scale"    , s.scale);
             s.rotation = state.value("rotation" , glm::radians(s.rotation));
             s.tint     = state.value("tint"     , s.tint);
+            s.enabled  = state.value("enabled"     , s.enabled);
             states.emplace_back(s);
         }
     }

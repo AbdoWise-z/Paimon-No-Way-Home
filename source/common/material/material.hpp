@@ -60,6 +60,16 @@ namespace our {
         TexturedMaterial* copy() override;
     };
 
+    class MultiTexturedMaterial : public TintedMaterial {
+    public:
+        std::vector<Texture2D*> textures;
+        std::vector<Sampler*> samplers;
+
+        void setup() const override;
+        void deserialize(const nlohmann::json& data) override;
+        MultiTexturedMaterial* copy() override;
+    };
+
     class DefaultMaterial : public Material{
     public:
         Texture2D* texture;
@@ -68,6 +78,7 @@ namespace our {
         glm::vec3 diffuseReflectivity = glm::vec3(1,1,1);
         glm::vec3 specularReflectivity = glm::vec3(1,1,1);
         float specularIntensity = 4;
+        float emission = 0;
         bool isSkybox;
         glm::vec4 tint;
 

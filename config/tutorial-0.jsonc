@@ -12,7 +12,27 @@
   "scene": {
     "renderer":{
       "sky": "assets/textures/skybox_0.png",
-      "postprocess": "assets/shaders/postprocess/vignette.frag",
+      "postprocess": {
+        "channels": 2,
+        "effects": [
+          {
+            "target": "assets/shaders/postprocess/blur.frag", // the target shader
+            "params": { // shader params
+              "horizontal": true
+            }
+          },
+          {
+            "target": "assets/shaders/postprocess/blur.frag", // the target shader
+            "params": { // shader params
+              "horizontal": false
+            }
+          },
+          {
+            "target": "assets/shaders/postprocess/bloom.frag", // the main shader
+            "params": {} //must be there even if its empty (mainly cuz Im lazy handle it)..
+          }
+        ]
+      },
       "areaLight": [0.6,0.6,0.6]
     },
     "assets":{
@@ -145,7 +165,8 @@
             }
           },
           "tint": [1, 0.8, 0.1, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
+          "specularReflectivity": [0.2, 0.2, 0.2],
+          "emission": 2
         },
         "ground_blue":{
           "type": "default",
@@ -159,7 +180,8 @@
             }
           },
           "tint": [0.2, 0.2, 1.0, 1],
-          "specularReflectivity": [0.2, 0.2, 0.2]
+          "specularReflectivity": [0.2, 0.2, 0.2],
+          "emission": 2
         },
         "mora":{
           "type": "default",
@@ -469,6 +491,7 @@
           },
 
           {
+            "name": "Mora",
             "position": [10, 2, -6],
             "scale": [0.003,0.003,0.003],
             "components": [
@@ -509,7 +532,8 @@
                 "states": [
                   {
                     "position": [12, -4, 0],
-                    "tint": [0.45, 0.4, 0.5, 0]
+                    "tint": [0.45, 0.4, 0.5, 0],
+                    "enabled": false
                   },
                   {
                     "position": [12, 0, 0],
@@ -540,7 +564,8 @@
                 "states": [
                   {
                     "position": [14, -4, 0],
-                    "tint": [0.45, 0.4, 0.5, 0]
+                    "tint": [0.45, 0.4, 0.5, 0],
+                    "enabled": false
                   },
                   {
                     "position": [14, 0, 0],
@@ -571,7 +596,8 @@
                 "states": [
                   {
                     "position": [16, -4, 0],
-                    "tint": [0.45, 0.4, 0.5, 0]
+                    "tint": [0.45, 0.4, 0.5, 0],
+                    "enabled": false
                   },
                   {
                     "position": [16, 0, 0],
