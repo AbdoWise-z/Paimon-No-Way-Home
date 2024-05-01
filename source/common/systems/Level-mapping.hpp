@@ -353,6 +353,7 @@ namespace our{
 
             //first we need to get all of our objects ready
             for (auto k : world->getEntities()){
+                if (!k->enabled) continue;
                 if (camera == nullptr) camera = k->getComponent<CameraComponent>();
                 auto g = k->getComponent<Ground>();
                 if (g){

@@ -16,6 +16,7 @@ namespace our {
         glm::vec3 scale    = glm::vec3(1,1,1);
         glm::vec3 rotation = glm::vec3(0,0,0);
         glm::vec4 tint     = glm::vec4(1,1,1,1);
+        bool enabled = true; //is the entity enabled or not ? (applied at the end)
     };
 
     class StateAnimator: public ActionReceiver {

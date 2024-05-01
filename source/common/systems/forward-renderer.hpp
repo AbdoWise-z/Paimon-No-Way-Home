@@ -7,6 +7,7 @@
 #include "../components/DirectionalLight.hpp"
 #include "components/SpotLight.h"
 #include "components/ConeLight.h"
+#include "texture/framebuffer.h"
 
 #include <glad/gl.h>
 #include <vector>
@@ -47,9 +48,15 @@ namespace our
         DefaultMaterial* skyMaterial;
         glm::vec3 areaLight;
         // Objects used for Postprocessing
-        GLuint postprocessFrameBuffer, postProcessVertexArray;
-        Texture2D *colorTarget, *depthTarget;
-        TexturedMaterial* postprocessMaterial;
+
+        Framebuffer* postprocessFramebuffer;
+        Framebuffer* postprocessFramebuffer2;
+
+        GLuint postProcessVertexArray;
+        MultiTexturedMaterial* postprocessMaterial;
+        std::vector<ShaderProgram*> postprocessShaders;
+        std::vector<nlohmann::json> postprocessData;
+        Sampler* postprocessSampler;
     public:
         // Initialize the renderer including the sky and the Postprocessing objects.
         // windowSize is the width & height of the window (in pixels).

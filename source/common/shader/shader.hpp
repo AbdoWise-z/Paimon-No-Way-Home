@@ -95,7 +95,7 @@ namespace our
                 std::cerr << "Uniform '" << uniform << "' does not exist in the shader program." << std::endl;
                 return;
             }
-            glUniform2f(location, value.x, value.y);
+            glUniform2f(location, (float) value.x, (float) value.y);
         }
 
         void set(const std::string &uniform, glm::vec3 value) const

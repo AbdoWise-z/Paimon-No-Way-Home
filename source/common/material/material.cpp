@@ -94,6 +94,8 @@ namespace our {
     void DefaultMaterial::setup() const {
         Material::setup();
         shader->set("material.tint" , this->tint);
+        shader->set("material.emission" , emission);
+
         if (texture != nullptr){
             glActiveTexture(GL_TEXTURE0);
             texture->bind();
@@ -115,16 +117,20 @@ namespace our {
 
     void DefaultMaterial::deserialize(const nlohmann::json &data) {
         Material::deserialize(data);
+
         texture = AssetLoader<Texture2D>::get(data.value("texture", ""));
         sampler = AssetLoader<Sampler>::get(data.value("sampler", ""));
 
-        tint = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-        isSkybox = data.value("isSkybox" , false);
-        ambientReflectivity = data.value("specularReflectivity" , ambientReflectivity);
-        diffuseReflectivity = data.value("diffuseReflectivity" , diffuseReflectivity);
+        tint                 = data.value("tint", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        isSkybox             = data.value("isSkybox" , false);
+        ambientReflectivity  = data.value("specularReflectivity" , ambientReflectivity);
+        diffuseReflectivity  = data.value("diffuseReflectivity" , diffuseReflectivity);
         specularReflectivity = data.value("specularReflectivity" , specularReflectivity);
-        specularIntensity = data.value("specularIntensity" , specularIntensity);
-
+        specularIntensity    = data.value("specularIntensity" , specularIntensity);
+        emission             = data.value("emission" , emission);
+        if (emission != 0){
+            std::cout << "emission: " << emission << std::endl;
+        }
     }
 
     DefaultMaterial *DefaultMaterial::copy() {
@@ -138,8 +144,33 @@ namespace our {
         k->diffuseReflectivity = diffuseReflectivity;
         k->tint = tint;
         k->isSkybox = isSkybox;
+        k->emission = emission;
         return k;
     }
 
 
+    void MultiTexturedMaterial::setup() const {
+        TintedMaterial::setup();
+
+        for (GLint i = 0; i < textures.size(); i++) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            textures[i]->bind();
+            if (samplers[i] != nullptr)
+                samplers[i]->bind(i);
+            shader->set(std::string("tex_").append(std::to_string(i)),
+                        i);
+        }
+    }
+
+    void MultiTexturedMaterial::deserialize(const nlohmann::json &data) {
+        TintedMaterial::deserialize(data);
+        //fixme: maybe implement this once day ..
+        throw "Not implemented";
+    }
+
+    MultiTexturedMaterial *MultiTexturedMaterial::copy() {
+        //fixme: maybe implement this once day ..
+        throw "Not implemented";
+        return nullptr;
+    }
 }

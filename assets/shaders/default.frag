@@ -8,11 +8,13 @@ in Varyings {
     vec3 position;
 } fs_in;
 
-out vec4 frag_color;
+layout (location = 0) out vec4 frag_color;
+layout (location = 1) out vec4 bright_color;
 
 //material
 uniform struct Material {
     vec4 tint;
+    float emission;
     int hasTexture; //1 == true , 0 == false
     sampler2D tex;
     vec3 ambientReflectivity;
@@ -68,6 +70,7 @@ void main(){
 
     if (isSkybox == 1){ // no need to do light calculations
         frag_color = baseColor * vec4(areaLight * material.ambientReflectivity, 1.0);
+        bright_color = vec4(0.0, 0.0, 0.0, 1.0);
         return;
     }
 
@@ -145,5 +148,11 @@ void main(){
     vec3 totalLight = (specularLight * material.specularReflectivity) +
                     ((directionalLight + spotLight + coneLight) * material.diffuseReflectivity) +
                     ((areaLight + ambientLight) * material.ambientReflectivity);
-    frag_color = baseColor * vec4(totalLight , 1.0);
+    frag_color   = baseColor * vec4(totalLight , 1.0);
+    bright_color = vec4(baseColor.rgb * material.emission , baseColor.a);
+
+    float brightness = dot(frag_color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if (brightness > 1){
+        bright_color += frag_color;
+    }
 }

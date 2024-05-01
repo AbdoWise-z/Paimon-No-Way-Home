@@ -72,6 +72,7 @@ namespace our{
                     auto g = k->getComponent<Ground>();
                     if (g) our::GroundSystem::onGroundMoved(g , diff);
                 }
+
                 if (state->scale)    k->localTransform.scale    = scl;
                 if (state->rotation) k->localTransform.rotation = rot;
                 if (state->tint) {
@@ -89,6 +90,7 @@ namespace our{
 
                 if (done){
                     state->currentState = state->nextState;
+                    k->enabled = state->states[state->currentState].enabled;
                 }
             }
         }
@@ -101,6 +103,7 @@ namespace our{
                     if (state->position) k->localTransform.position = state->states[state->currentState].position;
                     if (state->scale   ) k->localTransform.scale    = state->states[state->currentState].scale;
                     if (state->rotation) k->localTransform.rotation = state->states[state->currentState].rotation;
+                    k->enabled = state->states[state->currentState].enabled;
 
                     if (state->tint){
                         auto renderer = k->getComponent<MeshRendererComponent>();
