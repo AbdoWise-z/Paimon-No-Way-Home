@@ -91,6 +91,8 @@ class MainMenuState : public our::State{
         ImGui::SetCursorPos({1280/2 - 140/2,500});
 
         if(ImGui::Button("Start",{140,0})) {
+            //TODO: implement level change logic here
+            our::level_path = getApp()->getConfig()["levels"][0].get<std::string>();
             getApp()->changeState("play");
         }
 

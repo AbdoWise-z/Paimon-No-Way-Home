@@ -19,6 +19,7 @@
 
 #include "systems/CollectablesSystem.h"
 #include "systems/state-system.hpp"
+#include "texture/texture-utils.hpp"
 
 using namespace irrklang;
 
@@ -300,7 +301,9 @@ class Playstate: public our::State {
 
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
-        auto& config = getApp()->getConfig()["scene"];
+        std::ifstream file_in(our::level_path);
+        nlohmann::json config = nlohmann::json::parse(file_in, nullptr, true, true);
+        file_in.close();
         // If we have assets in the scene config, we deserialize them
         if(config.contains("assets")){
             our::deserializeAllAssets(config["assets"]);

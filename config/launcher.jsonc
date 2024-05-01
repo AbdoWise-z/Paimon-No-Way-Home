@@ -1,0 +1,16 @@
+{
+  //this file will only contain the levels paths from now on
+  "start-scene": "main-menu",
+  "window":
+  {
+    "title":"Default Game Window",
+    "size":{
+      "width":1280,
+      "height":720
+    },
+    "fullscreen": false
+  },
+  "levels" : [
+    "config/levels/level-0.jsonc"
+  ]
+}

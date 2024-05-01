@@ -14,6 +14,7 @@
 namespace our {
     EXTERN bool SUPPRESS_SHADER_ERRORS;
     EXTERN ImFont* AppFont;
+    EXTERN std::string level_path;
 }
 
 #endif //GFX_LAB_GLOBALS_H
