@@ -1,5 +1,5 @@
 {
-  "start-scene": "play",
+  "start-scene": "main-menu",
   "window":
   {
     "title":"Default Game Window",
@@ -10,6 +10,9 @@
     "fullscreen": false
   },
   "scene": {
+    "game": {
+      "remainingTime": 60
+    },
     "renderer":{
       "sky": "assets/textures/skybox_0.png",
       "postprocess": "assets/shaders/postprocess/vignette.frag",
@@ -37,6 +40,18 @@
       },
       "samplers":{
         "default":{}
+      },
+      "audio":{
+        "audio1":{
+          "music": "assets/sounds/game-play-audio.mp3",
+          "volume": 0.2
+        },"audio2":{
+          "music": "assets/sounds/oi-paimon.mp3",
+          "volume": 10.0
+        },"audio3":{
+          "music": "assets/sounds/game-over-audio.mp3",
+          "volume": 3.0
+        }
       },
       "materials":{
         "paimon_hair":{

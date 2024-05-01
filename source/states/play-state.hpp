@@ -21,9 +21,12 @@
 #include "systems/state-system.hpp"
 
 using namespace irrklang;
+
+enum GameState{PLAYING, WON, LOST};
 // This state shows how to use the ECS framework and deserialization.
 class Playstate: public our::State {
 
+    // systems
     our::CollisionSystem collisionSystem;
     our::World world;
     our::ForwardRenderer renderer;
@@ -34,43 +37,77 @@ class Playstate: public our::State {
     our::OrbitalCameraControllerSystem orbitalCameraControllerSystem;
     our::PaimonMovement paimonMovement;
     our::AudioPlayer* audioPlayer = our::AudioPlayer::getInstance();
-
     our::StateSystem stateSystem;
     our::CollectablesSystem collectablesSystem;
-
+    // textures
     our::Texture2D* mora_tex;
     our::Texture2D* game_over_tex;
+    our::Texture2D* game_won_tex;
+    our::Texture2D* paimon_icon;
+    our::Texture2D* button_style;
+    //fonts
+    ImFont* genhsinFont = nullptr;
     // size of framebuffer
     glm::ivec2 size;
     // count of mora
     int mora_count = 0;
-
-    bool gameLost = false;
-
-    bool gameWon = false; //this value should be returned from a system like paimon movement i guess
-
-    int remainingTime = 20;
-
+    // current game state
+    GameState gameState = PLAYING; // this value should be returned from a system like paimon movement i guess
+    // audios
+    std::pair<std::string,float>* game_over_audio;
+    std::pair<std::string,float>* game_won_audio;
+    // time remaining to lose
+    int remainingTime = 3; //TODO: this value should be loaded from each level's json file
+    // HUD parameters
     float time_counter = 0;
+    ImVec2 windowSize;
+    float fontScale = 3.0f;
+    float buttonWidth = 240.0f;
+    float buttonPosx = 0.0f;
+    float buttonCurvature = 100.0f;
+    ImVec2 button_style_size = {50.0f, 50.0f};
+    ImVec2 button_style_pos_offset = {200.0f, 19.0f};
+    std::vector<float> hudPadding = {30.0f, 30.0f, 30.0f, 30.0f}; // {top, left , bottom , right}
+    bool showMenu = false;
 
     void initHUD() {
+        windowSize.x = size.x;
+        windowSize.y = size.y;
+        buttonPosx = (windowSize.x - buttonWidth) / 2;
         mora_tex = our::texture_utils::loadImage("assets/textures/mora_icon.png");
         game_over_tex = our::texture_utils::loadImage("assets/textures/game_over.png");
+        game_won_tex = our::texture_utils::loadImage("assets/textures/game_won.png");
+        paimon_icon = our::texture_utils::loadImage("assets/textures/paimon_icon.png");
+        button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
+
+        ImGuiIO& io = ImGui::GetIO();
+
+        //io.Fonts->AddFontDefault();
+
+        // Load a custom font from a file
+        //const char* font_filename = "assets/fonts/genshin.ttf";
+        //genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f);
+
+
+        // Build the font atlas (important for rendering)
+        //io.Fonts->Build();
     }
 
     void drawMoraCount() {
         ImGui::Begin("mora_count" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
             | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 
-        ImGui::SetWindowPos({30,30});
-        ImGui::SetWindowSize({100,40});
+        float width = 100.0f;
+        float height = 40.0f;
+        ImGui::SetWindowPos({hudPadding[1],hudPadding[0]});
+        ImGui::SetWindowSize({width,height});
 
         GLuint mora_id = mora_tex->getOpenGLName();
         ImGui::SetCursorPos({0,0});
         ImGui::Image((void*)mora_id,{40,40},{0,1},{1,0});
 
         ImGui::SetCursorPos({50,0});
-        ImGui::SetWindowFontScale(3);
+        ImGui::SetWindowFontScale(fontScale);
         ImGui::Text(std::to_string(mora_count).c_str());
         ImGui::End();
     }
@@ -81,18 +118,21 @@ class Playstate: public our::State {
             time_counter = 0;
         }
         if(remainingTime <= 0) {
-            gameLost = true;
+            gameState = LOST;
             remainingTime = 0;
         }
 
         ImGui::Begin("timer" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
             | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 
-        ImGui::SetWindowPos({570,30});
-        ImGui::SetWindowSize({140,40});
+        float width = 140.0f;
+        float height = 40.0f;
+        ImGui::SetWindowPos({(windowSize.x  - width) / 2,hudPadding[0]});
+        ImGui::SetWindowSize({width,height});
 
-        ImGui::SetCursorPos({18,0});
-        ImGui::SetWindowFontScale(3);
+        ImVec2 timerInnerPadding = {18,0};
+        ImGui::SetCursorPos(timerInnerPadding);
+        ImGui::SetWindowFontScale(fontScale);
 
         std::string seconds = std::to_string(remainingTime % 60);
         if(remainingTime % 60 <= 9) seconds = "0" + seconds;
@@ -106,7 +146,89 @@ class Playstate: public our::State {
 
     }
 
-    void drawGameLost() {
+    void drawEndGame() {
+        static bool playSound = false;
+
+        if(gameState == LOST) {
+            if (game_over_audio && !playSound) {
+                auto music = game_over_audio->first;
+                auto volume = game_over_audio->second;
+                if (!music.empty()) {
+                    audioPlayer->playSound(music.c_str(), false, volume); // Play a sound with volume 0.5
+                    playSound = true;
+                }
+            }
+        }else {
+            if (game_won_audio && !playSound) {
+                auto music = game_won_audio->first;
+                auto volume = game_won_audio->second;
+                if (!music.empty()) {
+                    audioPlayer->playSound(music.c_str(), false, volume); // Play a sound with volume 0.5
+                    playSound = true;
+                }
+            }
+        }
+
+        ImGui::Begin("game_end" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
+            | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
+            | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+
+        ImGui::SetWindowPos({0,0});
+        ImGui::SetWindowSize(windowSize);
+
+        GLuint id = gameState == LOST? game_over_tex->getOpenGLName() : game_won_tex->getOpenGLName();
+
+        float imageWidth = windowSize.x;
+        float imageHeight = 450.0f;
+        ImGui::SetCursorPos({0,0});
+        ImGui::Image((void*)id,{imageWidth,imageHeight},{0,1},{1,0});
+
+        ImGui::SetWindowFontScale(fontScale);
+
+        ImGui::SetCursorPos({buttonPosx,imageHeight});
+
+        std::string buttonLabel = gameState == LOST? "Restart" : "Continue";
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.24f, 0.24f, 0.24f, 0.6f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.24f, 0.24f, 0.9f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
+        if(ImGui::Button(buttonLabel.c_str(),{buttonWidth, 0})) {
+            if(gameState == LOST){
+                //TODO: restart level
+            }else {
+                //TODO: go to next level
+            }
+            playSound = false;
+        }
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+
+        GLuint style_id = button_style->getOpenGLName();
+        ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,imageHeight - button_style_pos_offset.y});
+        ImGui::Image((void*)style_id,button_style_size,{0,1},{1,0});
+
+        ImGui::SetCursorPos({buttonPosx,imageHeight + 100.0f});
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.85f, 0.2f, 0.15f, 0.6f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.85f, 0.2f, 0.15f, 0.9f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.85f, 0.2f, 0.15f, 1.0f));
+        if(ImGui::Button("Exit",{buttonWidth, 0})) {
+            //TODO: go to main menu state
+            getApp()->changeState("main-menu");
+            playSound = false;
+        }
+
+        ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,imageHeight + 100.0f - button_style_pos_offset.y});
+        ImGui::Image((void*)style_id,button_style_size,{0,1},{1,0});
+
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+
+        ImGui::End();
+    }
+
+    void drawMenu() {
         static float tempx = 0;
         static float tempy = 0;
         static float posx = 0;
@@ -118,7 +240,7 @@ class Playstate: public our::State {
         }
         if(key.isPressed(GLFW_KEY_2)) {
             tempy +=0.5f;
-            std::cout<<"sizey=" <<tempx<<std::endl;
+            std::cout<<"sizey=" <<tempy<<std::endl;
         }
         if(key.isPressed(GLFW_KEY_3)) {
             tempx -=0.5f;
@@ -126,14 +248,14 @@ class Playstate: public our::State {
         }
         if(key.isPressed(GLFW_KEY_4)) {
             tempy -=0.5f;
-            std::cout<<"sizey=" <<tempx<<std::endl;
+            std::cout<<"sizey=" <<tempy<<std::endl;
         }
         if(key.isPressed(GLFW_KEY_5)) {
             posx +=0.5f;
             std::cout<<"posx=" <<posx<<std::endl;
         }
         if(key.isPressed(GLFW_KEY_6)) {
-            posy +=0.5f;
+            posy +=0.05f;
             std::cout<<"posy=" <<posy<<std::endl;
         }
         if(key.isPressed(GLFW_KEY_7)) {
@@ -141,64 +263,93 @@ class Playstate: public our::State {
             std::cout<<"posx=" <<posx<<std::endl;
         }
         if(key.isPressed(GLFW_KEY_8)) {
-            posy -=0.5f;
+            posy -=0.05f;
             std::cout<<"posy=" <<posy<<std::endl;
         }
-        ImGui::Begin("game_over" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
+
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.5f));
+
+        ImGui::Begin("Press Esc to close." , &showMenu, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoScrollWithMouse
             | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
-            | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
-
+            | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
         ImGui::SetWindowPos({0,0});
-        ImGui::SetWindowSize({1280,720});
+        ImGui::SetWindowSize({windowSize.x + 10,windowSize.y + 10}); // +10 to get rid of these borders lol
 
-        GLuint id = game_over_tex->getOpenGLName();
-        ImGui::SetCursorPos({0,0});
-        ImGui::Image((void*)id,{1280,450},{0,1},{1,0});
+        ImGui::SetWindowFontScale(fontScale);
 
-        ImGui::SetWindowFontScale(3);
+        float topPadding = 230.0f;
+        ImGui::SetCursorPos({buttonPosx,topPadding});
 
-        ImGui::SetCursorPos({520,450});
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 1.0f, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.0f, 0.75f, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.0f, 0.5f, 1.0f));
-        if(ImGui::Button("Restart",{240, 0})) {
-            //TODO: restart level
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.24f, 0.24f, 0.24f, 0.6f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.24f, 0.24f, 0.9f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
+        if(ImGui::Button("Levels",{buttonWidth, 0})) {
+            //TODO: go to levels menu state
         }
-        ImGui::PopStyleColor();
-        ImGui::PopStyleColor();
-        ImGui::PopStyleColor();
 
+        GLuint style_id = button_style->getOpenGLName();
+        ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,topPadding - button_style_pos_offset.y});
+        ImGui::Image((void*)style_id,button_style_size,{0,1},{1,0});
 
-        ImGui::SetCursorPos({520,550});
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.75f, 0.0f, 0.0f, 1.0f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.5f, 0.0f, 0.0f, 1.0f));
-        if(ImGui::Button("Exit",{240, 0})) {
-            //TODO: go to level-menu state
+        ImGui::SetCursorPos({buttonPosx,topPadding + 120.0f});
+
+        if(ImGui::Button("Options",{buttonWidth, 0})) {
+            //looks good tho
         }
+        ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,topPadding + 120.0f - button_style_pos_offset.y});
+        ImGui::Image((void*)style_id,button_style_size,{0,1},{1,0});
+
+        ImGui::SetCursorPos({buttonPosx,topPadding + 240.0f});
+
+        if(ImGui::Button("Main Menu",{buttonWidth, 0})) {
+            getApp()->changeState("main-menu");
+
+        }
+
+        ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,topPadding + 240.0f - button_style_pos_offset.y});
+        ImGui::Image((void*)style_id,button_style_size,{0,1},{1,0});
+
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
+
+        float imageWidth = 105.0f;
+        float imageHeight = 140.0f;
+        ImGui::SetCursorPos({windowSize.x - imageWidth - hudPadding[3],windowSize.y - imageHeight - hudPadding[2]});
+        GLuint id = paimon_icon->getOpenGLName();
+        ImGui::Image((void*)id,{imageWidth,imageHeight},{0,1},{1,0});
 
         ImGui::End();
-    }
 
-    void drawGameWon() {
+        ImGui::PopStyleColor();
 
     }
 
     void drawHUD() {
+
+        //ImGui::PushFont(genhsinFont);
+
         drawMoraCount();
         drawTimer();
-        if(gameLost) drawGameLost();
-        if(gameWon) drawGameWon();
+        if(gameState != PLAYING) drawEndGame();
+        if(showMenu && gameState == PLAYING) drawMenu();
+
+        //ImGui::PopFont();
     }
 
     void destroyHUD() {
         delete mora_tex;
-        gameLost = false;
-        gameWon = false;
-    }
+        delete game_over_tex;
+        delete game_won_tex;
+        delete paimon_icon;
+        delete button_style;
+
+        ImGuiIO& io = ImGui::GetIO();
+        //io.Fonts->Clear();
+        //delete genhsinFont;
+
+        gameState = PLAYING;
+    } //TODO: delete things
 
     void onImmediateGui() override {
         ImGui::ShowDemoWindow(nullptr);
@@ -215,7 +366,7 @@ class Playstate: public our::State {
         if(config.contains("world")){
             world.deserialize(config["world"]);
         }
-
+        remainingTime = config["game"].value("remainingTime",0);
         // We initialize the camera controller system since it needs a pointer to the app
         cameraController.enter(getApp());
         // Then we initialize the renderer
@@ -229,24 +380,26 @@ class Playstate: public our::State {
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
         collisionSystem.init(getApp());
-//        auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio1");
-//        if (audioAsset) {
-//            auto music = audioAsset->first;
-//            auto volume = audioAsset->second;
-//            //std::cout<< music<<std::endl;
-//            std::cout<< volume<<std::endl;
-//
-//            if (!music.empty()) {
-//                audioPlayer->playSound(music.c_str(), true, volume); // Play a sound with volume 0.5
-//            }
-//        }else{
-//            std::cout<< "audio is not found" <<std::endl;
-//        }
+        auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio1");
+        game_over_audio =  our::AssetLoader<std::pair<std::string, float>>::get("audio3");
+        game_won_audio =  our::AssetLoader<std::pair<std::string, float>>::get("audio2");
+        if (audioAsset) {
+            auto music = audioAsset->first;
+            auto volume = audioAsset->second;
+            //std::cout<< music<<std::endl;
+            std::cout<< volume<<std::endl;
 
+            if (!music.empty()) {
+                audioPlayer->playSound(music.c_str(), true, volume); // Play a sound with volume 0.5
+            }
+        }else{
+            std::cout<< "audio is not found" <<std::endl;
+        }
     }
 
     void onDraw(double deltaTime) override {
-        time_counter += (float)deltaTime;
+
+        if(!showMenu) time_counter += (float)deltaTime;
 
         // Here, we just run a bunch of systems to control the world logic
         our::Events::Update((float) deltaTime);
@@ -269,7 +422,7 @@ class Playstate: public our::State {
 
         if(keyboard.justPressed(GLFW_KEY_ESCAPE)){
             // If the escape  key is pressed in this frame, go to the play state
-            getApp()->changeState("level-menu");
+            showMenu = !showMenu;
         }
 
 //        auto mouse = getApp()->getMouse();

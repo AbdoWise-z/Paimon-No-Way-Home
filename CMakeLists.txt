@@ -156,6 +156,7 @@ set(STATES_SOURCES
         source/common/systems/CollectablesSystem.h
         source/common/components/Mora.cpp
         source/common/components/Mora.cpp
+        source/states/main-menu-state.h
 )
 
 # For each example, we add an executable target

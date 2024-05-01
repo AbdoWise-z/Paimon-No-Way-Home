@@ -22,6 +22,7 @@
 #include "states/material-test-state.hpp"
 #include "states/entity-test-state.hpp"
 #include "states/level-menu-state.h"
+#include "states/main-menu-state.h"
 #include "states/renderer-test-state.hpp"
 
 int main(int argc, char** argv) {
@@ -64,6 +65,7 @@ int main(int argc, char** argv) {
     app.registerState<EntityTestState>("entity-test");
     app.registerState<RendererTestState>("renderer-test");
     app.registerState<LevelMenuState>("level-menu");
+    app.registerState<MainMenuState>("main-menu");
     // Then choose the state to run based on the option "start-scene" in the config
     if(app_config.contains(std::string{"start-scene"})){
         app.changeState(app_config["start-scene"].get<std::string>());
