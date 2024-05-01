@@ -91,37 +91,8 @@ set(COMMON_SOURCES
         source/common/systems/collision.cpp
         source/common/components/Mora.hpp
         source/common/components/Mora.cpp
-)
+        source/common/texture/framebuffer.cpp
 
-# Define the directories in which to search for the included headers
-include_directories(
-        source/common
-        vendor/glfw/include
-        vendor/glad/include
-        vendor/glm
-        vendor/imgui
-        vendor/utils
-        vendor/irrklang
-        vendor/irrklang/include
-)
-
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
-
-set(STATES_SOURCES
-        source/states/play-state.hpp
-        source/states/menu-state.hpp
-        source/states/shader-test-state.hpp
-        source/states/mesh-test-state.hpp
-        source/states/transform-test-state.hpp
-        source/states/pipeline-test-state.hpp
-        source/states/texture-test-state.hpp
-        source/states/sampler-test-state.hpp
-        source/states/material-test-state.hpp
-        source/states/entity-test-state.hpp
-        source/states/renderer-test-state.hpp
         source/common/components/DirectionalLight.cpp
         source/common/components/DirectionalLight.hpp
         source/common/components/SpotLight.cpp
@@ -158,6 +129,37 @@ set(STATES_SOURCES
         source/common/systems/CollectablesSystem.h
         source/common/components/Mora.cpp
         source/common/components/Mora.cpp
+)
+
+# Define the directories in which to search for the included headers
+include_directories(
+        source/common
+        vendor/glfw/include
+        vendor/glad/include
+        vendor/glm
+        vendor/imgui
+        vendor/utils
+        vendor/irrklang
+        vendor/irrklang/include
+)
+
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/bin)
+
+set(STATES_SOURCES
+        source/states/play-state.hpp
+        source/states/menu-state.hpp
+        source/states/shader-test-state.hpp
+        source/states/mesh-test-state.hpp
+        source/states/transform-test-state.hpp
+        source/states/pipeline-test-state.hpp
+        source/states/texture-test-state.hpp
+        source/states/sampler-test-state.hpp
+        source/states/material-test-state.hpp
+        source/states/entity-test-state.hpp
+        source/states/renderer-test-state.hpp
         source/states/main-menu-state.h
 )
 

@@ -11,14 +11,11 @@
 #include <functional>
 #include <array>
 
-#include "menu-state.hpp"
-
 class MainMenuState : public our::State{
 
     std::vector<our::Texture2D*> main_menu_tex;
     our::Texture2D* main_menu_logo;
     our::Texture2D* button_style;
-    ImFont* genhsinFont;
     int main_menu_index = 0;
     float accumaltedTime = 0;
 
@@ -30,15 +27,6 @@ class MainMenuState : public our::State{
         }
         main_menu_logo = our::texture_utils::loadImage("assets/textures/main_menu/main_menu.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
-        ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->Clear();
-        // Load default font (optional, for fallback)
-        io.Fonts->AddFontDefault();
-        // Load a custom font from a file
-        const char* font_filename = "assets/fonts/genshin.ttf";
-        genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f); // 16 pixels size
-        // Build the font atlas (important for rendering)
-        io.Fonts->Build();
 
         ImGuiStyle& style = ImGui::GetStyle();
         style.FrameRounding = 100.0f;
@@ -84,10 +72,10 @@ class MainMenuState : public our::State{
             std::cout<<"posy=" <<posy<<std::endl;
         }
 
-        ImGui::PushFont(genhsinFont);
         ImGui::Begin("main_menu" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
             | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
             | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
+
         ImGui::SetWindowFontScale(3);
         ImGui::SetWindowSize({1280,720});
         ImGui::SetWindowPos({0,0});
@@ -120,9 +108,7 @@ class MainMenuState : public our::State{
         ImGui::SetCursorPos({1280/2 - 140/2 + 100,500 + 80 - 16});
         ImGui::Image((void*)style_id,{50.0f,50.0f},{0,1},{1,0});
 
-
         ImGui::End();
-        ImGui::PopFont();
     }
 
     void onDraw(double deltaTime) override {
@@ -135,10 +121,7 @@ class MainMenuState : public our::State{
     }
 
     void onDestroy() override {
-        ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->Clear();
-        io.Fonts->AddFontDefault();
-        io.Fonts->Build();
+
     }
 };
 

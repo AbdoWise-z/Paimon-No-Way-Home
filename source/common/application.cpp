@@ -24,6 +24,7 @@
 #endif
 
 #include "texture/screenshot.hpp"
+#include "../globals.h"
 
 std::string default_screenshot_filepath() {
     std::stringstream stream;
@@ -241,6 +242,13 @@ int our::Application::run(int run_for_frames) {
     double last_frame_time = glfwGetTime();
     int current_frame = 0;
 
+    ImFontConfig config;
+    io.Fonts->Clear();
+    config.GlyphRanges = io.Fonts->GetGlyphRangesDefault(); // Get default ranges
+    config.RasterizerDensity = 4;
+    our::AppFont = io.Fonts->AddFontFromFileTTF("assets/fonts/genshin.ttf" , 14 , &config);
+    io.Fonts->Build();
+
     //Game loop
     while(!glfwWindowShouldClose(window)){
         if(run_for_frames != 0 && current_frame >= run_for_frames) break;
@@ -258,7 +266,7 @@ int our::Application::run(int run_for_frames) {
         keyboard.setEnabled(!io.WantCaptureKeyboard, window);
         mouse.setEnabled(!io.WantCaptureMouse, window);
 
-        // Render the ImGui commands we called (this doesn't actually draw to the screen yet.
+        // Render the ImGui commands we called (this doesn't actually draw to the screen yet).
         ImGui::Render();
 
         // Just in case ImGui changed the OpenGL viewport (the portion of the window to which we render the geometry),

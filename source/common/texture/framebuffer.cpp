@@ -70,7 +70,3 @@ our::Framebuffer::~Framebuffer() {
 int our::Framebuffer::getColorTexturesCount() {
     return color.size();
 }
-
-
-
-

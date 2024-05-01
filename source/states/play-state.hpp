@@ -80,16 +80,6 @@ class Playstate: public our::State {
         game_won_tex = our::texture_utils::loadImage("assets/textures/game_won.png");
         paimon_icon = our::texture_utils::loadImage("assets/textures/paimon_icon.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
-
-        ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->Clear();
-        // Load a custom font from a file
-        const char* font_filename = "assets/fonts/genshin.ttf";
-        ImFontConfig font_config;
-        font_config.GlyphRanges = io.Fonts->GetGlyphRangesDefault(); // Optional: Set glyph ranges
-        io.Fonts->AddFontDefault();
-        genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 16.0f, &font_config);
-        io.Fonts->Build();
     }
 
     void drawMoraCount() {
@@ -286,15 +276,10 @@ class Playstate: public our::State {
     }
 
     void drawHUD() {
-
-        //ImGui::PushFont(genhsinFont);
-
         drawMoraCount();
         drawTimer();
         if(gameState != PLAYING) drawEndGame();
         if(showMenu && gameState == PLAYING) drawMenu();
-
-        //ImGui::PopFont();
     }
 
     void destroyHUD() {
@@ -303,11 +288,6 @@ class Playstate: public our::State {
         delete game_won_tex;
         delete paimon_icon;
         delete button_style;
-
-        ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->Clear();
-        io.Fonts->AddFontDefault();
-        io.Fonts->Build();
 
         gameState = PLAYING;
         showMenu = false;
@@ -396,13 +376,9 @@ class Playstate: public our::State {
     void onDestroy() override {
         destroyHUD();
         collectablesSystem.destroy();
-        // Don't forget to destroy the renderer
         renderer.destroy();
-        // On exit, we call exit for the camera controller system to make sure that the mouse is unlocked
         cameraController.exit();
-        // Clear the world
         world.clear();
-        // and we delete all the loaded assets to free memory on the RAM and the VRAM
         our::clearAllAssets();
     }
 };

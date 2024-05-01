@@ -128,9 +128,6 @@ namespace our {
         specularReflectivity = data.value("specularReflectivity" , specularReflectivity);
         specularIntensity    = data.value("specularIntensity" , specularIntensity);
         emission             = data.value("emission" , emission);
-        if (emission != 0){
-            std::cout << "emission: " << emission << std::endl;
-        }
     }
 
     DefaultMaterial *DefaultMaterial::copy() {

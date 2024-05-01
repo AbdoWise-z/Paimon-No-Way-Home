@@ -122,6 +122,9 @@ namespace our {
             for (auto k : postprocessShaders){
                 delete k;
             }
+
+            postprocessShaders.clear();
+            postprocessData.clear();
         }
     }
 

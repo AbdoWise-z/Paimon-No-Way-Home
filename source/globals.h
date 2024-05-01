@@ -5,12 +5,15 @@
 #ifndef GFX_LAB_GLOBALS_H
 #define GFX_LAB_GLOBALS_H
 
+#include "imgui.h"
+
 #ifndef EXTERN
 #define EXTERN extern
 #endif
 
 namespace our {
     EXTERN bool SUPPRESS_SHADER_ERRORS;
+    EXTERN ImFont* AppFont;
 }
 
 #endif //GFX_LAB_GLOBALS_H
