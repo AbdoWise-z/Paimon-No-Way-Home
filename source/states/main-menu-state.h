@@ -31,14 +31,12 @@ class MainMenuState : public our::State{
         main_menu_logo = our::texture_utils::loadImage("assets/textures/main_menu/main_menu.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
         ImGuiIO& io = ImGui::GetIO();
-
+        io.Fonts->Clear();
         // Load default font (optional, for fallback)
         io.Fonts->AddFontDefault();
-
         // Load a custom font from a file
         const char* font_filename = "assets/fonts/genshin.ttf";
         genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f); // 16 pixels size
-
         // Build the font atlas (important for rendering)
         io.Fonts->Build();
 
@@ -137,7 +135,10 @@ class MainMenuState : public our::State{
     }
 
     void onDestroy() override {
-
+        ImGuiIO& io = ImGui::GetIO();
+        io.Fonts->Clear();
+        io.Fonts->AddFontDefault();
+        io.Fonts->Build();
     }
 };
 

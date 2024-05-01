@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)   # Selects the minimum version of CMake required to run this file
-project(GFX-LAB VERSION 0.1.0)          # Here we select the project name and version
+project(Paimon:-No-Way-Home VERSION 0.1.0)          # Here we select the project name and version
 
 # Here we select C++17 with all the standards required and all compiler-specific extensions disabled
 set(CMAKE_CXX_STANDARD 17)
@@ -22,8 +22,10 @@ set(IMGUI_SOURCES
         vendor/imgui/imgui_demo.cpp
         vendor/imgui/imgui_draw.cpp
         vendor/imgui/imgui_widgets.cpp
+        vendor/imgui/imgui_tables.cpp
         vendor/imgui/imgui_impl/imgui_impl_glfw.cpp
         vendor/imgui/imgui_impl/imgui_impl_opengl3.cpp
+        vendor/imgui/imgui_impl/imgui_impl_win32.cpp
         )
 
 # Combine all vendor source files together into a single variable

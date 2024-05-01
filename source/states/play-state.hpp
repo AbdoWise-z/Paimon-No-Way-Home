@@ -74,6 +74,7 @@ class Playstate: public our::State {
         windowSize.x = size.x;
         windowSize.y = size.y;
         buttonPosx = (windowSize.x - buttonWidth) / 2;
+
         mora_tex = our::texture_utils::loadImage("assets/textures/mora_icon.png");
         game_over_tex = our::texture_utils::loadImage("assets/textures/game_over.png");
         game_won_tex = our::texture_utils::loadImage("assets/textures/game_won.png");
@@ -81,15 +82,13 @@ class Playstate: public our::State {
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
 
         ImGuiIO& io = ImGui::GetIO();
-
-        io.Fonts->AddFontDefault();
-
+        io.Fonts->Clear();
         // Load a custom font from a file
         const char* font_filename = "assets/fonts/genshin.ttf";
-        genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f);
-
-
-        // Build the font atlas (important for rendering)
+        ImFontConfig font_config;
+        font_config.GlyphRanges = io.Fonts->GetGlyphRangesDefault(); // Optional: Set glyph ranges
+        io.Fonts->AddFontDefault();
+        genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 16.0f, &font_config);
         io.Fonts->Build();
     }
 
@@ -288,14 +287,14 @@ class Playstate: public our::State {
 
     void drawHUD() {
 
-        ImGui::PushFont(genhsinFont);
+        //ImGui::PushFont(genhsinFont);
 
         drawMoraCount();
         drawTimer();
         if(gameState != PLAYING) drawEndGame();
         if(showMenu && gameState == PLAYING) drawMenu();
 
-        ImGui::PopFont();
+        //ImGui::PopFont();
     }
 
     void destroyHUD() {
@@ -305,9 +304,10 @@ class Playstate: public our::State {
         delete paimon_icon;
         delete button_style;
 
-        //ImGuiIO& io = ImGui::GetIO();
-        //io.Fonts->Clear();
-        //delete genhsinFont;
+        ImGuiIO& io = ImGui::GetIO();
+        io.Fonts->Clear();
+        io.Fonts->AddFontDefault();
+        io.Fonts->Build();
 
         gameState = PLAYING;
         showMenu = false;
@@ -317,6 +317,7 @@ class Playstate: public our::State {
         ImGui::ShowDemoWindow(nullptr);
         drawHUD();
     }
+
     void onInitialize() override {
         // First of all, we get the scene configuration from the app config
         auto& config = getApp()->getConfig()["scene"];
@@ -330,10 +331,11 @@ class Playstate: public our::State {
         }
         remainingTime = config["game"].value("remainingTime",0);
         // We initialize the camera controller system since it needs a pointer to the app
-        cameraController.enter(getApp());
         // Then we initialize the renderer
         size = getApp()->getFrameBufferSize();
+
         initHUD();
+
         collectablesSystem.init();
         renderer.initialize(size, config["renderer"]);
         our::Events::Init(getApp() , &world);
@@ -342,17 +344,18 @@ class Playstate: public our::State {
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
         collisionSystem.init(getApp());
+        cameraController.enter(getApp());
+
         auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio1");
         game_over_audio =  our::AssetLoader<std::pair<std::string, float>>::get("audio3");
         game_won_audio =  our::AssetLoader<std::pair<std::string, float>>::get("audio2");
         if (audioAsset) {
             auto music = audioAsset->first;
             auto volume = audioAsset->second;
-            //std::cout<< music<<std::endl;
-            std::cout<< volume<<std::endl;
 
             if (!music.empty()) {
-                audioPlayer->playSound(music.c_str(), true, volume); // Play a sound with volume 0.5
+                //fixme change the sound file
+                //audioPlayer->playSound(music.c_str(), true, volume); // Play a sound with volume 0.5
             }
         }else{
             std::cout<< "audio is not found" <<std::endl;
@@ -361,7 +364,7 @@ class Playstate: public our::State {
 
     void onDraw(double deltaTime) override {
 
-        if(!showMenu) time_counter += (float)deltaTime;
+        if (!showMenu) time_counter += (float)deltaTime;
 
         // Here, we just run a bunch of systems to control the world logic
         our::Events::Update((float) deltaTime);
@@ -386,21 +389,6 @@ class Playstate: public our::State {
             // If the escape  key is pressed in this frame, go to the play state
             showMenu = !showMenu;
         }
-
-//        auto mouse = getApp()->getMouse();
-//        auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio2");
-//
-//        if (audioAsset) {
-//            auto music = audioAsset->first;
-//            auto volume = audioAsset->second;
-//            auto isplaying = audioPlayer->isPlaying(music.c_str());
-//
-//            if (!music.empty() && mouse.isPressed(0) && ! isplaying) {
-//                audioPlayer->playSound(music.c_str(), false, volume);
-//            }
-//        }else{
-//            std::cout<< "audio is not found" <<std::endl;
-//        }
 
         world.deleteMarkedEntities();
     }

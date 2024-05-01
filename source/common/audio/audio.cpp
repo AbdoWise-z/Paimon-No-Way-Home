@@ -31,7 +31,9 @@ our::AudioPlayer::~AudioPlayer() {
 void our::AudioPlayer::playSound(const char* soundFile, bool looped, float volume) {
     if (SoundEngine) {
         // Play the sound with the specified volume
-        SoundEngine->play2D(soundFile, looped, false, true, ESM_AUTO_DETECT, false)->setVolume(volume);
+        auto audio = SoundEngine->play2D(soundFile, looped, false, true, ESM_STREAMING, false);
+        audio->setVolume(volume);
+        audio->setPlaybackSpeed(1);
     }
 }
 bool our::AudioPlayer::isPlaying(const char* soundFile) {
