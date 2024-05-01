@@ -7,6 +7,8 @@
 #include <systems/free-camera-controller.hpp>
 #include <systems/movement.hpp>
 #include <asset-loader.hpp>
+#include <imgui_internal.h>
+
 #include "systems/paimon-idle.hpp"
 #include "systems/Level-mapping.hpp"
 #include "systems/orbital-camera-controller.hpp"
@@ -57,8 +59,9 @@ class Playstate: public our::State {
     // audios
     std::pair<std::string,float>* game_over_audio;
     std::pair<std::string,float>* game_won_audio;
+    std::pair<std::string,float>* ost;
     // time remaining to lose
-    int remainingTime = 3; //TODO: this value should be loaded from each level's json file
+    int remainingTime = 3;
     // HUD parameters
     float time_counter = 0;
     ImVec2 windowSize;
@@ -138,24 +141,19 @@ class Playstate: public our::State {
 
     void drawEndGame() {
         static bool playSound = false;
+        static bool playHoverSound = false;
+        static bool restart_hover = false;
+        static bool exit_hover = false;
 
         if(gameState == LOST) {
             if (game_over_audio && !playSound) {
-                auto music = game_over_audio->first;
-                auto volume = game_over_audio->second;
-                if (!music.empty()) {
-                    audioPlayer->playSound(music.c_str(), false, volume); // Play a sound with volume 0.5
-                    playSound = true;
-                }
+                audioPlayer->playSound(game_over_audio->first.c_str(), false, game_over_audio->second); // Play a sound with volume 0.5
+                playSound = true;
             }
         }else {
             if (game_won_audio && !playSound) {
-                auto music = game_won_audio->first;
-                auto volume = game_won_audio->second;
-                if (!music.empty()) {
-                    audioPlayer->playSound(music.c_str(), false, volume); // Play a sound with volume 0.5
-                    playSound = true;
-                }
+                audioPlayer->playSound(game_won_audio->first.c_str(), false, game_won_audio->second); // Play a sound with volume 0.5
+                playSound = true;
             }
         }
 
@@ -182,12 +180,21 @@ class Playstate: public our::State {
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.24f, 0.24f, 0.9f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
         if(ImGui::Button(buttonLabel.c_str(),{buttonWidth, 0})) {
+            audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             if(gameState == LOST){
-                //TODO: restart level
+                getApp()->changeState("play");
             }else {
                 //TODO: go to next level
             }
             playSound = false;
+        }
+        if(ImGui::IsItemHovered() && !playHoverSound && !restart_hover) {
+            audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
+            restart_hover = true;
+            playHoverSound = true;
+        }else if(!ImGui::IsItemHovered() && !exit_hover) {
+            restart_hover = false;
+            playHoverSound = false;
         }
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
@@ -203,8 +210,17 @@ class Playstate: public our::State {
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.85f, 0.2f, 0.15f, 0.9f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.85f, 0.2f, 0.15f, 1.0f));
         if(ImGui::Button("Exit",{buttonWidth, 0})) {
+            audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             getApp()->changeState("main-menu");
             playSound = false;
+        }
+        if(ImGui::IsItemHovered() && !playHoverSound && !exit_hover) {
+            audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
+            exit_hover = true;
+            playHoverSound = true;
+        }else if(!ImGui::IsItemHovered() && !restart_hover) {
+            exit_hover = false;
+            playHoverSound = false;
         }
 
         ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,imageHeight + 100.0f - button_style_pos_offset.y});
@@ -218,6 +234,12 @@ class Playstate: public our::State {
     }
 
     void drawMenu() {
+
+        static bool button1_hover =false;
+        static bool button2_hover =false;
+        static bool button3_hover =false;
+        static bool playHoverSound = false;
+
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.5f));
 
         ImGui::Begin("Press Esc to close." , &showMenu, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoScrollWithMouse
@@ -236,6 +258,15 @@ class Playstate: public our::State {
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
         if(ImGui::Button("Levels",{buttonWidth, 0})) {
             //TODO: go to levels menu state
+            audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
+        }
+        if(ImGui::IsItemHovered() && !button1_hover) {
+            audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
+            button1_hover = true;
+            playHoverSound = true;
+        }else if(!ImGui::IsItemHovered() && !button2_hover && !button3_hover) {
+            button1_hover = false;
+            playHoverSound = false;
         }
 
         GLuint style_id = button_style->getOpenGLName();
@@ -246,15 +277,33 @@ class Playstate: public our::State {
 
         if(ImGui::Button("Options",{buttonWidth, 0})) {
             //looks good tho
+            audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
         }
+        if(ImGui::IsItemHovered() && !button2_hover) {
+            audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
+            button2_hover = true;
+            playHoverSound = true;
+        }else if(!ImGui::IsItemHovered() && !button1_hover && !button3_hover) {
+            button2_hover = false;
+            playHoverSound = false;
+        }
+
         ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,topPadding + 120.0f - button_style_pos_offset.y});
         ImGui::Image((void*)style_id,button_style_size,{0,1},{1,0});
 
         ImGui::SetCursorPos({buttonPosx,topPadding + 240.0f});
 
         if(ImGui::Button("Main Menu",{buttonWidth, 0})) {
+            audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             getApp()->changeState("main-menu");
-
+        }
+        if(ImGui::IsItemHovered() && !button3_hover) {
+            audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
+            button3_hover = true;
+            playHoverSound = true;
+        }else if(!ImGui::IsItemHovered() && !button1_hover && !button2_hover) {
+            button3_hover = false;
+            playHoverSound = false;
         }
 
         ImGui::SetCursorPos({buttonPosx + button_style_pos_offset.x,topPadding + 240.0f - button_style_pos_offset.y});
@@ -329,19 +378,13 @@ class Playstate: public our::State {
         collisionSystem.init(getApp());
         cameraController.enter(getApp());
 
-        auto audioAsset =  our::AssetLoader<std::pair<std::string, float>>::get("audio1");
-        game_over_audio =  our::AssetLoader<std::pair<std::string, float>>::get("audio3");
-        game_won_audio =  our::AssetLoader<std::pair<std::string, float>>::get("audio2");
-        if (audioAsset) {
-            auto music = audioAsset->first;
-            auto volume = audioAsset->second;
-
-            if (!music.empty()) {
-                //fixme change the sound file
-                //audioPlayer->playSound(music.c_str(), true, volume); // Play a sound with volume 0.5
-            }
+        ost = our::AssetLoader<std::pair<std::string, float>>::get("ost");
+        game_over_audio = our::AssetLoader<std::pair<std::string, float>>::get("level_lost");
+        game_won_audio = our::AssetLoader<std::pair<std::string, float>>::get("level_won");
+        if (ost) {
+            audioPlayer->playSound(ost->first.c_str(), true, ost->second); // Play a sound with volume 0.5
         }else{
-            std::cout<< "audio is not found" <<std::endl;
+            std::cout<< "OST is not found" <<std::endl;
         }
     }
 

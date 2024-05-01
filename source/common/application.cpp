@@ -249,6 +249,13 @@ int our::Application::run(int run_for_frames) {
     our::AppFont = io.Fonts->AddFontFromFileTTF("assets/fonts/genshin.ttf" , 14 , &config);
     io.Fonts->Build();
 
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.FrameRounding = 100.0f;
+    style.WindowRounding = 10.0f;
+
+    hover_button_audio =  std::pair<std::string,float>{"assets/sounds/sfx/hover-button-audio.mp3",0.5f};
+    press_button_audio =  std::pair<std::string,float>{"assets/sounds/sfx/press-button-audio.mp3",0.5f};
+
     //Game loop
     while(!glfwWindowShouldClose(window)){
         if(run_for_frames != 0 && current_frame >= run_for_frames) break;

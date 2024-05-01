@@ -1,7 +1,7 @@
 {
   //this will contain the actual level data :)
   "game": {
-    "remainingTime": 60
+    "remainingTime": 5
   },
   "renderer":{
     "sky": "assets/textures/skybox_0.png",
@@ -52,14 +52,14 @@
       "default":{}
     },
     "audio":{
-      "audio1":{
-        "music": "assets/sounds/game-play-audio.mp3",
+      "ost":{
+        "music": "assets/sounds/osts/Maidens of Sanctity.mp3",
         "volume": 0.2
-      },"audio2":{
+      },"level_won":{
         "music": "assets/sounds/oi-paimon.mp3",
         "volume": 10.0
-      },"audio3":{
-        "music": "assets/sounds/game-over-audio.mp3",
+      },"level_lost":{
+        "music": "assets/sounds/sfx/ehe_te_nandayo.mp3",
         "volume": 3.0
       }
     },
