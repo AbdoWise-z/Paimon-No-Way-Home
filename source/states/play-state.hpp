@@ -82,15 +82,15 @@ class Playstate: public our::State {
 
         ImGuiIO& io = ImGui::GetIO();
 
-        //io.Fonts->AddFontDefault();
+        io.Fonts->AddFontDefault();
 
         // Load a custom font from a file
-        //const char* font_filename = "assets/fonts/genshin.ttf";
-        //genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f);
+        const char* font_filename = "assets/fonts/genshin.ttf";
+        genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f);
 
 
         // Build the font atlas (important for rendering)
-        //io.Fonts->Build();
+        io.Fonts->Build();
     }
 
     void drawMoraCount() {
@@ -213,7 +213,6 @@ class Playstate: public our::State {
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.85f, 0.2f, 0.15f, 0.9f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.85f, 0.2f, 0.15f, 1.0f));
         if(ImGui::Button("Exit",{buttonWidth, 0})) {
-            //TODO: go to main menu state
             getApp()->changeState("main-menu");
             playSound = false;
         }
@@ -229,44 +228,6 @@ class Playstate: public our::State {
     }
 
     void drawMenu() {
-        static float tempx = 0;
-        static float tempy = 0;
-        static float posx = 0;
-        static float posy = 0;
-        auto key = getApp()->getKeyboard();
-        if(key.isPressed(GLFW_KEY_1)) {
-            tempx +=0.5f;
-            std::cout<<"sizex=" <<tempx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_2)) {
-            tempy +=0.5f;
-            std::cout<<"sizey=" <<tempy<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_3)) {
-            tempx -=0.5f;
-            std::cout<<"sizex=" <<tempx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_4)) {
-            tempy -=0.5f;
-            std::cout<<"sizey=" <<tempy<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_5)) {
-            posx +=0.5f;
-            std::cout<<"posx=" <<posx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_6)) {
-            posy +=0.05f;
-            std::cout<<"posy=" <<posy<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_7)) {
-            posx -=0.5f;
-            std::cout<<"posx=" <<posx<<std::endl;
-        }
-        if(key.isPressed(GLFW_KEY_8)) {
-            posy -=0.05f;
-            std::cout<<"posy=" <<posy<<std::endl;
-        }
-
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.5f));
 
         ImGui::Begin("Press Esc to close." , &showMenu, ImGuiWindowFlags_NoTitleBar| ImGuiWindowFlags_NoScrollWithMouse
@@ -327,14 +288,14 @@ class Playstate: public our::State {
 
     void drawHUD() {
 
-        //ImGui::PushFont(genhsinFont);
+        ImGui::PushFont(genhsinFont);
 
         drawMoraCount();
         drawTimer();
         if(gameState != PLAYING) drawEndGame();
         if(showMenu && gameState == PLAYING) drawMenu();
 
-        //ImGui::PopFont();
+        ImGui::PopFont();
     }
 
     void destroyHUD() {
@@ -344,11 +305,12 @@ class Playstate: public our::State {
         delete paimon_icon;
         delete button_style;
 
-        ImGuiIO& io = ImGui::GetIO();
+        //ImGuiIO& io = ImGui::GetIO();
         //io.Fonts->Clear();
         //delete genhsinFont;
 
         gameState = PLAYING;
+        showMenu = false;
     } //TODO: delete things
 
     void onImmediateGui() override {

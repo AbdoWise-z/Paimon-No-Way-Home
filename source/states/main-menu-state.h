@@ -17,6 +17,7 @@ class MainMenuState : public our::State{
 
     std::vector<our::Texture2D*> main_menu_tex;
     our::Texture2D* main_menu_logo;
+    our::Texture2D* button_style;
     ImFont* genhsinFont;
     int main_menu_index = 0;
     float accumaltedTime = 0;
@@ -28,18 +29,18 @@ class MainMenuState : public our::State{
             main_menu_tex.push_back(our::texture_utils::loadImage(path));
         }
         main_menu_logo = our::texture_utils::loadImage("assets/textures/main_menu/main_menu.png");
+        button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
+        ImGuiIO& io = ImGui::GetIO();
 
-        // ImGuiIO& io = ImGui::GetIO();
-        //
-        // // Load default font (optional, for fallback)
-        // io.Fonts->AddFontDefault();
-        //
-        // // Load a custom font from a file
-        // const char* font_filename = "assets/fonts/genshin-drip.ttf";
-        // genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f); // 16 pixels size
-        //
-        // // Build the font atlas (important for rendering)
-        // io.Fonts->Build();
+        // Load default font (optional, for fallback)
+        io.Fonts->AddFontDefault();
+
+        // Load a custom font from a file
+        const char* font_filename = "assets/fonts/genshin.ttf";
+        genhsinFont = io.Fonts->AddFontFromFileTTF(font_filename, 13.0f); // 16 pixels size
+
+        // Build the font atlas (important for rendering)
+        io.Fonts->Build();
 
         ImGuiStyle& style = ImGui::GetStyle();
         style.FrameRounding = 100.0f;
@@ -47,7 +48,45 @@ class MainMenuState : public our::State{
 
     void onImmediateGui() override {
 
-        //ImGui::PushFont(genhsinFont);
+        static float tempx = 0;
+        static float tempy = 0;
+        static float posx = 0;
+        static float posy = 0;
+        auto key = getApp()->getKeyboard();
+        if(key.isPressed(GLFW_KEY_1)) {
+            tempx +=0.5f;
+            std::cout<<"sizex=" <<tempx<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_2)) {
+            tempy +=0.5f;
+            std::cout<<"sizey=" <<tempy<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_3)) {
+            tempx -=0.5f;
+            std::cout<<"sizex=" <<tempx<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_4)) {
+            tempy -=0.5f;
+            std::cout<<"sizey=" <<tempy<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_5)) {
+            posx +=0.5f;
+            std::cout<<"posx=" <<posx<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_6)) {
+            posy +=0.05f;
+            std::cout<<"posy=" <<posy<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_7)) {
+            posx -=0.5f;
+            std::cout<<"posx=" <<posx<<std::endl;
+        }
+        if(key.isPressed(GLFW_KEY_8)) {
+            posy -=0.05f;
+            std::cout<<"posy=" <<posy<<std::endl;
+        }
+
+        ImGui::PushFont(genhsinFont);
         ImGui::Begin("main_menu" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
             | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
             | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground);
@@ -69,15 +108,23 @@ class MainMenuState : public our::State{
             getApp()->changeState("play");
         }
 
+        GLuint style_id = button_style->getOpenGLName();
+
+        ImGui::SetCursorPos({1280/2 - 140/2 + 100,500 - 16});
+        ImGui::Image((void*)style_id,{50.0f,50.0f},{0,1},{1,0});
+
         ImGui::SetCursorPos({1280/2 - 140/2,500 + 80});
 
         if(ImGui::Button("Exit",{140,0})) {
             getApp()->close();
         }
 
+        ImGui::SetCursorPos({1280/2 - 140/2 + 100,500 + 80 - 16});
+        ImGui::Image((void*)style_id,{50.0f,50.0f},{0,1},{1,0});
+
 
         ImGui::End();
-        //ImGui::PopFont();
+        ImGui::PopFont();
     }
 
     void onDraw(double deltaTime) override {
