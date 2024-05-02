@@ -4,6 +4,8 @@
 #include <application.hpp>
 #include <texture/texture2d.hpp>
 #include <texture/texture-utils.hpp>
+#include <iomanip>
+#include <filesystem>
 
 #include "../globals.h"
 
@@ -21,11 +23,18 @@ class MainMenuState : public our::State{
 
     void onInitialize() override {
         our::curr_level = 0;
-        for(int i = 0; i < 50; i++) {
-            std::string path = "assets/textures/main_menu/frame_" + std::to_string(i);
-            path += "_delay-0.1s.png";
-            main_menu_tex.push_back(our::texture_utils::loadImage(path));
+
+        int i = 0;
+        while (true) {
+            std::stringstream ss;
+            ss << "assets/textures/main_menu/frame_" << std::setw(0) << std::setfill('0') << i << "_delay-0.1s.png";
+            std::cout << "Loading: " << ss.str() << std::endl;
+
+            if ( ! std::filesystem::exists(ss.str()) ) break;
+            main_menu_tex.push_back(our::texture_utils::loadImage(ss.str()));
+            i++;
         }
+
         main_menu_logo = our::texture_utils::loadImage("assets/textures/main_menu/main_menu.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
         our::ost_path = "assets/sounds/osts/The Caress of Three Mothers.mp3";
@@ -46,7 +55,7 @@ class MainMenuState : public our::State{
         ImGui::SetWindowSize({1280,720});
         ImGui::SetWindowPos({0,0});
 
-        GLuint id = main_menu_tex[main_menu_index < 50 ? main_menu_index : 99 - main_menu_index]->getOpenGLName();
+        GLuint id = main_menu_tex[main_menu_index % main_menu_tex.size()]->getOpenGLName();
         ImGui::SetCursorPos({0,0});
         ImGui::Image((void*)id,{1280,720},{0,1},{1,0});
 
