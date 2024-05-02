@@ -29,7 +29,7 @@ namespace our {
 
     public:
         void init(Application* a);
-        void update(World *world, LevelMapping* level, float deltaTime);
+        void update(World *world, LevelMapping* level, float deltaTime , bool& won);
         void onGroundMoved(Ground* g, glm::vec3 delta);
     };
 }

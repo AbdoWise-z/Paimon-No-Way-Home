@@ -7,7 +7,7 @@
 #include "components/mesh-renderer.hpp"
 #include "ground-system.hpp"
 
-void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaTime) {
+void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaTime, bool& won) {
     //first we get paimon
     for (auto k : world->getEntities()){
         if (paimon == nullptr) paimon = k->getComponent<Paimon>();
@@ -52,7 +52,11 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
     if (paimon->ground == nullptr){
         paimon->ground = level->findBlockNear(paimonViewPos , paimonViewUp);
         if (paimon->ground){
+            Events::onPaimonEnter(paimon->ground);
             Events::onPaimonEnterWorld();
+            if (paimon->ground->getOwner()->name == "the_winning_block"){
+                won = true;
+            }
         }
 
     }
@@ -114,6 +118,9 @@ void our::PaimonMovement::update(World *world, LevelMapping *level, float deltaT
                 our::Events::onPaimonExit(paimon->ground);
                 paimon->ground = nextBlock;
                 our::Events::onPaimonEnter(paimon->ground);
+                if (paimon->ground->getOwner()->name == "the_winning_block"){
+                    won = true;
+                }
             }
 
             auto pos1 = glm::vec3(camera->getViewMatrix() * glm::vec4(paimon->getOwner()->localTransform.position , 1.0));

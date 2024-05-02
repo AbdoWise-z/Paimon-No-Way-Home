@@ -29,7 +29,6 @@ class Playstate: public our::State {
     our::CollisionSystem collisionSystem;
     our::World world;
     our::ForwardRenderer renderer;
-    our::FreeCameraControllerSystem cameraController;
     our::MovementSystem movementSystem;
     our::PaimonIdleSystem paimonIdleSystem;
     our::LevelMapping levelMapping;
@@ -99,7 +98,7 @@ class Playstate: public our::State {
     }
 
     void drawTimer() {
-        if(time_counter > 1) {
+        if(time_counter > 1 && gameState == PLAYING) {
             remainingTime--;
             time_counter = 0;
         }
@@ -157,18 +156,18 @@ class Playstate: public our::State {
         ImGui::SetWindowPos({0,0});
         ImGui::SetWindowSize(windowSize);
 
-        GLuint id = gameState == LOST? game_over_tex->getOpenGLName() : game_won_tex->getOpenGLName();
+        GLuint id = gameState == LOST ? game_over_tex->getOpenGLName() : game_won_tex->getOpenGLName();
 
         float imageWidth = windowSize.x;
         float imageHeight = 450.0f;
         ImGui::SetCursorPos({0,0});
-        ImGui::Image((void*)id,{imageWidth,imageHeight},{0,1},{1,0});
+        ImGui::Image((void*) id,{imageWidth,imageHeight},{0,1},{1,0});
 
         ImGui::SetWindowFontScale(fontScale);
 
         ImGui::SetCursorPos({buttonPosx,imageHeight});
 
-        std::string buttonLabel = gameState == LOST? "Restart" : "Continue";
+        std::string buttonLabel = gameState == LOST ? "Restart" : "Continue";
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.24f, 0.24f, 0.24f, 0.6f));
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.24f, 0.24f, 0.24f, 0.9f));
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.24f, 0.24f, 0.24f, 1.0f));
@@ -192,6 +191,7 @@ class Playstate: public our::State {
             restart_hover = false;
             playHoverSound = false;
         }
+
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
@@ -370,12 +370,13 @@ class Playstate: public our::State {
 
         renderer.initialize(size, config["renderer"]);
         our::Events::Init(getApp() , &world);
-        stateSystem.init(&world);
+
         levelMapping.init(getApp() , &world);
         orbitalCameraControllerSystem.init(getApp());
         paimonMovement.init(getApp());
         collisionSystem.init(getApp());
-        cameraController.enter(getApp());
+        stateSystem.init(&world);
+
 
         auto audio = our::AssetLoader<std::pair<std::string, float>>::get("ost");
         game_over_audio = our::AssetLoader<std::pair<std::string, float>>::get("level_lost");
@@ -391,16 +392,25 @@ class Playstate: public our::State {
 
         // Here, we just run a bunch of systems to control the world logic
         our::Events::Update((float) deltaTime);
-        stateSystem.update(&world , (float) deltaTime);
-        movementSystem.update(&world, (float)deltaTime);
-        cameraController.update(&world, (float)deltaTime);
         paimonIdleSystem.update(&world, (float)deltaTime);
-        orbitalCameraControllerSystem.update(&world , (float) deltaTime);
 
-        levelMapping.update();
-        paimonMovement.update(&world , &levelMapping, (float) deltaTime);
 
-        mora_count += collisionSystem.update(&world);
+        if ((gameState == PLAYING || gameState == WON) && !showMenu) { //stop everything if the game is paused or we lost
+
+            bool won = false;
+            stateSystem.update(&world , (float) deltaTime);
+            movementSystem.update(&world, (float)deltaTime);
+            levelMapping.update();
+            paimonMovement.update(&world , &levelMapping, (float) deltaTime , won);
+            orbitalCameraControllerSystem.update(&world , (float) deltaTime);
+            mora_count += collisionSystem.update(&world);
+
+            if (won){ // yay
+                gameState = WON;
+            }
+        }
+
+
 
         // And finally we use the renderer system to draw the scene
         renderer.render(&world);
@@ -419,7 +429,6 @@ class Playstate: public our::State {
     void onDestroy() override {
         destroyHUD();
         renderer.destroy();
-        cameraController.exit();
         world.clear();
         our::clearAllAssets();
     }

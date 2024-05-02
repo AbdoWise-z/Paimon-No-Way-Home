@@ -759,7 +759,7 @@
         },
 
         {
-          "name": "_",
+          "name": "the_winning_block", //yes I run out of names idk ..
           "position": [-14, 0, 0],
           "components": [
             {
