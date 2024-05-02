@@ -13,6 +13,7 @@ void our::EventController::deserialize(const nlohmann::json &data) {
         EventTrigger trigger;
         trigger.type             = static_cast<our::EventType>(k.value("trigger", 0));
         trigger.associatedObject = k.value("object", "");
+        trigger.maxTrigger       = k.value("maxTrigger" , trigger.maxTrigger);
 
         std::vector<EventAction> actions;
         auto act = k["actions"];
@@ -27,7 +28,7 @@ void our::EventController::deserialize(const nlohmann::json &data) {
             actions.emplace_back(aa);
         }
 
-        events.insert({trigger , actions});
+        events.push_back({trigger , actions});
     }
 }
 

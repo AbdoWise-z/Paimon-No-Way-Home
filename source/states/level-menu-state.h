@@ -99,6 +99,7 @@ class LevelMenuState : public our::State{
         if(ImGui::Button("1",button_size)) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             audioPlayer->stopSound(our::ost->getSoundSource());
+            our::curr_level = 0;
             our::level_path = getApp()->getConfig()["levels"][0].get<std::string>();
             getApp()->changeState("play");
         }
@@ -126,6 +127,7 @@ class LevelMenuState : public our::State{
         if(ImGui::Button("2",button_size)) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             audioPlayer->stopSound(our::ost->getSoundSource());
+            our::curr_level = 1;
             our::level_path = getApp()->getConfig()["levels"][1].get<std::string>();
             getApp()->changeState("play");
 
@@ -148,6 +150,7 @@ class LevelMenuState : public our::State{
         if(ImGui::Button("3",button_size)) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             audioPlayer->stopSound(our::ost->getSoundSource());
+            our::curr_level = 2;
             our::level_path = getApp()->getConfig()["levels"][2].get<std::string>();
             getApp()->changeState("play");
 
@@ -170,6 +173,7 @@ class LevelMenuState : public our::State{
         if(ImGui::Button("4",button_size)) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             audioPlayer->stopSound(our::ost->getSoundSource());
+            our::curr_level = 3;
             our::level_path = getApp()->getConfig()["levels"][3].get<std::string>();
             getApp()->changeState("play");
 
@@ -191,6 +195,7 @@ class LevelMenuState : public our::State{
         if(ImGui::Button("5",button_size)) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
             audioPlayer->stopSound(our::ost->getSoundSource());
+            our::curr_level = 4;
             our::level_path = getApp()->getConfig()["levels"][4].get<std::string>();
             getApp()->changeState("play");
 

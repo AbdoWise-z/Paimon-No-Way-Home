@@ -1,7 +1,7 @@
 {
   //this will contain the actual level data :)
   "game": {
-    "remainingTime": 5
+    "remainingTime": 60
   },
   "renderer":{
     "sky": "assets/textures/skybox_0.png",

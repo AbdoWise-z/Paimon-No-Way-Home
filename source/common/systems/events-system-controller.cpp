@@ -8,12 +8,7 @@
 static our::Application* mApp;
 static our::World* mWorld;
 
-static std::vector<
-        std::unordered_map<
-            our::EventTrigger,
-            std::vector<our::EventAction>
-            >
-        > events;
+static std::list<our::Event> events;
 
 
 struct ActiveAction{
@@ -36,45 +31,50 @@ void our::Events::Init(Application *app, World *world) {
     for (auto k : world->getEntities()){
         auto comp = k->getComponent<EventController>();
         if (comp != nullptr){
-            events.emplace_back(comp->events);
+            for (auto& j : comp->events) {
+                events.emplace_back(j);
+            }
         }
     }
     std::cout << "EVENTS| LOADED: " << events.size() << " event controller" << std::endl;
 
 }
 
-void triggerEven(our::EventType type, const std::string& obj){
-    for (const auto& map : events){
-        for (const auto& [trigger , actions]: map){
-            if (trigger.type == type && obj == trigger.associatedObject){
-                // we should trigger this event :)
-                for (auto action : actions){
-                    ActiveAction activeAction{};
-                    activeAction.data = action.data;
-                    activeAction.remainingTriggerCount = action.triggerCount;
-                    activeAction.nextTriggerDelay = action.triggerDelay;
-                    activeAction.triggerInterval = action.triggerInterval;
-                    // now search for the receiver
-                    for (auto et : mWorld->getEntities()){
-                        if (et->name == action.target){
-                            auto receivers = et->getAllComponents<our::ActionReceiver>();
-                            for (auto receiver : receivers){
-                                if (receiver->getReceiverID() == action.receiverID){
-                                    activeAction.receiver = receiver;
-                                    break;
-                                }
+void triggerEven(const our::EventType type, const std::string& obj){
+    for (auto&[trigger, actions] : events){
+        if (trigger.type == type && obj == trigger.associatedObject){
+            // we should trigger this event :)
+            trigger.maxTrigger--;
+            for (const auto& action : actions){
+                ActiveAction activeAction{};
+                activeAction.data = action.data;
+                activeAction.remainingTriggerCount = action.triggerCount;
+                activeAction.nextTriggerDelay = action.triggerDelay;
+                activeAction.triggerInterval = action.triggerInterval;
+                // now search for the receiver
+                for (auto et : mWorld->getEntities()){
+                    if (et->name == action.target){
+                        auto receivers = et->getAllComponents<our::ActionReceiver>();
+                        for (auto receiver : receivers){
+                            if (receiver->getReceiverID() == action.receiverID){
+                                activeAction.receiver = receiver;
+                                break;
                             }
-                            break;
                         }
+                        break;
                     }
+                }
 
-                    if (activeAction.receiver != nullptr){
-                        activeActions.push_back(activeAction);
-                    }
+                if (activeAction.receiver != nullptr){
+                    activeActions.push_back(activeAction);
                 }
             }
         }
     }
+
+    events.remove_if([](const our::Event& act) {
+       return act.trigger.maxTrigger == 0;
+    });
 }
 
 void our::Events::Update(float deltaTime) {

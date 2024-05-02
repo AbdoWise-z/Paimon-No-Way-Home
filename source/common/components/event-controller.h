@@ -24,6 +24,7 @@ namespace our {
 
         EventType type;
         std::string associatedObject;
+        int maxTrigger = -1;
 
         bool operator==(const EventTrigger& other) const;
     };
@@ -35,6 +36,11 @@ namespace our {
         int triggerCount;         // the number of times this event is triggered
         float triggerDelay;       // the delay of the first trigger
         nlohmann::json data;      // the payload to target
+    };
+
+    struct Event {
+        EventTrigger trigger;
+        std::vector<EventAction> actions;
     };
 }
 
@@ -54,7 +60,7 @@ namespace our {
         static std::string getID() { return "Event Controller"; }
 
         // events in the game is just an un-ordered map of list of event actions
-        std::unordered_map<EventTrigger, std::vector<EventAction>> events;
+        std::vector<Event> events;
 
 
         // Reads linearVelocity & angularVelocity from the given json object
