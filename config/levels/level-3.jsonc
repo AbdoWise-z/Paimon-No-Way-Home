@@ -1,10 +1,10 @@
 {
   //this will contain the actual level data :)
   "game": {
-    "remainingTime": 300
+    "remainingTime": 200
   },
   "renderer":{
-    "sky": "assets/textures/skybox_0.png",
+    "sky": "assets/textures/2795961.jpg",
     "postprocess": {
       "channels": 2,
       "effects": [
@@ -268,6 +268,23 @@
                   }
                 }
               ]
+            },
+            {
+              "trigger": 0,
+              "object": "movement_1_trigger",
+              "actions": [
+                {
+                  "target": "movement_1_trigger",
+                  "receiverID": "State Animator",
+                  "triggerCount": 1,
+                  "triggerDelay": 0.1,
+                  "triggerInterval": 0,
+                  "data": {
+                    "inc": 1,
+                    "duration": 3.0
+                  }
+                }
+              ]
             }
           ]
         }
@@ -366,7 +383,6 @@
             }
           ]
         },
-
         {
           "name": "_",
           "position": [2, 0, 0],
@@ -382,7 +398,6 @@
             }
           ]
         },
-
         {
           "name": "_",
           "position": [4, 0, 0],
@@ -398,7 +413,6 @@
             }
           ]
         },
-
         {
           "name": "_",
           "position": [6, 0, 0],
@@ -414,10 +428,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [8, 0, 0],
+          "position": [8, 2, 0],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -430,10 +443,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [10, 0, 0],
+          "position": [10, 4, 0],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -446,10 +458,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [10, 0, -2],
+          "position": [12, 6, 0],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -462,10 +473,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [10, 0, -4],
+          "position": [14, 8, 0],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -478,15 +488,14 @@
             }
           ]
         },
-
         {
-          "name": "path_0_trigger",
-          "position": [10, 0, -6],
+          "name": "_",
+          "position": [14, 8, -2],
           "components": [
             {
               "type": "Mesh Renderer",
               "mesh": "ground",
-              "material": "ground_blue",
+              "material": "ground",
               "copy": true
             },
             {
@@ -494,10 +503,84 @@
             }
           ]
         },
-
+        {
+          "name": "_",
+          "position": [14, 10, -4],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [14, 12, -6],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [14, 12, -8],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [0, 8, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [2, 8, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
         {
           "name": "Mora",
-          "position": [10, 2, -6],
+          "position": [2, 10, -12],
           "scale": [0.003,0.003,0.003],
           "components": [
             {
@@ -515,107 +598,9 @@
             }
           ]
         },
-
-        {
-          "name": "path_0_0",
-          "position": [12, 0, 0],
-          "components": [
-            {
-              "type": "Mesh Renderer",
-              "mesh": "ground",
-              "material": "ground",
-              "copy": true
-            },
-            {
-              "type": "Ground"
-            },
-            {
-              "type": "State Animator",
-              "initialState": 0,
-              "rotation": false,
-              "scale": false,
-              "states": [
-                {
-                  "position": [12, -4, 0],
-                  "tint": [0.45, 0.4, 0.5, 0],
-                  "enabled": false
-                },
-                {
-                  "position": [12, 0, 0],
-                  "tint": [0.45, 0.4, 0.5, 1]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "path_0_1",
-          "position": [14, 0, 0],
-          "components": [
-            {
-              "type": "Mesh Renderer",
-              "mesh": "ground",
-              "material": "ground",
-              "copy": true
-            },
-            {
-              "type": "Ground"
-            },
-            {
-              "type": "State Animator",
-              "initialState": 0,
-              "rotation": false,
-              "scale": false,
-              "states": [
-                {
-                  "position": [14, -4, 0],
-                  "tint": [0.45, 0.4, 0.5, 0],
-                  "enabled": false
-                },
-                {
-                  "position": [14, 0, 0],
-                  "tint": [0.45, 0.4, 0.5, 1]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "path_0_2",
-          "position": [16, 0, 0],
-          "components": [
-            {
-              "type": "Mesh Renderer",
-              "mesh": "ground",
-              "material": "ground",
-              "copy": true
-            },
-            {
-              "type": "Ground"
-            },
-            {
-              "type": "State Animator",
-              "initialState": 0,
-              "rotation": false,
-              "scale": false,
-              "states": [
-                {
-                  "position": [16, -4, 0],
-                  "tint": [0.45, 0.4, 0.5, 0],
-                  "enabled": false
-                },
-                {
-                  "position": [16, 0, 0],
-                  "tint": [0.45, 0.4, 0.5, 1]
-                }
-              ]
-            }
-          ]
-        },
-
         {
           "name": "_",
-          "position": [18, 0, 0],
+          "position": [4, 8, -12],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -628,10 +613,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [28, -10, -2],
+          "position": [6, 8, -12],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -644,10 +628,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [28, -10, -4],
+          "position": [8, 8, -12],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -660,10 +643,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [28, -10, -6],
+          "position": [10, 8, -12],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -676,10 +658,9 @@
             }
           ]
         },
-
         {
           "name": "_",
-          "position": [26, 5, 9],
+          "position": [12, 8, -12],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -692,10 +673,214 @@
             }
           ]
         },
-
+        {
+          "name": "_",
+          "position": [14, 8, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "Mora",
+          "position": [14, 10, -12],
+          "scale": [0.003,0.003,0.003],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "mora",
+              "material": "mora",
+              "copy": true
+            },
+            {
+              "type": "Mora"
+            },
+            {
+              "type": "Movement",
+              "angularVelocity": [0,90,0]
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-2, 6, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-4, 4, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-8, 2, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-10, 0, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-16, -4, -12],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-16, -4, -10],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-16, -8, -14],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "Mora",
+          "position": [-16, -6, -14],
+          "scale": [0.003,0.003,0.003],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "mora",
+              "material": "mora",
+              "copy": true
+            },
+            {
+              "type": "Mora"
+            },
+            {
+              "type": "Movement",
+              "angularVelocity": [0,90,0]
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-16, -4, -8],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-16, -4, -6],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-16, -4, -4],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
         {
           "name": "movement_0_trigger",
-          "position": [26, 5, 7],
+          "position": [4, 0, 2],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -715,20 +900,19 @@
 
               "states": [
                 {
-                  "position": [26, 5, 7]
+                  "position": [4, 0, 2]
                 },
                 {
-                  "position": [-8, 0, 0]
+                  "position": [4, 0, 10]
                 }
               ]
             }
 
           ]
         },
-
         {
           "name": "_",
-          "position": [-10, 0, 0],
+          "position": [4, 0, 12],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -741,10 +925,61 @@
             }
           ]
         },
+        {
+          "name": "Mora",
+          "position": [4, 2, 10],
+          "scale": [0.003,0.003,0.003],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "mora",
+              "material": "mora",
+              "copy": true
+            },
+            {
+              "type": "Mora"
+            },
+            {
+              "type": "Movement",
+              "angularVelocity": [0,90,0]
+            }
+          ]
+        },
+        {
+          "name": "movement_1_trigger",
+          "position": [-16, -4, -2],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground_blue",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            },
+            {
+              "type": "State Animator",
+              "initialState": 0,
+              "rotation": false,
+              "scale": false,
+              "tint": false,
 
+              "states": [
+                {
+                  "position": [-16, -4, -2]
+                },
+                {
+                  "position": [-16, -4, 10]
+                }
+              ]
+            }
+
+          ]
+        },
         {
           "name": "_",
-          "position": [-12, 0, 0],
+          "position": [-14, -2, 8],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -757,10 +992,104 @@
             }
           ]
         },
-
+        {
+          "name": "_",
+          "position": [-14, 0, 6],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-12, 0, 6],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-10, 0, 6],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-10, 2, 4],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "_",
+          "position": [-10, 2, 8],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "ground",
+              "material": "ground",
+              "copy": true
+            },
+            {
+              "type": "Ground"
+            }
+          ]
+        },
+        {
+          "name": "Mora",
+          "position": [-10, 4, 8],
+          "scale": [0.003,0.003,0.003],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "mora",
+              "material": "mora",
+              "copy": true
+            },
+            {
+              "type": "Mora"
+            },
+            {
+              "type": "Movement",
+              "angularVelocity": [0,90,0]
+            }
+          ]
+        },
         {
           "name": "the_winning_block", //yes I run out of names idk ..
-          "position": [-14, 0, 0],
+          "position": [-10, 0, 0],
           "components": [
             {
               "type": "Mesh Renderer",
@@ -772,53 +1101,9 @@
               "type": "Ground"
             }
           ]
-        },
-
-
-        {
-          "name": "test_block",
-          "position": [-2, 0, 14],
-          "components": [
-            {
-              "type": "Mesh Renderer",
-              "mesh": "ground",
-              "material": "ground",
-              "copy": true
-            },
-            {
-              "type": "Ground"
-            },
-            {
-              "type": "State Animator",
-              "initialState": 0,
-              "rotation": false,
-              "scale": false,
-
-              "states": [
-                {
-                  "position": [-2, 0, 14],
-                  "tint": [1,0,0,1]
-                },
-                {
-                  "position": [-2, 0, 10],
-                  "tint": [1,1,0,1]
-                },
-                {
-                  "position": [-2, 0, 8],
-                  "tint": [1,1,1,1]
-                },
-                {
-                  "position": [-2, 0, 6],
-                  "tint": [0,0,1,1]
-                },
-                {
-                  "position": [-2, 0, 4],
-                  "tint": [0,1,1,1]
-                }
-              ]
-            }
-          ]
         }
+
+
 
         //          {
         //            "name": "test_mora",

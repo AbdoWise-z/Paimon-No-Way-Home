@@ -1,10 +1,10 @@
 {
   //this will contain the actual level data :)
   "game": {
-    "remainingTime": 400
+    "remainingTime": 100
   },
   "renderer":{
-    "sky": "assets/textures/wallpaper1.jpg",
+    "sky": "assets/textures/wallpaper2.jpg",
     "postprocess": {
       "channels": 2,
       "effects": [
