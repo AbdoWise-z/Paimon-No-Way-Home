@@ -30,7 +30,7 @@ class MainMenuState : public our::State{
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
         our::ost_path = "assets/sounds/osts/The Caress of Three Mothers.mp3";
         if(!audioPlayer->isPlaying(our::ost_path)) {
-            our::ost = audioPlayer->playSound(our::ost_path,true,0.5f);
+            our::ost = audioPlayer->playSound(our::ost_path,true,0.2f);
         }
     }
 
