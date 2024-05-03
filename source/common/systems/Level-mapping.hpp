@@ -32,6 +32,7 @@ namespace our{
 
     class LevelMapping {
     private:
+
         [[nodiscard]] inline std::pair<int,glm::vec3> findBlockAlongDirection2(
                 const glm::vec3& direction,
                 const glm::vec3& position,
@@ -47,7 +48,7 @@ namespace our{
 
                 if (glm::dot(block.up , up) < UP_TO_UP_ALIGNMENT) continue;
                 auto P0 = block.position;
-                auto P1 = position + glm::normalize(direction) * 2.0f;
+                auto P1 = position + direction * 2.0f;
                 auto depth = abs(P0.z); //distance from cam
 
                 auto dot = glm::dot(glm::normalize(P1 - P0) , glm::vec3(0,0,1));
@@ -66,6 +67,8 @@ namespace our{
 
         std::vector<GroundBlock> blocks;
         GroundLinks groundMap;
+
+        bool EnableAdvancedIllusions = true;
 
     public:
         Application* app{};
@@ -94,14 +97,14 @@ namespace our{
             return nullptr;
         }
 
-        inline glm::vec3 getBlockPositionWorld(Ground* g){
+        static inline glm::vec3 getBlockPositionWorld(Ground* g){
             if (g == nullptr){
                 throw "Ground can't be null";
             }
             return g->getOwner()->getWorldPosition();
         }
 
-        inline glm::vec3 getBlockPosition(Ground* g){
+        inline glm::vec3 getBlockPosition(Ground* g) const{
             if (g == nullptr){
                 throw "Ground can't be null";
             }
@@ -115,7 +118,7 @@ namespace our{
         }
 
         // block_pos in camera space
-        float getPaimonDistanceToGround(glm::vec3 block_pos , glm::vec3 paimonPos , glm::vec3 paimonUp){
+        float getPaimonDistanceToGround(glm::vec3 block_pos , glm::vec3 paimonPos , glm::vec3 paimonUp) const{
             auto PV = camera->getViewMatrix();
             paimonUp       = glm::vec3(
                     PV * glm::vec4(paimonUp , 0.0)
@@ -134,7 +137,7 @@ namespace our{
         // block_pos: the block position in world space
         // paimonPos: paimon position in world space
         // paimonUp : a vector pointing from paimon upwards in world space
-        float getPaimonDistanceToGround2D(glm::vec3 block_pos , glm::vec3 paimonPos , glm::vec3 paimonUp){
+        float getPaimonDistanceToGround2D(glm::vec3 block_pos , glm::vec3 paimonPos , glm::vec3 paimonUp) const{
             auto PV = camera->getViewMatrix();
             paimonUp       = glm::vec3(
                     PV * glm::vec4(paimonUp , 0.0)
@@ -271,14 +274,14 @@ namespace our{
                 auto p = glm::vec3(0);
                 auto Ma = k.et->getLocalToWorldMatrix();
                 auto Mb = camera->getViewMatrix();
-                auto v0 = glm::vec3(-1,-1, 1);
-                auto v1 = glm::vec3( 1,-1, 1);
-                auto v2 = glm::vec3(-1, 1, 1);
-                auto v3 = glm::vec3( 1, 1, 1);
-                auto v4 = glm::vec3(-1,-1,-1);
-                auto v5 = glm::vec3( 1,-1,-1);
-                auto v6 = glm::vec3(-1, 1,-1);
-                auto v7 = glm::vec3( 1, 1,-1);
+                auto v0 = glm::vec3(-1,-1, 1); //        v6 --- v7
+                auto v1 = glm::vec3( 1,-1, 1); //       /      / |
+                auto v2 = glm::vec3(-1, 1, 1); //     v2 ---- v3 |
+                auto v3 = glm::vec3( 1, 1, 1); //     |        |
+                auto v4 = glm::vec3(-1,-1,-1); //     |        |/
+                auto v5 = glm::vec3( 1,-1,-1); //     v0 ---- v1
+                auto v6 = glm::vec3(-1, 1,-1); //
+                auto v7 = glm::vec3( 1, 1,-1); //
                 v3AB(Mb , Ma , v0);
                 v3AB(Mb , Ma , v1);
                 v3AB(Mb , Ma , v2);
@@ -396,8 +399,14 @@ namespace our{
 
             while (!next.empty()){
                 auto index = next.front(); next.pop();
-
                 GroundBlock g = blocks[index];
+
+                auto isLeftUp = true;
+                if (glm::abs(glm::dot(left , glm::vec3(0,1,0))) < glm::abs(glm::dot(forward , glm::vec3(0,1,0)))){
+                    isLeftUp = false;
+                }
+
+
 
                 auto l = findBlockAlongDirection2(left     , g.position , top, index );
                 auto r = findBlockAlongDirection2(-left    , g.position , top, index );
@@ -408,6 +417,26 @@ namespace our{
                 PUSH(index , r)
                 PUSH(index , f)
                 PUSH(index , b)
+
+                if (EnableAdvancedIllusions) {
+                    auto lT = left;
+                    auto directionUp = left;
+                    auto directionLeft = forward;
+                    if (!isLeftUp) {
+                        lT = forward;
+                        directionUp = forward;
+                        directionLeft = left;
+                    }
+                    lT.z = 0;
+                    lT = glm::normalize(lT);
+
+                    if (glm::abs(glm::dot(lT, glm::vec3(0, 1, 0))) > 0.95) {
+                        auto f2 = findBlockAlongDirection2(directionUp * 2.0f, g.position, top, index);
+                        auto b2 = findBlockAlongDirection2(-directionUp * 2.0f, g.position, top, index);
+                        PUSH(index, f2)
+                        PUSH(index, b2)
+                    }
+                }
             }
 
 
