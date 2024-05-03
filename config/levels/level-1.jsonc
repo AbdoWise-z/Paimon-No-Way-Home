@@ -934,7 +934,7 @@
         },
         {
           "name": "_",
-          "position": [6, 0, 10],
+          "position": [6, 4, 10],
           "components": [
             {
               "type": "Mesh Renderer",
