@@ -820,20 +820,6 @@
         },
         {
           "name": "_",
-          "position": [-6, 4, 8],
-          "components": [
-            {
-              "type": "Mesh Renderer",
-              "mesh": "ground",
-              "material": "ground",
-              "copy": true
-            },
-            {
-              "type": "Ground"
-            }
-          ]
-        },{
-          "name": "_",
           "position": [-6, 6, 10],
           "components": [
             {
@@ -906,20 +892,6 @@
         },{
           "name": "_",
           "position": [8, 2, 10],
-          "components": [
-            {
-              "type": "Mesh Renderer",
-              "mesh": "ground",
-              "material": "ground",
-              "copy": true
-            },
-            {
-              "type": "Ground"
-            }
-          ]
-        },{
-          "name": "_",
-          "position": [6, 2, 10],
           "components": [
             {
               "type": "Mesh Renderer",
