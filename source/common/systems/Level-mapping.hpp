@@ -68,7 +68,7 @@ namespace our{
         std::vector<GroundBlock> blocks;
         GroundLinks groundMap;
 
-        bool EnableAdvancedIllusions = true;
+        bool EnableAdvancedIllusions = false;
 
     public:
         Application* app{};
@@ -275,10 +275,10 @@ namespace our{
                 auto Ma = k.et->getLocalToWorldMatrix();
                 auto Mb = camera->getViewMatrix();
                 auto v0 = glm::vec3(-1,-1, 1); //        v6 --- v7
-                auto v1 = glm::vec3( 1,-1, 1); //       /      / |
+                auto v1 = glm::vec3( 1,-1, 1); //       /|     / |
                 auto v2 = glm::vec3(-1, 1, 1); //     v2 ---- v3 |
-                auto v3 = glm::vec3( 1, 1, 1); //     |        |
-                auto v4 = glm::vec3(-1,-1,-1); //     |        |/
+                auto v3 = glm::vec3( 1, 1, 1); //     |  v4 ---| v5
+                auto v4 = glm::vec3(-1,-1,-1); //     |/       |/
                 auto v5 = glm::vec3( 1,-1,-1); //     v0 ---- v1
                 auto v6 = glm::vec3(-1, 1,-1); //
                 auto v7 = glm::vec3( 1, 1,-1); //
@@ -291,7 +291,8 @@ namespace our{
                 v3AB(Mb , Ma , v6);
                 v3AB(Mb , Ma , v7);
 
-                bool intersect = glm::intersectLineTriangle(
+                bool intersect =
+                        glm::intersectLineTriangle(                 // front face
                                 glm::vec3(vsVector),
                                 glm::vec3(0,0,1),
                                 v0,v1,v2,
@@ -303,7 +304,7 @@ namespace our{
                                 v2,v1,v3,
                                 p
                         ) ||
-                        glm::intersectLineTriangle(
+                        glm::intersectLineTriangle(                 // left face
                                 glm::vec3(vsVector),
                                 glm::vec3(0,0,1),
                                 v0,v4,v2,
@@ -315,7 +316,7 @@ namespace our{
                                 v4,v2,v6,
                                 p
                         ) ||
-                        glm::intersectLineTriangle(
+                        glm::intersectLineTriangle(                 // top face
                                 glm::vec3(vsVector),
                                 glm::vec3(0,0,1),
                                 v6,v2,v7,
@@ -325,6 +326,42 @@ namespace our{
                                 glm::vec3(vsVector),
                                 glm::vec3(0,0,1),
                                 v2,v7,v3,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(                 // right face
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v1,v3,v7,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v7,v5,v1,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(                 // bottom face
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v0,v1,v4,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v4,v5,v1,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(                 // back face
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v4,v6,v7,
+                                p
+                        ) ||
+                        glm::intersectLineTriangle(
+                                glm::vec3(vsVector),
+                                glm::vec3(0,0,1),
+                                v7,v5,v4,
                                 p
                         );
 
@@ -433,8 +470,19 @@ namespace our{
                     if (glm::abs(glm::dot(lT, glm::vec3(0, 1, 0))) > 0.95) {
                         auto f2 = findBlockAlongDirection2(directionUp * 2.0f, g.position, top, index);
                         auto b2 = findBlockAlongDirection2(-directionUp * 2.0f, g.position, top, index);
+
+                        auto fl1 = findBlockAlongDirection2(directionUp + directionLeft, g.position, top, index);
+                        auto fl2 = findBlockAlongDirection2(directionUp - directionLeft, g.position, top, index);
+
+                        auto bl1 = findBlockAlongDirection2(- directionUp + directionLeft, g.position, top, index);
+                        auto bl2 = findBlockAlongDirection2(- directionUp - directionLeft, g.position, top, index);
+
                         PUSH(index, f2)
                         PUSH(index, b2)
+                        PUSH(index, fl1)
+                        PUSH(index, fl2)
+                        PUSH(index, bl1)
+                        PUSH(index, bl2)
                     }
                 }
             }

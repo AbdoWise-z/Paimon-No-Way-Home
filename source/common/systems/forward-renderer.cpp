@@ -145,7 +145,7 @@ namespace our {
             glm::vec4 position = localToWorld * glm::vec4(0, 0, 0, 1);
 
             // If this entity has a mesh renderer component
-            if(auto meshRenderer = entity->getComponent<MeshRendererComponent>(); meshRenderer){
+            for ( auto meshRenderer : entity->getAllComponents<MeshRendererComponent>()){
                 // We construct a command from it
                 RenderCommand command;
                 command.localToWorld = localToWorld;

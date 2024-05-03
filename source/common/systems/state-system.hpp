@@ -76,8 +76,7 @@ namespace our{
                 if (state->scale)    k->localTransform.scale    = scl;
                 if (state->rotation) k->localTransform.rotation = rot;
                 if (state->tint) {
-                    auto renderer = k->getComponent<MeshRendererComponent>();
-                    if (renderer != nullptr) {
+                    for (auto renderer: k->getAllComponents<MeshRendererComponent>()) {
                         auto mat = (DefaultMaterial *) renderer->material;
                         mat->tint = tnt;
                     }
@@ -106,9 +105,8 @@ namespace our{
                     k->enabled = state->states[state->currentState].enabled;
 
                     if (state->tint){
-                        auto renderer = k->getComponent<MeshRendererComponent>();
-                        if (renderer != nullptr){
-                            auto mat = (DefaultMaterial*) renderer->material;
+                        for (auto renderer: k->getAllComponents<MeshRendererComponent>()) {
+                            auto mat = (DefaultMaterial *) renderer->material;
                             mat->tint = state->states[state->currentState].tint;
                         }
                     }
