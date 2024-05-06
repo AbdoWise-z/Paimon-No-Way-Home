@@ -23,7 +23,7 @@ namespace our
         Application *app;
     public:
         void init(Application *app);
-        int update(World *world);
+        void update(World *world, int& goldenCount , int& blueCount , int& redCount);
         void checkGameOver(bool gameOverflag);
         void exit();
     };

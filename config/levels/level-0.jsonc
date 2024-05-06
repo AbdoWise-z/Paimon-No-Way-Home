@@ -201,10 +201,45 @@
         },
         "tint": [1, 1, 1, 1],
         "texture": "mora",
-        "sampler": "default"
+        "sampler": "default",
+        "emission": 0.5
+      },
+
+      "blue_mora":{
+        "type": "default",
+        "shader": "default",
+        "pipelineState": {
+          "faceCulling":{
+            "enabled": false
+          },
+          "depthTesting":{
+            "enabled": true
+          }
+        },
+        "tint": [0.2, 0.2, 1, 1],
+        "texture": "mora",
+        "sampler": "default",
+        "emission": 0.5
+      },
+      "red_mora":{
+        "type": "default",
+        "shader": "default",
+        "pipelineState": {
+          "faceCulling":{
+            "enabled": false
+          },
+          "depthTesting":{
+            "enabled": true
+          }
+        },
+        "tint": [0.2, 1, 0.2, 1],
+        "texture": "mora",
+        "sampler": "default",
+        "emission": 0.5
       }
     }
   },
+
   "world":[
     {
       "name": "Events",
@@ -212,6 +247,61 @@
         {
           "type": "Event Controller",
           "events": [
+            {
+              "name": "Entrance Action",
+              "trigger": 3,
+              "object": "",
+              "actions": [
+                {
+                  "target": "Camera",
+                  "receiverID": "Orbital Camera Component",
+                  "triggerCount": 1,
+                  "triggerDelay": 0.1,
+                  "triggerInterval": 0,
+                  "data": {
+                    "action": "follow",
+                    "target": "the_winning_block"
+                  }
+                },
+
+                {
+                  "target": "Camera",
+                  "receiverID": "Orbital Camera Component",
+                  "triggerCount": 1,
+                  "triggerDelay": 0.1,
+                  "triggerInterval": 0,
+                  "data": {
+                    "action": "unfollow",
+                    "target": "Paimon"
+                  }
+                },
+
+                {
+                  "target": "Camera",
+                  "receiverID": "Orbital Camera Component",
+                  "triggerCount": 1,
+                  "triggerDelay": 1.5,
+                  "triggerInterval": 0,
+                  "data": {
+                    "action": "unfollow",
+                    "target": "the_winning_block"
+                  }
+                },
+
+                {
+                  "target": "Camera",
+                  "receiverID": "Orbital Camera Component",
+                  "triggerCount": 1,
+                  "triggerDelay": 1.5,
+                  "triggerInterval": 0,
+                  "data": {
+                    "action": "follow",
+                    "target": "Paimon"
+                  }
+                }
+              ]
+            },
+
             {
               "trigger": 0,
               "object": "path_0_trigger",
@@ -251,7 +341,6 @@
                 }
               ]
             },
-
             {
               "trigger": 0,
               "object": "movement_0_trigger",
@@ -291,7 +380,7 @@
           "follow": [
             "Paimon"
           ],
-          "speed": 2.0,
+          "speed": 4.0,
           "OrthoZoom": 18,
           "Distance": 100,
           "switchSpeed": 0.5,
@@ -508,6 +597,28 @@
             },
             {
               "type": "Mora"
+            },
+            {
+              "type": "Movement",
+              "angularVelocity": [0,90,0]
+            }
+          ]
+        },
+
+        {
+          "name": "BlueMora",
+          "position": [10, 2, -2],
+          "scale": [0.003,0.003,0.003],
+          "components": [
+            {
+              "type": "Mesh Renderer",
+              "mesh": "mora",
+              "material": "blue_mora",
+              "copy": true
+            },
+            {
+              "type": "Mora",
+              "mora_type": 1
             },
             {
               "type": "Movement",

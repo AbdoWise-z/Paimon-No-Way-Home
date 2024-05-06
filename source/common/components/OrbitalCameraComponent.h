@@ -7,16 +7,18 @@
 
 #include "ecs/component.hpp"
 #include "glm/vec3.hpp"
+#include "components/actions/action-receiver.h"
 
 namespace our {
 
-    class OrbitalCameraComponent: public Component {
+    class OrbitalCameraComponent: public ActionReceiver {
     public:
         float Distance = 50;
         float OrthoZoom = 10;
         float switchSpeed = 0.8; //in sec
         float speed = 4;
         float Divisions = 8;
+        int switches = INT_MAX;
         bool inputEnabled = true;
 
         float _switchProgress = 0;
@@ -30,6 +32,8 @@ namespace our {
 
         static std::string getID() { return "Orbital Camera Component"; }
         void deserialize(const nlohmann::json& data) override;
+        void trigger(const nlohmann::json& data) override ;
+        std::string getReceiverID() override;
     };
 
 } // our

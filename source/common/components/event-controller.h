@@ -12,12 +12,12 @@
 
 namespace our {
     enum EventType {
-        PAIMON_ENTER_GROUND,
-        PAIMON_EXIT_GROUND,
-        PAIMON_PICK_MORA,
-        PAIMON_ENTER_WORLD,
-        PAIMON_INTERACT,
-        PAIMON_CAMERA_CHANGE
+        PAIMON_ENTER_GROUND = 0,
+        PAIMON_EXIT_GROUND = 1,
+        PAIMON_PICK_MORA = 2,
+        PAIMON_ENTER_WORLD = 3,
+        PAIMON_INTERACT = 4,
+        PAIMON_CAMERA_CHANGE = 5
     };
 
     struct EventTrigger{

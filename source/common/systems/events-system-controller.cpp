@@ -53,6 +53,8 @@ void triggerEven(const our::EventType type, const std::string& obj){
                 activeAction.triggerInterval = action.triggerInterval;
                 // now search for the receiver
                 for (auto et : mWorld->getEntities()){
+                    activeAction.receiver = nullptr;
+
                     if (et->name == action.target){
                         auto receivers = et->getAllComponents<our::ActionReceiver>();
                         for (auto receiver : receivers){
@@ -61,13 +63,14 @@ void triggerEven(const our::EventType type, const std::string& obj){
                                 break;
                             }
                         }
-                        break;
+                    }
+
+                    if (activeAction.receiver != nullptr){
+                        activeActions.push_back(activeAction);
                     }
                 }
 
-                if (activeAction.receiver != nullptr){
-                    activeActions.push_back(activeAction);
-                }
+
             }
         }
     }

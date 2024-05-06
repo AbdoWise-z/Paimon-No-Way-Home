@@ -42,6 +42,8 @@ class Playstate: public our::State {
     our::Texture2D* game_won_tex;
     our::Texture2D* paimon_icon;
     our::Texture2D* button_style;
+    our::Texture2D* camera_icon;
+    our::Texture2D* angle_icon;
     // size of framebuffer
     glm::ivec2 size;
     // count of mora
@@ -66,6 +68,8 @@ class Playstate: public our::State {
     std::vector<float> hudPadding = {30.0f, 30.0f, 30.0f, 30.0f}; // {top, left , bottom , right}
     bool showMenu = false;
 
+    our::OrbitalCameraComponent* cameraComponent;
+
     void initHUD() {
         windowSize.x = size.x;
         windowSize.y = size.y;
@@ -76,6 +80,10 @@ class Playstate: public our::State {
         game_won_tex = our::texture_utils::loadImage("assets/textures/game_won.png");
         paimon_icon = our::texture_utils::loadImage("assets/textures/paimon_icon.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
+
+        camera_icon = our::texture_utils::loadImage("assets/textures/icons/camera.png");
+        angle_icon  = our::texture_utils::loadImage("assets/textures/icons/angle.png");
+
     }
 
     void drawMoraCount() {
@@ -94,6 +102,77 @@ class Playstate: public our::State {
         ImGui::SetCursorPos({50,0});
         ImGui::SetWindowFontScale(fontScale);
         ImGui::Text(std::to_string(mora_count).c_str());
+        ImGui::End();
+    }
+
+    void drawGameplayConfigurations(double delta, int camera_count = 1000 , int angle_count = 8) {
+        static int prev_camera_count = 0;
+        static int prev_angle_count  = 0;
+        static float camera_anim = 0;
+        static float angle_anim = 0;
+        const float camera_anim_duration = 0.4;
+        const float angle_anim_duration  = 0.8;
+
+        ImGui::Begin("game_play" , nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollWithMouse
+                                             | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+
+        if (prev_camera_count != camera_count){
+            camera_anim = 1;
+            prev_camera_count = camera_count;
+        }
+
+        if (prev_angle_count != angle_count){
+            angle_anim = 1;
+            prev_angle_count = angle_count;
+        }
+
+        camera_anim -= delta / camera_anim_duration;
+        angle_anim  -= delta / angle_anim_duration;
+
+        if (camera_anim < 0) camera_anim = 0;
+        if (angle_anim < 0)  angle_anim = 0;
+
+
+        ImVec4 text_color_normal = {1 , 1 , 1 , 1};
+        ImVec4 text_color_changed = {0 , 1 , 0 , 1};
+        ImVec4 total_color_camera = {0,0,0,0};
+        total_color_camera.x = text_color_normal.x * (1 - camera_anim) + text_color_changed.x * camera_anim;
+        total_color_camera.y = text_color_normal.y * (1 - camera_anim) + text_color_changed.y * camera_anim;
+        total_color_camera.z = text_color_normal.z * (1 - camera_anim) + text_color_changed.z * camera_anim;
+        total_color_camera.w = text_color_normal.w * (1 - camera_anim) + text_color_changed.w * camera_anim;
+
+        ImVec4 total_color_angle = {0,0,0,0};
+        total_color_angle.x = text_color_normal.x * (1 - angle_anim) + text_color_changed.x * angle_anim;
+        total_color_angle.y = text_color_normal.y * (1 - angle_anim) + text_color_changed.y * angle_anim;
+        total_color_angle.z = text_color_normal.z * (1 - angle_anim) + text_color_changed.z * angle_anim;
+        total_color_angle.w = text_color_normal.w * (1 - angle_anim) + text_color_changed.w * angle_anim;
+
+
+        float width = 130.0f;
+        float height = 40.0f * 2;
+        ImGui::SetWindowPos({hudPadding[1],hudPadding[0] + 40 + 5});
+        ImGui::SetWindowSize({width,height});
+
+        GLuint camera_ic = camera_icon->getOpenGLName();
+        ImGui::SetCursorPos({5,2.5});
+        ImGui::Image((void*) camera_ic,{35,35},{0,1},{1,0});
+
+        ImGui::PushStyleColor(ImGuiCol_Text , total_color_camera);
+        ImGui::SetCursorPos({50,5});
+        ImGui::SetWindowFontScale(fontScale * 0.8);
+        ImGui::Text("%s", camera_count > 1000 ? "inf" : std::to_string(camera_count).c_str());
+        ImGui::PopStyleColor();
+
+        GLuint angle_ic = angle_icon->getOpenGLName();
+        ImGui::SetCursorPos({5,2.5 + 40});
+        ImGui::Image((void*) angle_ic,{35,35},{0,1},{1,0});
+
+        ImGui::PushStyleColor(ImGuiCol_Text , total_color_angle);
+        ImGui::SetCursorPos({50,5 + 40});
+        ImGui::SetWindowFontScale(fontScale * 0.8);
+        ImGui::Text("%s", std::to_string(angle_count).c_str());
+        ImGui::PopStyleColor();
+
         ImGui::End();
     }
 
@@ -325,8 +404,14 @@ class Playstate: public our::State {
     }
 
     void drawHUD() {
+        static double time = glfwGetTime();
         drawMoraCount();
+
+
+        drawGameplayConfigurations(glfwGetTime() - time , cameraComponent->switches , (int) cameraComponent->Divisions);
         drawTimer();
+        time = glfwGetTime();
+
         if(gameState != PLAYING) drawEndGame();
         if(showMenu && gameState == PLAYING) drawMenu();
     }
@@ -384,6 +469,14 @@ class Playstate: public our::State {
         if (audio && !audioPlayer->isPlaying(audio->first.c_str())) {
             ost = audioPlayer->playSound(audio->first.c_str(), true, audio->second); // Play a sound with volume 0.5
         }
+
+        for (auto k : world.getEntities()){
+            auto c = k->getComponent<our::OrbitalCameraComponent>();
+            if (c != nullptr){
+                cameraComponent = c;
+                break;
+            }
+        }
     }
 
     void onDraw(double deltaTime) override {
@@ -397,13 +490,22 @@ class Playstate: public our::State {
 
         if ((gameState == PLAYING || gameState == WON) && !showMenu) { //stop everything if the game is paused or we lost
 
+            int gold = 0, red = 0, blue = 0;
             bool won = false;
             stateSystem.update(&world , (float) deltaTime);
             movementSystem.update(&world, (float)deltaTime);
             levelMapping.update();
             paimonMovement.update(&world , &levelMapping, (float) deltaTime , won);
             orbitalCameraControllerSystem.update(&world , (float) deltaTime);
-            mora_count += collisionSystem.update(&world);
+            collisionSystem.update(&world , gold , blue , red);
+
+            remainingTime += gold * 10;
+            cameraComponent->switches += blue;
+            auto temp = red;
+            while (temp--)
+                cameraComponent->Divisions *= 2;
+
+            mora_count += gold + blue + red;
 
             if (won){ // yay
                 gameState = WON;

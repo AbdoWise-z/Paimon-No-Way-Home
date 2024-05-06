@@ -76,11 +76,12 @@ namespace our{
                 if (controller->_switchProgress < 0) controller->_switchProgress = 0;
             }else{
 
-                if (controller->inputEnabled) {
+                if (controller->inputEnabled && controller->switches > 0) {
                     if (app->getKeyboard().isPressed(GLFW_KEY_Q)) {
                         controller->_currentPos--;
                         controller->_switchDirection = -1;
                         controller->_switchProgress = 1;
+                        controller->switches--;
                         Events::onPaimonCameraChange(controller->getOwner()->name);
                     }
 
@@ -88,6 +89,8 @@ namespace our{
                         controller->_currentPos++;
                         controller->_switchDirection = 1;
                         controller->_switchProgress = 1;
+                        controller->switches--;
+                        Events::onPaimonCameraChange(controller->getOwner()->name);
                     }
                 }
             }

@@ -35,7 +35,7 @@ namespace our {
 
         nextState          = data.value("state" , -1);
         int inc            = data.value("inc" , 0);
-        if (inc != 0 && nextState == -1){
+        if (nextState == -1){
             nextState = currentState + inc;
             while (nextState < 0){
                 nextState += states.size();

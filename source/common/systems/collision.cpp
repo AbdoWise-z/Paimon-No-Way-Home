@@ -12,8 +12,7 @@ namespace our {
 
     }
 
-    int CollisionSystem::update(World *world) {
-        int count = 0;
+    void CollisionSystem::update(World *world , int& goldenCount , int& blueCount , int& redCount) {
         glm::vec3 paimonPos;
         Entity* paimon;
         for (auto entity: world->getEntities()) {
@@ -25,7 +24,7 @@ namespace our {
             }
         }
 
-        if (!paimon) return 0;
+        if (!paimon) return ;
 
         for (auto entity: world->getEntities()) {
             glm::vec3 moraVec = entity->getWorldPosition();
@@ -38,12 +37,20 @@ namespace our {
                     //std::cout << "Mora Hit" << std::endl;
                     our::Events::onPaimonPickMora(entity->name);
                     world->markForRemoval(entity);
-                    count ++;
+                    switch (moraObject->type) {
+                        case GOLDEN:
+                            goldenCount++;
+                            break;
+                        case BLUE:
+                            blueCount++;
+                            break;
+                        case RED:
+                            redCount++;
+                            break;
+                    }
                 }
             }
         }
-
-        return count;
     }
 
     void CollisionSystem::checkGameOver(bool gameOverflag) {
