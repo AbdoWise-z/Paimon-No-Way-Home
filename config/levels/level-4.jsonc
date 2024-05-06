@@ -4,7 +4,7 @@
     "remainingTime": 45
   },
   "renderer":{
-    "sky": "assets/textures/skybox_0.png",
+    "sky": "assets/textures/skybox/nebula-skybox.jpg",
     "postprocess": {
       "channels": 2,
       "effects": [
@@ -53,13 +53,13 @@
     },
     "audio":{
       "ost":{
-        "music": "assets/sounds/osts/Maidens of Sanctity.mp3",
+        "music": "assets/sounds/osts/Yiruma - River Flows in You.mp3",
         "volume": 0.2
       },"level_won":{
-        "music": "assets/sounds/sfx/oi-paimon.mp3",
+        "music": "assets/sounds/sfx/level-won.mp3",
         "volume": 10.0
       },"level_lost":{
-        "music": "assets/sounds/sfx/ehe_te_nandayo.mp3",
+        "music": "assets/sounds/sfx/level-lost.mp3",
         "volume": 3.0
       }
     },
@@ -261,7 +261,7 @@
           "events": [
             {
               "name": "Entrance Action",
-              "trigger": 15, //disabled for now
+              "trigger": 3,
               "object": "",
               "actions": [
                 {

@@ -28,7 +28,7 @@ class MainMenuState : public our::State{
         while (true) {
             std::stringstream ss;
             ss << "assets/textures/main_menu/frame_" << std::setw(0) << std::setfill('0') << i << "_delay-0.1s.png";
-            std::cout << "Loading: " << ss.str() << std::endl;
+            // std::cout << "Loading: " << ss.str() << std::endl;
 
             if ( ! std::filesystem::exists(ss.str()) ) break;
             main_menu_tex.push_back(our::texture_utils::loadImage(ss.str()));
@@ -37,7 +37,7 @@ class MainMenuState : public our::State{
 
         main_menu_logo = our::texture_utils::loadImage("assets/textures/main_menu/main_menu.png");
         button_style = our::texture_utils::loadImage("assets/textures/button_style.png");
-        our::ost_path = "assets/sounds/osts/The Caress of Three Mothers.mp3";
+        our::ost_path = "assets/sounds/osts/Lovers_Oath.mp3";
         if(!audioPlayer->isPlaying(our::ost_path)) {
             our::ost = audioPlayer->playSound(our::ost_path,true,0.2f);
         }

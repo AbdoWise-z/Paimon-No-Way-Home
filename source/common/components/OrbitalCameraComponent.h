@@ -18,7 +18,7 @@ namespace our {
         float switchSpeed = 0.8; //in sec
         float speed = 4;
         float Divisions = 8;
-        int switches = INT_MAX;
+        int switches = 100000;
         bool inputEnabled = true;
 
         float _switchProgress = 0;

@@ -352,9 +352,9 @@ class Playstate: public our::State {
 
         ImGui::SetCursorPos({buttonPosx,topPadding + 120.0f});
 
-        if(ImGui::Button("Options",{buttonWidth, 0})) {
-            //looks good tho
+        if(ImGui::Button("Restart",{buttonWidth, 0})) {
             audioPlayer->playSound(our::press_button_audio.first.c_str(),false, our::press_button_audio.second);
+            getApp()->changeState("play");
         }
         if(ImGui::IsItemHovered() && !button2_hover) {
             audioPlayer->playSound(our::hover_button_audio.first.c_str(),false, our::hover_button_audio.second);
@@ -403,15 +403,24 @@ class Playstate: public our::State {
 
     }
 
+    void drawHint() {
+        ImGui::Begin("hint",nullptr,ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoBackground
+            | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar
+            | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse);
+        ImGui::SetWindowPos({windowSize.x - 275,windowSize.y - 50});
+        ImGui::SetWindowSize({275,50});
+        ImGui::Text("Press Q or E to rotate Camera");
+        ImGui::TextColored({1.0f,1.0f,0.0f,1.0f},"Reach the golden block before time runs out");
+        ImGui::End();
+    }
+
     void drawHUD() {
         static double time = glfwGetTime();
         drawMoraCount();
-
-
         drawGameplayConfigurations(glfwGetTime() - time , cameraComponent->switches , (int) cameraComponent->Divisions);
         drawTimer();
+        drawHint();
         time = glfwGetTime();
-
         if(gameState != PLAYING) drawEndGame();
         if(showMenu && gameState == PLAYING) drawMenu();
     }
@@ -429,7 +438,6 @@ class Playstate: public our::State {
     }
 
     void onImmediateGui() override {
-        ImGui::ShowDemoWindow(nullptr);
         drawHUD();
     }
 
@@ -484,12 +492,13 @@ class Playstate: public our::State {
         if (!showMenu) time_counter += (float)deltaTime;
 
         // Here, we just run a bunch of systems to control the world logic
-        our::Events::Update((float) deltaTime);
+
         paimonIdleSystem.update(&world, (float)deltaTime);
 
 
         if ((gameState == PLAYING || gameState == WON) && !showMenu) { //stop everything if the game is paused or we lost
 
+            our::Events::Update((float) deltaTime);
             int gold = 0, red = 0, blue = 0;
             bool won = false;
             stateSystem.update(&world , (float) deltaTime);
