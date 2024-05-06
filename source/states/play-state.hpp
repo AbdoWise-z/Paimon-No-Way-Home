@@ -67,6 +67,7 @@ class Playstate: public our::State {
     ImVec2 button_style_pos_offset = {200.0f, 19.0f};
     std::vector<float> hudPadding = {30.0f, 30.0f, 30.0f, 30.0f}; // {top, left , bottom , right}
     bool showMenu = false;
+    float fade = 0.0f;
 
     our::OrbitalCameraComponent* cameraComponent;
 
@@ -416,10 +417,12 @@ class Playstate: public our::State {
 
     void drawHUD() {
         static double time = glfwGetTime();
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, fade);
         drawMoraCount();
         drawGameplayConfigurations(glfwGetTime() - time , cameraComponent->switches , (int) cameraComponent->Divisions);
         drawTimer();
         drawHint();
+        ImGui::PopStyleVar();
         time = glfwGetTime();
         if(gameState != PLAYING) drawEndGame();
         if(showMenu && gameState == PLAYING) drawMenu();
@@ -435,6 +438,7 @@ class Playstate: public our::State {
         gameState = PLAYING;
         showMenu = false;
         mora_count = 0;
+        fade = 0;
     }
 
     void onImmediateGui() override {
@@ -490,7 +494,7 @@ class Playstate: public our::State {
     void onDraw(double deltaTime) override {
 
         if (!showMenu) time_counter += (float)deltaTime;
-
+        if(fade < 1) fade += 0.01f;
         // Here, we just run a bunch of systems to control the world logic
 
         paimonIdleSystem.update(&world, (float)deltaTime);

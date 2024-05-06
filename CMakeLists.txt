@@ -167,7 +167,6 @@ add_executable(Paimon
 target_link_libraries(Paimon glfw)
 target_link_libraries(Paimon ${CMAKE_SOURCE_DIR}/vendor/irrKlang/lib/irrKlang.lib)
 add_custom_command(TARGET Paimon POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dlls
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/irrKlang.dll
         ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/ikpMP3.dll
