@@ -57,7 +57,7 @@
         "volume": 0.2
       },"level_won":{
         "music": "assets/sounds/sfx/level-won.mp3",
-        "volume": 10.0
+        "volume": 4.0
       },"level_lost":{
         "music": "assets/sounds/sfx/level-lost.mp3",
         "volume": 3.0
