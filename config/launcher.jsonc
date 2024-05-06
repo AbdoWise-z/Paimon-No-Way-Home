@@ -1,6 +1,6 @@
 {
   //this file will only contain the levels paths from now on
-  "start-scene": "play",
+  "start-scene": "splash",
   "window":
   {
     "title":"Paimon: No Way Home",

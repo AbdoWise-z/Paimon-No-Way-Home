@@ -661,7 +661,7 @@
           "follow": [
             "Paimon"
           ],
-          "speed": 30.0,
+          "speed": 2.0,
           "OrthoZoom": 18,
           "Distance": 100,
           "switchSpeed": 0.5,
