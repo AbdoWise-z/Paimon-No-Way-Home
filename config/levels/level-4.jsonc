@@ -1388,7 +1388,7 @@
             {
               "type": "State Animator",
 //              "initialState": 0,
-              "initialState": 2,
+              "initialState": 0,
               "rotation": false,
               "scale": false,
               "tint": false,
@@ -1475,7 +1475,7 @@
             {
               "type": "State Animator",
               //"initialState": 4,
-              "initialState": 2,
+              "initialState": 4,
               "rotation": false,
               "scale": false,
               "tint": false,
