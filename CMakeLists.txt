@@ -156,10 +156,17 @@ set(STATES_SOURCES
 # For each example, we add an executable target
 # Each target compiles one example source file and the common & vendor source files
 # Then we link GLFW with each target
-add_executable(GAME_APPLICATION source/main.cpp ${STATES_SOURCES} ${COMMON_SOURCES} ${VENDOR_SOURCES})
-target_link_libraries(GAME_APPLICATION glfw)
-target_link_libraries(GAME_APPLICATION ${CMAKE_SOURCE_DIR}/vendor/irrKlang/lib/irrKlang.lib)
-add_custom_command(TARGET GAME_APPLICATION POST_BUILD
+
+add_executable(Paimon
+        source/main.cpp
+        ${STATES_SOURCES}
+        ${COMMON_SOURCES}
+        ${VENDOR_SOURCES}
+        app.o
+)
+target_link_libraries(Paimon glfw)
+target_link_libraries(Paimon ${CMAKE_SOURCE_DIR}/vendor/irrKlang/lib/irrKlang.lib)
+add_custom_command(TARGET Paimon POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/dlls
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/vendor/irrKlang/bin/irrKlang.dll
