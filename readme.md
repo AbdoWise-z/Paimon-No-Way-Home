@@ -57,34 +57,42 @@ camera.
 ## Features
 We included various mechanisms such as:
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px;margin: 0;">
+<table>
+<tr>
+<td>
 <div style="display: flex; align-items: center;flex-direction: column;  justify-content: flex-start; font-size: 18px;">
-    <p style="margin: 0;">Collectable items</p>
-    <p style="margin: 0;">&</p>
-    <p style="margin: 0;">and Hidden paths</p>
+    <p style="margin: 0;">Collectable items & Hidden paths</p>
     <img src="images/collectables_hidden_paths.gif" alt="img" width="100%" style="border-radius: 15px;">
 </div>
+</td>
+<td>
 <div style="display: flex; align-items: center;flex-direction: column;  justify-content: flex-start; font-size: 18px;">
-    <p style="margin: 0;">&nbsp</p>
     <p style="margin: 0;">Camera Illusions</p>
-    <p style="margin: 0;">&nbsp</p>
     <img src="images/camera_illusion.gif" alt="img" width="100%" style="border-radius: 15px;">
 </div>
+</td>
+</tr>
+<tr>
+<td>
 <div style="display: flex; align-items: center;flex-direction: column;  justify-content: flex-start; font-size: 18px;">
-    <p style="margin: 0;">&nbsp</p>
     <p style="margin: 0;">&nbsp</p>
     <p style="margin: 0;">Moving Platforms</p>
     <img src="images/moving_platforms.gif" alt="img" width="100%" style="border-radius: 15px;">
 </div>
+</td>
+<td>
 <div style="display: flex; align-items: center;flex-direction: column;  justify-content: flex-start; font-size: 18px;">
-    <p style="margin: 0;">&nbsp</p>
     <p style="margin: 0;">&nbsp</p>    
     <p style="margin: 0;">Push Buttons</p>
     <img src="images/push_buttons.gif" alt="img" width="100%" style="border-radius: 15px;">
 </div>
-</div>
+</td>
+</tr>
+</table>
 
-and more to come ..
+
+
+and more to come ...
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -208,13 +216,30 @@ Ensure you have the following tools installed on your machine:
 We can also provide you with a pre-built version of the game, it can be found [here](https://xabdomo.itch.io/paimon-no-way-home)
 
 ## Images
-<div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px;margin: 0;">
-<img src="images/image_0.png">
-<img src="images/image_1.png">
-<img src="images/image_2.png">
-<img src="images/image_3.png">
-<img src="images/image_4.png">
-</div>
+
+<table>
+<tr>
+   <td>
+      <img src="images/image_0.png">
+   </td>
+   <td>
+      <img src="images/image_1.png">
+   </td>
+</tr>
+<tr>
+   <td>
+      <img src="images/image_2.png">
+   </td>
+   <td>
+      <img src="images/image_3.png">
+   </td>
+<tr>
+   <td>
+      <img src="images/image_4.png">
+   </td>
+</tr>
+</table>
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
