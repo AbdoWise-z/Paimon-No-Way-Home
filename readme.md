@@ -98,7 +98,7 @@ and more to come ...
 
 ### Built With
 
-This project was burly built using C++/C, we used libraries such as 
+This project was purely built using C++/C, we used libraries such as 
 * ImGui: For UI Rendering
 * irrKlang: as a sound Engine
 * Glad
